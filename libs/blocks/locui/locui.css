@@ -337,3 +337,28 @@ helix-sidekick {
 .info-title {
   font-weight: 500;
 }
+
+a.locui-url-action {
+  min-width: 88px;
+  display: block;
+  padding: 36px 6px 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #676767;
+  border-radius: 4px;
+}
+
+a.locui-url-action:hover {
+  text-decoration: none;
+  background-color: #d9d9d9;
+  color: #000;
+}
+
+a.locui-url-action-edit {
+  background: url('../../ui/img/word-icon.svg') center 8px / 26px no-repeat;
+}
+
+a.locui-url-action-view {
+  background: url('../../ui/img/aec-icon.svg') center 8px / 26px no-repeat;
+}
