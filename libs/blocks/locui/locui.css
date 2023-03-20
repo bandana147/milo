@@ -232,39 +232,6 @@ button.locui-urls-heading-action {
   box-sizing: border-box;
 }
 
-div.locui-subproject-locales {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-span.locui-subproject-locale {
-  background: rgb(0 0 0 / 15%);
-  margin: 4px 4px 0 0;
-  text-transform: uppercase;
-  padding: 4px 6px;
-  border-radius: 4px;
-  font-size: 14px;
-  line-height: 1;
-}
-
-button.locui-urls-heading-action {
-  outline: transparent solid 0px;
-  transition: outline 300ms;
-  border: none;
-  height: 36px;
-  font-family: 'Adobe Clean', adobe-clean, sans-serif;
-  color: #FFF;
-  background: #FF1593;
-  background-repeat: no-repeat;
-  background-size: 18px;
-  background-position: 12px center;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 0 18px;
-  clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
-  box-sizing: border-box;
-}
-
 ul.locui-urls {
   margin: 0;
   list-style: none;
@@ -384,17 +351,3 @@ a.locui-url-action {
   cursor: pointer;
 }
 
-button.locui-url-action:hover {
-  text-decoration: none;
-  background-color: #d9d9d9;
-  color: #000;
-  box-shadow: inset 0 0 10px #9f9f9f;
-}
-
-button.locui-url-action-edit {
-  background: url('../../ui/img/word-icon.svg') center 14px / 26px no-repeat;
-}
-
-button.locui-url-action-view {
-  background: url('../../ui/img/aec-icon.svg') center 14px / 26px no-repeat;
-}
