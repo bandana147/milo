@@ -38,14 +38,6 @@ main {
   align-items: center;
 }
 
-.locui-project-details-name {
-  text-transform: lowercase;
-}
-
-.locui-project-details-name {
-  text-transform: lowercase;
-}
-
 .locui-project-details-edit {
   background: url('./img/edit-sheet.svg');
   width: 68px;
