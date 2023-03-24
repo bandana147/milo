@@ -1,7 +1,6 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
 import setDetails from './index.js';
 import { heading, languages, urls } from '../utils/state.js';
-import loginToSharePoint from '../utils/sp/login.js';
 
 import Heading from '../heading/view.js';
 import Langs from '../langs/view.js';
