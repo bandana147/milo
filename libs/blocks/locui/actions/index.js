@@ -68,6 +68,7 @@ export async function findFragments() {
   }
 }
 
+<<<<<<< HEAD
 function checkSource() {
   return urls.value.some((url) => {
     if (!url.actions || url.actions.edit?.status === 404) return true;
@@ -110,6 +111,16 @@ export async function syncToLangstore() {
     if (total === 0) setStatus('langstore');
   }
 }
+=======
+export function noSource() {
+  return urls.value.find((url) => {
+    if (!url.actions) return true;
+    return url.actions?.edit?.status === 404;
+  });
+}
+
+export function syncToLangstore() {
+>>>>>>> 851dedb7 (Color updates)
 
 export function startProject() {
   console.log('start the project')
