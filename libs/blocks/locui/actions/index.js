@@ -1,14 +1,13 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import updateExcelTable from '../utils/sp/excel.js';
-import { heading, setStatus, urls } from '../utils/state.js';
+import { heading, setStatus, urls, previewPath, projectStatus } from '../utils/state.js';
 import { origin, preview } from '../utils/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
-import copyFile from '../utils/sp/file.js';
-import makeGroups from '../utils/group.js';
+import '../../../deps/md5.min.js';
 
-const MISSING_SOURCE = 'There are missing source docs in the project. Remove the missing docs or create them.';
+const apiUrl = 'https://14257-miloc-jsingler.adobeioruntime.net/api/v1/web/miloc-0.0.1';
 
 async function updateExcelJson() {
   let count = 1;
@@ -46,6 +45,19 @@ async function findPageFragments(path) {
   return getUrls(fragmentUrls);
 }
 
+function createProject(projectUrl) {
+  return fetch(`${apiUrl}/create-project`, {
+    method: 'POST',
+    body: projectUrl
+  });
+}
+
+function startProject(projectHash) {
+  return fetch(`${apiUrl}/start-project?project=${projectHash}`, {
+    method: 'POST',
+  });
+}
+
 export async function findFragments() {
   setStatus('fragments', 'info', 'Finding fragments.');
   const found = urls.value.map((url) => findPageFragments(url.pathname));
@@ -68,60 +80,84 @@ export async function findFragments() {
   }
 }
 
-<<<<<<< HEAD
-function checkSource() {
-  return urls.value.some((url) => {
-    if (!url.actions || url.actions.edit?.status === 404) return true;
-    return false;
-  });
-}
-
-async function syncFile(url) {
-  return new Promise(async (resolve) => {
-    const sourcePath = url.pathname;
-    const destPath = url.langstore.pathname;
-    const json = await copyFile(sourcePath, destPath);
-    if (json.webUrl) {
-      url.langstore.actions = {
-        ...url.langstore.actions,
-        edit: {
-          url: json.webUrl,
-          status: 200,
-        },
-      };
-      resolve(url);
-    }
-  });
-}
-
 export async function syncToLangstore() {
   setStatus('file');
-  if (checkSource()) {
-    setStatus('langstore', 'error', 'Missing source docs.', MISSING_SOURCE);
-    return;
-  }
-
-  let total = urls.value.length;
-  for (const [idx, url] of urls.value.entries()) {
-    setStatus('langstore', 'info', `Syncing - ${total} left.`, 'Syncing to Langstore.');
-    // eslint-disable-next-line no-await-in-loop
-    urls.value[idx] = await syncFile(url);
-    urls.value = [...urls.value];
-    total -= 1;
-    if (total === 0) setStatus('langstore');
-  }
-}
-=======
-export function noSource() {
-  return urls.value.find((url) => {
-    if (!url.actions) return true;
-    return url.actions?.edit?.status === 404;
+  const projectHash = md5(previewPath.value);
+  try {
+  await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
+    method: 'POST',
   });
+  setStatus('project', 'info', 'Successfully started syncing');
+  checkStatus(5000, 'sync-done');
+  } catch (error) {
+    setStatus('project', 'error', `Syncing failed: ${error}`);
+  }
 }
 
-export function syncToLangstore() {
->>>>>>> 851dedb7 (Color updates)
+export async function checkStatus(pollingInterval, status) {
+  try {
+    const response = await getProjectStatus();
+    if (response.projectStatus !== status) {
+      setTimeout(()=> checkStatus(pollingInterval, status), pollingInterval);
+    } else {
+      setStatus('project', 'info', response.projectStatusText);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
-export function startProject() {
-  console.log('start the project')
+export async function startLocalize() {
+  const projectUrl = previewPath.value;
+  const projectHash = md5(projectUrl);
+  const status = projectStatus.value?.projectStatus;
+
+  if (!status) {
+    try {
+      setStatus('project', 'info', 'Creating project');
+      const createResponse = await createProject(projectUrl);
+      if (createResponse.status === 201) {
+        setStatus('project', 'info', 'Project created successfully!', undefined, 1000);
+        await getProjectStatus();
+      }
+    } catch (error) {
+      setStatus('project', 'error', 'Failed to create project');
+    }
+  } else {
+    setStatus('project', 'info', 'Starting project');
+    try {
+      const startResponse = await startProject(projectHash);
+        if (startResponse.status === 201) {
+          setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
+          await getProjectStatus();
+        }
+    } catch (error) {
+      setStatus('project', 'error', 'Failed to start project');
+    }
+  }
+}
+
+export async function getProjectStatus() {
+  const projectHash = md5(previewPath.value);
+  try {
+    const statusResponse = await fetch(`${apiUrl}/project-status?project=${projectHash}`, {
+      method: 'GET',
+    });
+
+    if(!statusResponse.ok) {
+      const error = statusResponse.json();
+      throw new Error(`Failed to get project status: ${error}`);
+    }
+    const status = await statusResponse.json();
+    projectStatus.value = status;
+    
+    return status;
+  } catch(err) {
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
+    throw new Error(`Failed to get project status: ${err}`);
+  }
+}
+
+export async function rolloutFiles() {
+  setStatus('Files rolled out.');
 }
