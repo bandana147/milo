@@ -10,12 +10,6 @@
  * governing permissions and limitations under the License.
  */
 
-import {
-  loadArea,
-  loadLana,
-  setConfig,
-} from '../utils/utils.js';
-
 // Production Domain
 const prodDomains = ['milo.adobe.com'];
 
@@ -138,17 +132,19 @@ const eagerLoad = (img) => {
   img?.setAttribute('fetchpriority', 'high');
 };
 
-(async function loadLCPImage() {
-  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
-  if (firstDiv?.classList.contains('marquee')) {
-    firstDiv.querySelectorAll('img').forEach(eagerLoad);
-  } else {
-    eagerLoad(document.querySelector('img'));
-  }
-}());
+function loadLCPImage() {
+  return new Promise((resolve) => {
+    const img = document.querySelector('img');
+    if (img) {
+      img.onload = () => { resolve(); };
+      img.removeAttribute('loading');
+    }
+  });
+}
 
 (async function loadPage() {
-  performance.mark('loadpage');
+  await loadLCPImage();
+  const { loadArea, loadDelayed, loadLana, setConfig } = await import('../utils/utils.js');
   setConfig(config);
   loadLana({ clientId: 'milo' });
   await loadArea();
