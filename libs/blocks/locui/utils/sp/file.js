@@ -18,7 +18,6 @@ async function downloadFile(id) {
 //   return resp.json();
 // }
 
-
 async function getItem(path) {
   const fullpath = `${baseUri}${path}`;
   const options = getReqOptions();
