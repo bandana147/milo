@@ -156,6 +156,7 @@ export async function getProjectStatus() {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
     throw new Error(`Failed to get project status: ${err}`);
   }
+}
 
 export async function rolloutFiles() {
   setStatus('Files rolled out.');
