@@ -1,0 +1,8 @@
+.blade {
+  display: block;
+  width: 500px;
+  height: 377px;
+  position: relative;
+  overflow: hidden;
+  margin-left: 20px;
+}
