@@ -14,7 +14,7 @@ export default async function init(el) {
     const { children } = item;
     const keyName = children[0].textContent;
     const content = children[1];
-    const src = content.querySelectorAll(':scope > picture > img')[0]?.src || '';
+    const src = content.querySelectorAll(':scope > picture > img')[0]?.src || content.querySelectorAll(':scope > a')[0]?.href;
     customElem.setAttribute(keyName, src);
   });
   el.innerHTML = '';
