@@ -2,7 +2,7 @@ import { getConfig } from '../../utils/utils.js';
 
 const config = getConfig();
 const base = config.miloLibs || config.codeRoot;
-await import(`${base}/deps/blades/blade-changebg.js`);
+import(`${base}/deps/blades/blade-changebg.js`);
 
 function renderAsset(container, customElem) {
   container.innerHTML = '';
