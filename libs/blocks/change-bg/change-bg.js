@@ -6,11 +6,13 @@ const base = config.miloLibs || config.codeRoot;
 function renderAsset(container, customElem, placeHolderImg) {
   container.innerHTML = '';
   container.append(placeHolderImg);
-  placeHolderImg.addEventListener('load', async () => {
-    await import(`${base}/deps/blades/blade-changebg.js`);
+  placeHolderImg.addEventListener('load', () => {
+    setTimeout(async () => {
+      await import(`${base}/deps/blades/blade-changebg.js`);
+      container.innerHTML = '';
+      container.append(customElem);
+    }, 1000);
   });
-  container.innerHTML = '';
-  container.append(customElem);
 }
 
 export default function init(el) {
