@@ -28,7 +28,7 @@ function renderAsset(container, placeHolderImg, images) {
 
 export default function init(el) {
   const images = el.querySelectorAll(':scope > div');
-  const firstImage = images[1]?.children[1];
+  const firstImage = images[2]?.children[1];
   const src = firstImage.querySelectorAll(':scope > picture > img')[0]?.src || firstImage.querySelectorAll(':scope > a')[0]?.href;
   const placeHolderImg = createTag('img', { src, class: 'blade' });
 
@@ -39,6 +39,6 @@ export default function init(el) {
     renderAsset(container, placeHolderImg, images);
     el.remove();
   } else {
-    renderAsset(el, placeHolderImg);
+    renderAsset(el, placeHolderImg, images);
   }
 }
