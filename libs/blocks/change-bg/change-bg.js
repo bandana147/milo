@@ -8,21 +8,21 @@ function renderAsset(container, placeHolderImg, images) {
   container.append(placeHolderImg);
 
   placeHolderImg.addEventListener('load', () => {
-    // setTimeout(async () => {
-    import(`${base}/deps/blades/blade-changebg.js`);
-    const customElem = document.createElement('blade-changebg');
-    customElem.classList.add('blade');
-    // Extracting asset keys and urls and passing it to the custom element
-    images.forEach((item) => {
-      const { children } = item;
-      const keyName = children[0].textContent;
-      const content = children[1];
-      const src = content.querySelectorAll(':scope > picture > img')[0]?.src || content.querySelectorAll(':scope > a')[0]?.href;
-      customElem.setAttribute(keyName, src);
-    });
-    container.innerHTML = '';
-    container.append(customElem);
-    // }, 0);
+    setTimeout(async () => {
+      import(`${base}/deps/blades/blade-changebg.js`);
+      const customElem = document.createElement('blade-changebg');
+      customElem.classList.add('blade');
+      // Extracting asset keys and urls and passing it to the custom element
+      images.forEach((item) => {
+        const { children } = item;
+        const keyName = children[0].textContent;
+        const content = children[1];
+        const src = content.querySelectorAll(':scope > picture > img')[0]?.src || content.querySelectorAll(':scope > a')[0]?.href;
+        customElem.setAttribute(keyName, src);
+      });
+      container.innerHTML = '';
+      container.append(customElem);
+    }, 1000);
   });
 }
 
