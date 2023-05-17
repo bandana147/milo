@@ -8,7 +8,7 @@ function renderAsset(container, placeHolderImg, images) {
   container.append(placeHolderImg);
 
   placeHolderImg.addEventListener('load', () => {
-    setTimeout(async () => {
+    // setTimeout(async () => {
       import(`${base}/deps/blades/blade-changebg.js`);
       const customElem = document.createElement('blade-changebg');
       customElem.classList.add('blade');
@@ -22,7 +22,7 @@ function renderAsset(container, placeHolderImg, images) {
       });
       container.innerHTML = '';
       container.append(customElem);
-    }, 1000);
+    // }, 1000);
   });
 }
 
