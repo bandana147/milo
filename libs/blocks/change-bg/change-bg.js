@@ -8,7 +8,7 @@ function renderAsset(container, placeHolderImg, images) {
   container.append(placeHolderImg);
 
   placeHolderImg.addEventListener('load', () => {
-      import(`${base}/deps/blades/blade-changebg.js`);
+      // import(`${base}/deps/blades/blade-changebg.js`);
       const customElem = document.createElement('blade-changebg');
       customElem.classList.add('blade');
       // Extracting asset keys and urls and passing it to the custom element
