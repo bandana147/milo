@@ -505,6 +505,49 @@ async function addWorksheetToExcel(excelPath, worksheetName) {
   throw new Error(`Failed to add worksheet ${worksheetName} to ${excelPath}.`);
 }
 
+async function connectWithSPRest() {
+  let sprest1 = '';
+  try {
+    const res = await getConfig();
+    sprest1 = res.sprest;
+  } catch(err){
+    console.log(err)
+  }
+  
+  const msalClient = new msal.PublicClientApplication(sprest1);
+  const loginRequest = {
+    scopes: ["https://adobe.sharepoint.com/.default"] // SharePoint API scope
+  };
+  const response = await msalClient.loginPopup(loginRequest);
+  accessToken = response.accessToken;
+}
+
+function getAuthorizedRequestOptionSP({
+  body = null,
+  json = true,
+  method = 'GET',
+} = {}) {
+  validateConnection();
+  const bearer = `Bearer ${accessToken}`;
+  const headers = new Headers();
+  headers.append('Authorization', bearer);
+  if (json) {
+    headers.append('Accept', 'application/json; odata=nometadata');
+    headers.append('Content-Type', 'application/json;odata=verbose');
+  }
+
+  const options = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    options.body = typeof body === 'string' ? body : JSON.stringify(body);
+  }
+
+  return options;
+}
+
 export {
   connect,
   copyFile,
@@ -528,4 +571,6 @@ export {
   fetchWithRetry,
   getFileNameFromPath,
   getFolderFromPath,
+  connectWithSPRest,
+  getAuthorizedRequestOptionSP,
 };

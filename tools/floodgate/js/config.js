@@ -16,7 +16,7 @@ async function getConfig() {
       const configPath = `${urlInfo.origin}${FLOODGATE_CONFIG}`;
       const configJson = await fetchConfigJson(configPath);
       decoratedConfig = {
-        sp: getSharepointConfig(configJson),
+        sprest: getSharepointRestConfig(configJson),
         admin: getHelixAdminConfig(),
       };
     }
