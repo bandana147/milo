@@ -10,6 +10,8 @@ const assetKeys = {
 
 const config = getConfig();
 const base = config.miloLibs || config.codeRoot;
+const params = new URLSearchParams(window.location.search);
+const delay = params.get('delay');
 
 function renderBlade(container, images) {
   import(`${base}/deps/blades/blade-changebg.js`);
@@ -38,7 +40,7 @@ export default function init(el) {
     el.remove();
     setTimeout(() => {
       renderBlade(container, images);
-    }, 3000);
+    }, delay);
   } else {
     renderBlade(el, images);
   }
