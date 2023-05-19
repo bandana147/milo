@@ -29,8 +29,6 @@ function renderBlade(container, images) {
 
 export default function init(el) {
   const images = el.querySelectorAll(':scope > div');
-  const firstImage = images[0]?.children[1];
-  const src = firstImage.querySelectorAll(':scope > picture > img')[0]?.src || firstImage.querySelectorAll(':scope > a')[0]?.href;
   // Render it inside marquee if its previous sibling is a marquee block
   if (el.previousElementSibling?.classList.contains('marquee')) {
     const marquee = el.previousElementSibling;
@@ -40,6 +38,13 @@ export default function init(el) {
       renderBlade(container, images);
     }, 3000);
   } else {
-    renderBlade(el, images);
+    const firstImage = images[0]?.children[1];
+    const src = firstImage.querySelector(':scope > picture > img')?.src || firstImage.querySelectorAll(':scope > a')[0]?.href;
+    const placeHolderImg = createTag('img', { src });
+    el.innerHTML = '';
+    el.append(placeHolderImg);
+    placeHolderImg.addEventListener('load', () => {
+      renderBlade(el, images);
+    });
   }
 }
