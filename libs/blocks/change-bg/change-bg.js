@@ -2,26 +2,34 @@ import { getConfig, createTag } from '../../utils/utils.js';
 
 const config = getConfig();
 const base = config.miloLibs || config.codeRoot;
+const assetKeys = {
+  colorOverlayUrl: 'colorOverlayUrl',
+  subjectUrl: 'yogaLadyUrl',
+  bgScene1Url: 'scene1Url',
+  bgScene2Url: 'scene2Url',
+  bgPattern1Url: 'pattern1Url',
+  bgPattern2Url: 'pattern2Url'
+}
 
 function renderAsset(container, placeHolderImg, images) {
   container.innerHTML = '';
   container.append(placeHolderImg);
 
-  // placeHolderImg.addEventListener('load', () => {
-  //     // import(`${base}/deps/blades/blade-changebg.js`);
-  //     const customElem = document.createElement('blade-changebg');
-  //     customElem.classList.add('blade');
-  //     // Extracting asset keys and urls and passing it to the custom element
-  //     images.forEach((item) => {
-  //       const { children } = item;
-  //       const keyName = children[0].textContent;
-  //       const content = children[1];
-  //       const src = content.querySelectorAll(':scope > picture > img')[0]?.src || content.querySelectorAll(':scope > a')[0]?.href;
-  //       customElem.setAttribute(keyName, src);
-  //     });
-  //     container.innerHTML = '';
-  //     container.append(customElem);
-  // });
+  placeHolderImg.addEventListener('load', async () => {
+      await import(`${base}/deps/blades/blade-changebg.js`);
+      const customElem = document.createElement('blade-changebg');
+      customElem.classList.add('blade');
+      // Extracting asset keys and urls and passing it to the custom element
+      images.forEach((item) => {
+        const { children } = item;
+        const keyName = children[0].textContent;
+        const content = children[1];
+        const src = content.querySelectorAll(':scope > picture > img')[0]?.src || content.querySelectorAll(':scope > a')[0]?.href;
+        customElem.setAttribute(assetKeys[keyName], src);
+      });
+      container.innerHTML = '';
+      container.append(customElem);
+  });
 }
 
 export default function init(el) {
