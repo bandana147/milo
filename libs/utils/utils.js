@@ -15,6 +15,7 @@ const MILO_BLOCKS = [
   'card-horizontal',
   'card-metadata',
   'carousel',
+  'change-bg',
   'chart',
   'columns',
   'faas',
