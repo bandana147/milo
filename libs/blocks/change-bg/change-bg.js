@@ -38,9 +38,13 @@ export default function init(el) {
     const marquee = el.previousElementSibling;
     const container = marquee.querySelectorAll(':scope > div:last-child > div:last-child')[0];
     el.remove();
-    setTimeout(() => {
+    if(delay) {
+      setTimeout(() => {
+        renderBlade(container, images);
+      }, delay);
+    } else {
       renderBlade(container, images);
-    }, delay);
+    }
   } else {
     renderBlade(el, images);
   }
