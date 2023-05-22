@@ -34,9 +34,9 @@ function renderAsset(container, placeHolderImg, images) {
 
 export default function init(el) {
   const images = el.querySelectorAll(':scope > div');
-  const firstImage = images[0]?.children[1];
+  const firstImage = images[2]?.children[1];
   const src = firstImage.querySelectorAll(':scope > picture > img')[0]?.src || firstImage.querySelectorAll(':scope > a')[0]?.href;
-  const placeHolderImg = createTag('img', { src, class: 'blade' });
+  const placeHolderImg = createTag('img', { src, class: 'blade-placeholder' });
 
   // Render it inside marquee if its previous sibling is a marquee block
   if (el.previousElementSibling?.classList.contains('marquee')) {
