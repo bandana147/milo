@@ -1,0 +1,16 @@
+
+.blade {
+  display: block;
+  width: 500px;
+  height: 377px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  padding-left: 60px;
+}
+
+.marquee .media.image img {
+  width: 463px;
+  height: 324px;
+  margin-top: -30px;
+}
