@@ -51,10 +51,46 @@ async function connect() {
   return connected;
 }
 
+async function connectWithSPRest() {
+  const { sprest } = await getConfig();
+  const msalClient = new msal.PublicClientApplication(sprest);
+  const loginRequest = {
+    scopes: ["https://adobe.sharepoint.com/.default"] // SharePoint API scope
+  };
+  const response = await msalClient.loginPopup(loginRequest);
+  accessToken = response.accessToken;
+}
+
 function validateConnection() {
   if (!accessToken) {
     throw new Error('You need to sign-in first');
   }
+}
+
+function getAuthorizedRequestOptionSP({
+  body = null,
+  json = true,
+  method = 'GET',
+} = {}) {
+  validateConnection();
+  const bearer = `Bearer ${accessToken}`;
+  const headers = new Headers();
+  headers.append('Authorization', bearer);
+  if (json) {
+    headers.append('Accept', 'application/json; odata=nometadata');
+    headers.append('Content-Type', 'application/json;odata=verbose');
+  }
+
+  const options = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    options.body = typeof body === 'string' ? body : JSON.stringify(body);
+  }
+
+  return options;
 }
 
 function getAuthorizedRequestOption({
@@ -86,7 +122,7 @@ function getAuthorizedRequestOption({
 let nextCallAfter = 0;
 const reqThresh = 5;
 let retryFlag = false;
-const TOO_MANY_REQUESTS = "429";
+const TOO_MANY_REQUESTS = '429';
 
 function enableRetry() {
   retryFlag = true;
@@ -380,8 +416,7 @@ async function copyFile(srcPath, destinationFolder, newName, isFloodgate, isFloo
   validateConnection();
   await createFolder(destinationFolder, isFloodgate);
   const { sp } = isFloodgate ? await getFloodgateConfig() : await getConfig();
-  const baseURI = sp.api.file.copy.baseURI;
-  const fgBaseURI = sp.api.file.copy.fgBaseURI;
+  const { baseURI, fgBaseURI } = sp.api.file.copy;
   const rootFolder = isFloodgate ? fgBaseURI.split('/').pop() : baseURI.split('/').pop();
 
   const payload = { ...sp.api.file.copy.payload, parentReference: { path: `${rootFolder}${destinationFolder}` } };
@@ -396,7 +431,7 @@ async function copyFile(srcPath, destinationFolder, newName, isFloodgate, isFloo
   // locked file copy happens in the floodgate content location
   // So baseURI is updated to reflect the destination accordingly
   const contentURI = isFloodgate && isFloodgateLockedFile ? fgBaseURI : baseURI;
-  const copyStatusInfo = await fetchWithRetry(`${contentURI}${srcPath}:/copy`, options);
+  const copyStatusInfo = await fetchWithRetry(`${contentURI}${srcPath}:/copy?@microsoft.graph.conflictBehavior=replace`, options);
   const statusUrl = copyStatusInfo.headers.get('Location');
   let copySuccess = false;
   let copyStatusJson = {};
@@ -503,49 +538,6 @@ async function addWorksheetToExcel(excelPath, worksheetName) {
     return res.json();
   }
   throw new Error(`Failed to add worksheet ${worksheetName} to ${excelPath}.`);
-}
-
-async function connectWithSPRest() {
-  let sprest1 = '';
-  try {
-    const res = await getConfig();
-    sprest1 = res.sprest;
-  } catch(err){
-    console.log(err)
-  }
-  
-  const msalClient = new msal.PublicClientApplication(sprest1);
-  const loginRequest = {
-    scopes: ["https://adobe.sharepoint.com/.default"] // SharePoint API scope
-  };
-  const response = await msalClient.loginPopup(loginRequest);
-  accessToken = response.accessToken;
-}
-
-function getAuthorizedRequestOptionSP({
-  body = null,
-  json = true,
-  method = 'GET',
-} = {}) {
-  validateConnection();
-  const bearer = `Bearer ${accessToken}`;
-  const headers = new Headers();
-  headers.append('Authorization', bearer);
-  if (json) {
-    headers.append('Accept', 'application/json; odata=nometadata');
-    headers.append('Content-Type', 'application/json;odata=verbose');
-  }
-
-  const options = {
-    method,
-    headers,
-  };
-
-  if (body) {
-    options.body = typeof body === 'string' ? body : JSON.stringify(body);
-  }
-
-  return options;
 }
 
 export {

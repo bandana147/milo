@@ -2,6 +2,7 @@ import { getUrlInfo } from '../../loc/utils.js';
 import {
   fetchConfigJson,
   getSharepointConfig,
+  getSharepointRestConfig,
   getHelixAdminConfig,
 } from '../../loc/config.js';
 
