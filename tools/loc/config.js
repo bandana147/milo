@@ -196,7 +196,7 @@ function getHelixAdminConfig() {
 }
 
 async function getConfig() {
-  if (true) {
+  if (!decoratedConfig) {
     const urlInfo = getUrlInfo();
     if (true) {
       const configPath = `${urlInfo.origin}${LOC_CONFIG}`;
