@@ -82,6 +82,7 @@ async function init() {
       method: 'POST'
     });
     await fetch(`${url}/Publish('${comment}')`, callOptions);
+    document.querySelector('#comment').value = '';
   }
 
   document.getElementById('publish').addEventListener('click', async (e) => {
