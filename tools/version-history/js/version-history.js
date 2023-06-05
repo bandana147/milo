@@ -52,6 +52,8 @@ async function init() {
         const fileUrl = data.isCurrent ? `https://adobe.sharepoint.com/${data.Url}` : `https://adobe.sharepoint.com/sites/adobecom/${data.Url}`;
         const a = document.createElement('a');
         a.href = fileUrl;
+        a.setAttribute('download', `test.docx`);
+        document.body.appendChild(a);
         a.click();
       })
       const td = document.createElement('td');
