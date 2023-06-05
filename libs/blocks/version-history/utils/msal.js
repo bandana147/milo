@@ -71,6 +71,6 @@ export function getReqOptions({ body = null, method = 'GET', contentType = 'appl
   const headerOpts = { Authorization: bearer, 'Content-Type': contentType, 'Accept': accept };
   const headers = new Headers(headerOpts);
   const options = { method, headers };
-  if (body) options.body = JSON.stringify(body);
+  if (body) options.body = JSON.stringify(body); 
   return options;
 }

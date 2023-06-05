@@ -5,15 +5,17 @@ const referrer = urlParams.get("referrer");
 const sourceCode = referrer?.match(/sourcedoc=([^&]+)/)[1];
 const sourceId = decodeURIComponent(sourceCode);
 const url = `https://adobe.sharepoint.com/sites/adobecom/_api/web/GetFileById('${sourceId}')`;
+const contentType = 'application/json;odata=verbose';
+const accept = 'application/json;odata=nometadata';
 
 export const fetchVersions = async () => {
   const options = getReqOptions({
-    contentType: 'application/json;odata=verbose',
-    accept: 'application/json;odata=nometadata'
+    contentType,
+    accept
   });
-  const documentData = await fetch(url, options);
-  const d = await documentData.json();
-  const { CheckInComment, TimeLastModified, UIVersionLabel, ServerRelativeUrl, ID } = d;
+  const response = await fetch(url, options);
+  const documentData = await response.json();
+  const { CheckInComment, TimeLastModified, UIVersionLabel, ServerRelativeUrl, ID } = documentData;
   const currentVersion = {
     ID,
     Url: ServerRelativeUrl,
@@ -25,14 +27,15 @@ export const fetchVersions = async () => {
 
   const versions = await fetch(`${url}/Versions`, options);
   const { value } = await versions.json();
-
   const versionHistory = [...value, currentVersion];
   return versionHistory.reverse().filter((item) => item.VersionLabel.indexOf('.0') !== -1);
 }
 
 export const createHistoryTag = async (comment = 'default') => {
   const callOptions = getReqOptions({
-    method: 'POST'
+    method: 'POST',
+    accept,
+    contentType
   });
   await fetch(`${url}/Publish('${comment}')`, callOptions);
 }
