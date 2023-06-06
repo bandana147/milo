@@ -1,5 +1,7 @@
-import { getConfig } from '../../tools/loc/config.js';
 import '../../tools/loc/lib/msal-browser.js';
+import loginToSharePoint from './sp/login.js';
+import { getReqOptions } from './sp/msal.js';
+
 // loadScript and loadStyle are passed in to avoid circular dependencies
 export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   let accessToken = '';
@@ -25,45 +27,12 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
     getModal(null, { id: 'preflight', content, closeEvent: 'closeModal' });
   };
 
-  const fetchAccessToken = async () => {
-    const { sprest } = await getConfig();
-      const msalClient = new msal.PublicClientApplication(sprest);
-      const loginRequest = {
-        scopes: ["https://adobe.sharepoint.com/.default"] // SharePoint API scope
-      };
-      const response = await msalClient.loginPopup(loginRequest);
-      accessToken = response.accessToken;
-  };
-
-  const getAuthorizedRequestOptionSP = ({
-    body = null,
-    json = true,
-    method = 'GET',
-  } = {}) => {
-    const bearer = `Bearer ${accessToken}`;
-    const headers = new Headers();
-    headers.append('Authorization', bearer);
-    if (json) {
-      headers.append('Accept', 'application/json; odata=nometadata');
-      headers.append('Content-Type', 'application/json;odata=verbose');
-    }
-  
-    const options = {
-      method,
-      headers,
-    };
-  
-    if (body) {
-      options.body = typeof body === 'string' ? body : JSON.stringify(body);
-    }
-  
-    return options;
-  };
-
   const addVersion = async (event) => {
     const url = `https://adobe.sharepoint.com/sites/adobecom/_api/web/GetFileByServerRelativeUrl('/sites/adobecom/CC/www${event.detail.data}.docx')`;
-    const options = getAuthorizedRequestOptionSP({
-      method: 'POST'
+    const options = getReqOptions({
+      method: 'POST',
+      accept: 'application/json; odata=nometadata',
+      contentType: 'application/json;odata=verbose'
     });
     await fetch(`${url}/Publish('Last Published version')`, {...options, keepalive: true});
   };
@@ -76,7 +45,7 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   });
 
   // fetch sharepoint access token
-  fetchAccessToken();
+  loginToSharePoint(["https://adobe.sharepoint.com/.default"]);
 
   const sk = document.querySelector('helix-sidekick');
 
