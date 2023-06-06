@@ -34,6 +34,7 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
       accept: 'application/json; odata=nometadata',
       contentType: 'application/json;odata=verbose'
     });
+    console.log(...options)
     await fetch(`${url}/Publish('Last Published version')`, {...options, keepalive: true});
   };
 

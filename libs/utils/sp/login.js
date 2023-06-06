@@ -3,6 +3,7 @@ import { user, spAccessToken } from './state.js';
 import { getMSALConfig } from './msal.js';
 
 export default async function loginToSharePoint(scope = []) {
+  console.log('I am fetching')
   const msalConfig = await getMSALConfig();
   const pca = new msal.PublicClientApplication(msalConfig);
 
@@ -19,6 +20,7 @@ export default async function loginToSharePoint(scope = []) {
   try {
     const res = await pca.acquireTokenSilent(reqDetails);
     spAccessToken.value = res.accessToken;
+    console.log('I am fetching done', res.accessToken)
   } catch {
     // couldn't get access token
   }
