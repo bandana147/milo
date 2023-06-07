@@ -1,6 +1,6 @@
 import { html, useState, useEffect } from '../../deps/htm-preact.js';
 import { fetchVersions, createHistoryTag } from './index.js';
-import loginToSharePoint from './utils/login.js';
+import loginToSharePoint from '../../utils/deps/login.js';
 
 export default function View() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,10 +8,14 @@ export default function View() {
   const [comment, setComment] = useState('');
 
   useEffect(async () => {
-    await loginToSharePoint();
-    setIsAuthenticated(true);
-    const versions = await fetchVersions();
-    setVersions(versions);
+    try {
+      await loginToSharePoint();
+      setIsAuthenticated(true);
+      const versions = await fetchVersions();
+      setVersions(versions);
+    } catch(err) {
+      setError(err.error_description)
+    }
   }, []);
 
   const onClickCreate = async () => {
@@ -65,8 +69,7 @@ export default function View() {
   }
 
   if (!isAuthenticated) {
-    return html`
-    <div id="status" class="container"> Authenticating... </div>`
+    return html`<div id="status" class="container"> Authenticating.... </div>`
   }
 
   return html`

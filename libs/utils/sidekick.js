@@ -1,6 +1,6 @@
 import '../../tools/loc/lib/msal-browser.js';
-import loginToSharePoint from './sp/login.js';
-import { getReqOptions } from './sp/msal.js';
+import loginToSharePoint from './deps/login.js';
+import { getReqOptions } from './deps/msal.js';
 
 // loadScript and loadStyle are passed in to avoid circular dependencies
 export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
