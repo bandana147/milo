@@ -19,7 +19,8 @@ async function downloadFile(id) {
 // }
 
 async function getItem(path) {
-  const fullpath = `${baseUri}${path}`;
+  const newBase = baseUri.replace('milo', 'bacom');
+  const fullpath = `${newBase}${path}`;
   const options = getReqOptions();
   const resp = await fetch(fullpath, options);
   const json = await resp.json();
@@ -131,7 +132,7 @@ function getDocDetails(path) {
  * @param {String} destPath the destination document path
  * @returns {Object} json an object describing the copied item
  */
-export default async function copyFile(sourcePath, destPath) {
+export async function copyFile(sourcePath, destPath) {
   console.log(site);
   const opts = getReqOptions({ method: 'GET' });
   const resp = await fetch(`${site}/drives`, opts);
