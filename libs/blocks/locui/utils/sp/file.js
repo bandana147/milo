@@ -19,8 +19,7 @@ async function downloadFile(id) {
 // }
 
 async function getItem(path) {
-  const newBase = baseUri.replace('milo', 'bacom');
-  const fullpath = `${newBase}${path}`;
+  const fullpath = `${baseUri}${path}`;
   const options = getReqOptions();
   const resp = await fetch(fullpath, options);
   const json = await resp.json();
@@ -31,7 +30,6 @@ async function copyItem(id, parentReference, folder, name) {
   const body = { ...BODY_BASE, parentReference, name };
   const options = getReqOptions({ method: 'POST', body });
   const resp = await fetch(`${site}/drive/items/${id}/copy`, options);
-  console.log(resp.headers.get('Location'));
   if (resp.status !== 202) return {};
   return getItem(`${folder}/${name}`);
 }
@@ -114,9 +112,10 @@ async function cancelUploadSession(fileUrl) {
 function getDocDetails(path) {
   const parentArr = path.split('/');
   const name = parentArr.pop();
+  const file = name.endsWith('.json') ? name.replace('.json', '.xlsx') : `${name}.docx`;
   const folder = parentArr.join('/');
-  const split = name.split('.');
-  return { folder, name, lockName: `${split[0]} (lock copy).${split[1]}` };
+  const split = file.split('.');
+  return { folder, name: file, lockName: `${split[0]} (lock copy).${split[1]}` };
 }
 
 /**
@@ -132,13 +131,7 @@ function getDocDetails(path) {
  * @param {String} destPath the destination document path
  * @returns {Object} json an object describing the copied item
  */
-export async function copyFile(sourcePath, destPath) {
-  console.log(site);
-  const opts = getReqOptions({ method: 'GET' });
-  const resp = await fetch(`${site}/drives`, opts);
-  const json = await resp.json();
-  console.log(json);
-
+export default async function copyFile(sourcePath, destPath) {
   const source = getDocDetails(sourcePath);
   const dest = getDocDetails(destPath);
 
