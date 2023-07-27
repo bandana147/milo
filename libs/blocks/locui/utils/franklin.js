@@ -18,5 +18,10 @@ export async function getStatus(url = '', editUrl = 'auto') {
   path = editUrl ? `${path}?editUrl=${editUrl}` : path;
   const resp = await fetch(path);
   const json = await resp.json();
+  // if (json.edit.status !== 200) {
+  //   return {
+  //     errorStatus: json.edit.status
+  //   }
+  // }
   return json;
 }
