@@ -293,6 +293,10 @@ button.locui-url-action[disabled] {
   opacity: 0.25;
 }
 
+button.locui-url-action.disabled {
+  opacity: 0.25;
+}
+
 button.locui-url-action:hover {
   text-decoration: none;
   background-color: #d9d9d9;
