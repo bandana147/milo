@@ -18,13 +18,6 @@ async function downloadFile(id) {
 //   return resp.json();
 // }
 
-export async function checkItem(path) {
-  const fullpath = `${baseUri}${path}.docx`;
-  const options = getReqOptions();
-  const resp = await fetch(fullpath, options);
-  const json = await resp.json();
-  return json;
-}
 
 async function getItem(path) {
   const fullpath = `${baseUri}${path}`;
