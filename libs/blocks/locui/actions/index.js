@@ -94,6 +94,7 @@ async function syncFile(url) {
 }
 
 export async function syncToLangstore() {
+  setStatus('file');
   if (checkSource()) {
     setStatus('langstore', 'error', 'Missing source docs.', MISSING_SOURCE);
     return;
@@ -108,4 +109,8 @@ export async function syncToLangstore() {
     total -= 1;
     if (total === 0) setStatus('langstore');
   }
+}
+
+export function startProject() {
+  console.log('start the project')
 }

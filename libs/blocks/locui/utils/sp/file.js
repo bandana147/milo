@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { getMSALConfig, getReqOptions } from './msal.js';
-
+import { setStatus } from '../state.js';
 const BODY_BASE = { '@microsoft.graph.conflictBehavior': 'replace' };
 
 const { baseUri, site } = await getMSALConfig();
@@ -18,13 +18,6 @@ async function downloadFile(id) {
 //   return resp.json();
 // }
 
-export async function checkItem(path) {
-  const fullpath = `${baseUri}${path}.docx`;
-  const options = getReqOptions();
-  const resp = await fetch(fullpath, options);
-  const json = await resp.json();
-  return json;
-}
 
 async function getItem(path) {
   const fullpath = `${baseUri}${path}`;
@@ -99,14 +92,22 @@ async function uploadAttempt(dest, destItem, uploadUrl, blob) {
   let count = 1;
   let uploadItem;
   let url = uploadUrl;
+  
   while (!uploadItem || uploadItem.error || count > 2) {
     uploadItem = await uploadFile(url, blob);
     if (!uploadItem.error) break;
     count += 1;
-    const session = await breakLock(dest, destItem, blob.size);
-    url = session.uploadUrl;
+    setStatus('file', 'error', `${uploadItem.error?.message}`, `${dest.folder}/${dest.name}`);
+    break;
+    // const session = await breakLock(dest, destItem, blob.size);
+    // url = session.uploadUrl;
   }
   return uploadItem;
+}
+
+async function cancelUploadSession(fileUrl) {
+  const opts = getReqOptions({ method: 'DELETE' });
+  return fetch(fileUrl, opts);
 }
 
 function getDocDetails(path) {
@@ -140,7 +141,20 @@ export default async function copyFile(sourcePath, destPath) {
 
   const blob = await downloadFile(sourceItem.id);
   const session = await getUploadSession(dest.folder, dest.name, blob.size);
-  const { uploadUrl } = session.error ? await breakLock(dest, destItem, blob.size) : session;
-  if (uploadUrl) return uploadAttempt(dest, destItem, uploadUrl, blob);
+
+  const { uploadUrl } = session;
+  if (uploadUrl) {
+    const resp = await uploadAttempt(dest, destItem, uploadUrl, blob);
+    if (resp.error) {
+      await cancelUploadSession(uploadUrl);
+    }
+    return resp;
+  }
   return { error: { msg: 'Couldn\'t copy file. Contact Milo Community.' } };
+}
+
+export async function checkItem(path) {
+  const docDetails = getDocDetails(path);
+  const fileDetails = await getItem(`${docDetails.folder}/${docDetails.name}`);
+  return fileDetails;
 }

@@ -161,7 +161,7 @@ h2.locui-section-label {
 }
 
 p.locui-project-label {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
   font-weight: 700;
   text-transform: uppercase;
@@ -187,14 +187,15 @@ li.locui-subproject {
 }
 
 h3.locui-subproject-name {
-  font-weight: 400;
-  font-size: 28px;
-  margin: 0 0 24px;
+  font-weight: 500;
+  font-size: 20px;
+  margin: 0 0 20px;
 }
 
 div.locui-subproject-locales {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 18px;
 }
 
 span.locui-subproject-locale {
@@ -261,13 +262,14 @@ h3.locui-url-label {
 }
 
 p.locui-url-path {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin: 12px 0 24px;
 }
 
 div.locui-url-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  margin-top: 36px;
 }
 
 .locui-url-source-actions {
@@ -308,6 +310,10 @@ button.locui-url-action-edit {
   background: url('../../ui/img/word-icon.svg') center 14px / 26px no-repeat;
 }
 
+button.locui-url-action-edit.xlsx {
+  background: url('https://res-1.cdn.office.net/files/fabric-cdn-prod_20230223.001/assets/item-types/20/xlsx.svg') center 14px / 26px no-repeat;
+}
+
 button.locui-url-action-view {
   background: url('../../ui/img/aec-icon.svg') center 14px / 26px no-repeat;
 }
@@ -320,4 +326,15 @@ button.locui-url-action-view {
 
 helix-sidekick {
   display: none;
+}
+
+.locui-user-info {
+  font-size: 16px;
+  width: 250px;
+  line-height: .8;
+  margin: 12px 0;
+}
+
+.info-title {
+  font-weight: 500;
 }

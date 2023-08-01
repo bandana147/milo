@@ -18,6 +18,8 @@ function Language({ item }) {
           ${item.locales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
         </div>
       `}
+      <p class=locui-project-label>Status</p>
+      <h3 class=locui-subproject-name>Not Started</h3>
     </li>
   `;
 }
