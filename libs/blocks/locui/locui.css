@@ -1,3 +1,4 @@
+/* stylelint-disable property-no-vendor-prefix */
 body {
   background: url('./img/bg.png');
   background-size: 100%;
@@ -51,7 +52,7 @@ main {
 }
 
 .locui-project-details-refresh {
-  background: url(./img/spectrum-refresh.svg);
+  background: url('./img/spectrum-refresh.svg');
   width: 26px;
   text-indent: -1000px;
   overflow: hidden;
@@ -214,7 +215,7 @@ div.locui-url-heading-actions {
 }
 
 button.locui-urls-heading-action {
-  outline: transparent solid 0px;
+  outline: transparent solid 0;
   transition: outline 300ms;
   border: none;
   height: 36px;
