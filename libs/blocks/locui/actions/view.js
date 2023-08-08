@@ -1,6 +1,6 @@
 import { html } from '../../../deps/htm-preact.js';
 import { spAccessToken, urls } from '../utils/state.js';
-import { findFragments, syncToLangstore, startProject } from './index.js';
+import { findFragments, syncToLangstore, startLocalize } from './index.js';
 
 export default function Actions() {
   return html`
@@ -19,7 +19,7 @@ export default function Actions() {
           Sync to Langstore <span>(${urls.value[0].langstore.lang})</span></button>
           <button 
           class=locui-urls-heading-action
-          onClick=${startProject}>Localize</button>
+          onClick=${startLocalize}>Localize</button>
       </div>
     </div>
   `;

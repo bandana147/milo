@@ -1,5 +1,5 @@
 import { getConfig, getLocale } from '../../../utils/utils.js';
-import { heading, languages, urls, getSiteConfig, setStatus } from '../utils/state.js';
+import { heading, languages, urls, getSiteConfig, setStatus, setPreviewPath } from '../utils/state.js';
 import { getStatus, preview } from '../utils/franklin.js';
 
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
@@ -64,6 +64,7 @@ async function loadHeading() {
   const json = await getStatus('', editUrl);
   resourcePath = json.resourcePath;
   previewPath = json.preview.url;
+  setPreviewPath(previewPath);
   const path = resourcePath.replace(/\.[^/.]+$/, '');
   setStatus('details');
   const projectName = json.edit.name.split('.').shift().replace('-', ' ');
