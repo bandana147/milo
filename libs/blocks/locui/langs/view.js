@@ -1,9 +1,10 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages } from '../utils/state.js';
+import { languages, projectStatus } from '../utils/state.js';
 
 function Language({ item }) {
   const hasLocales = item.locales?.length > 0;
-
+  const { languageStatus = {}} = projectStatus.value;
+  console.log(item.Language)
   return html`
     <li class=locui-subproject>
       <p class=locui-project-label>Language</p>
@@ -19,7 +20,11 @@ function Language({ item }) {
         </div>
       `}
       <p class=locui-project-label>Status</p>
-      <h3 class=locui-subproject-name>Not Started</h3>
+      <div class=language-status>
+        <div><label>Completed</label>: <span>${languageStatus[item.locales[0]].done}</span></div>
+        <div><label>Error</label>: <span>${languageStatus[item.locales[0]].error}</span></div>
+        <div><label>Total</label>: <span>${languageStatus[item.locales[0]].total}</span></div>
+      </div>
     </li>
   `;
 }

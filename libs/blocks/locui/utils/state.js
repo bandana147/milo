@@ -12,6 +12,7 @@ export const siteConfig = signal(null);
 export const user = signal();
 export const spAccessToken = signal();
 export const previewPath = signal('')
+export const projectStatus = signal({})
 
 export function setStatus(name, type, text, description, timeout) {
   const content = type && text ? { type, text, description } : null;
@@ -44,6 +45,3 @@ export function getSiteConfig() {
   });
 }
 
-export function setPreviewPath(path) {
-  previewPath.value = path;
-}

@@ -308,7 +308,7 @@ button.locui-url-action-edit {
 }
 
 button.locui-url-action-edit.xlsx {
-  background: url('https://res-1.cdn.office.net/files/fabric-cdn-prod_20230223.001/assets/item-types/20/xlsx.svg') center 14px / 26px no-repeat;
+  background: url('./img/excel-sheet.svg') center 14px / 26px no-repeat;
 }
 
 button.locui-url-action-view {

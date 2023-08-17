@@ -1,6 +1,14 @@
 import { getConfig, getLocale } from '../../../utils/utils.js';
-import { heading, languages, urls, getSiteConfig, setStatus, setPreviewPath } from '../utils/state.js';
 import { getStatus, preview } from '../utils/franklin.js';
+import {
+  urls,
+  heading,
+  setStatus,
+  languages,
+  getSiteConfig,
+  projectStatus,
+  previewPath,
+} from '../utils/state.js';
 
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
 const MOCK_REFERRER = 'https%3A%2F%2Fadobe.sharepoint.com%2F%3Ax%3A%2Fr%2Fsites%2Fadobecom%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257B94460FAC-CDEE-4B31-B8E0-AA5E3F45DCC5%257D%26file%3Dwesco-demo.xlsx';
@@ -8,7 +16,6 @@ const MOCK_REFERRER = 'https%3A%2F%2Fadobe.sharepoint.com%2F%3Ax%3A%2Fr%2Fsites%
 const urlParams = new URLSearchParams(window.location.search);
 
 let resourcePath;
-let previewPath;
 
 function getUrls(jsonUrls) {
   const { locales } = getConfig();
@@ -39,7 +46,7 @@ async function loadLocales() {
 async function loadDetails() {
   setStatus('details', 'info', 'Loading languages and URLs.');
   try {
-    const resp = await fetch(previewPath);
+    const resp = await fetch(previewPath.value);
     const json = await resp.json();
     const jsonUrls = json.urls.data.map((item) => new URL(item.URL));
     const projectUrls = getUrls(jsonUrls);
@@ -63,8 +70,7 @@ async function loadHeading() {
   const editUrl = urlParams.get('referrer') || MOCK_REFERRER;
   const json = await getStatus('', editUrl);
   resourcePath = json.resourcePath;
-  previewPath = json.preview.url;
-  setPreviewPath(previewPath);
+  previewPath.value = json.preview.url;
   const path = resourcePath.replace(/\.[^/.]+$/, '');
   setStatus('details');
   const projectName = json.edit.name.split('.').shift().replace('-', ' ');
@@ -72,8 +78,27 @@ async function loadHeading() {
   await preview(`${path}.json`);
 }
 
+async function getProjectStatus() {
+  projectStatus.value = {
+    projectStatus: 'not started',
+    languageStatus: {
+      vn_vi: {
+        done: 10,
+        error: 0,
+        total: 10,
+      },
+      in_hi: {
+        done: 8,
+        error: 1,
+        total: 10,
+      }
+    }
+  }
+}
+
 export default async function setDetails() {
   await loadHeading();
   await loadDetails();
   await loadLocales();
+  await getProjectStatus();
 }
