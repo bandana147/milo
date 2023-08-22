@@ -59,7 +59,6 @@ async function loadDetails() {
     }, []);
     languages.value = projectLangs;
     urls.value = projectUrls;
-    await getProjectStatus();
     setStatus('details');
   } catch {
     setStatus('details', 'error', 'Error loading languages and URLs.');
@@ -84,4 +83,5 @@ export default async function setDetails() {
   await loadHeading();
   await loadDetails();
   await loadLocales();
+  await getProjectStatus();
 }

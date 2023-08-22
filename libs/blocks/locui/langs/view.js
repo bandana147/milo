@@ -1,10 +1,14 @@
 import { html } from '../../../deps/htm-preact.js';
 import { languages, projectStatus } from '../utils/state.js';
 
+const statusLabel = {
+  'waiting for incoming translation': 'In progress'
+}
 function Language({ item }) {
   const hasLocales = item.locales?.length > 0;
   const { value = {}} = projectStatus;
-  const status = value[item.locales[0]]?.status;
+  const langStatus = value[item.locales[0]]?.status;
+  const status = value.projectStatus;
   
   return html`
     <li class=locui-subproject>
@@ -21,9 +25,9 @@ function Language({ item }) {
         </div>
       `}
       <div class="language-status green-btn">
-        <label>${status}</label>
+        <label>${langStatus || statusLabel[status] || 'Not started'}</label>
       </div>
-      ${status === 'Translated' && html`<div class="green-btn rollout-btn">Rollout</div>`}
+      ${langStatus === 'Translated' && html`<div class="green-btn rollout-btn">Rollout</div>`}
     </li>
   `;
 }

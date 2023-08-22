@@ -4,27 +4,38 @@ import {
   findFragments,
   syncToLangstore,
   startLocalize,
+  getProjectStatus
 } from './index.js';
 
+const SYNCED = 'sync to langstore completed';
+const ButtonLabel = {
+  [SYNCED]: 'Start project',
+  notStarted: 'Create project'
+}
+
 export default function Actions() {
+  const status = projectStatus.value?.projectStatus;
   return html`
     <div class=locui-section>
       <div class=locui-section-heading>
         <h2 class=locui-section-label>Actions</h2>
       </div>
       <div class=locui-url-heading-actions>
-        <button 
+        ${!status && html`<button 
           class="green-btn locui-urls-heading-action"
           disabled=${!spAccessToken.value}
-          onClick=${findFragments}>Find Fragments</button>
-        <button
+          onClick=${findFragments}>Find Fragments</button>`}
+        ${status === 'created' && html`<button
           onClick=${syncToLangstore}
           class="green-btn locui-urls-heading-action">
           Sync to Langstore <span>(${urls.value[0].langstore.lang})</span>
-        </button>
-          ${projectStatus.value.status === 'not started' && html`<button 
+        </button>`}
+          ${(!status || status === SYNCED) && html`<button 
           class="green-btn locui-urls-heading-action"
-          onClick=${startLocalize}>Localize</button>`}
+          onClick=${startLocalize}>${ButtonLabel[(status || 'notStarted')]}</button>`}
+          ${status && html`<button 
+          class="green-btn locui-urls-heading-action"
+          onClick=${getProjectStatus}>Get status</button>`}
       </div>
     </div>
   `;
