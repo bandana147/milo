@@ -12,7 +12,6 @@
 
 import {
   loadArea,
-  loadDelayed,
   loadLana,
   setConfig,
 } from '../utils/utils.js';
@@ -140,11 +139,16 @@ const eagerLoad = (img) => {
 };
 
 (async function loadLCPImage() {
-  const lcpImg = document.querySelector('img');
-  lcpImg?.removeAttribute('loading');
+  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
+  if (firstDiv?.classList.contains('marquee')) {
+    firstDiv.querySelectorAll('img').forEach(eagerLoad);
+  } else {
+    eagerLoad(document.querySelector('img'));
+  }
 }());
 
 (async function loadPage() {
+  performance.mark('loadpage');
   setConfig(config);
   loadLana({ clientId: 'milo' });
   await loadArea();
