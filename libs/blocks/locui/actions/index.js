@@ -105,6 +105,11 @@ export async function checkStatus(pollingInterval, status) {
   } catch (error) {
     console.error('Error:', error);
   }
+  setStatus('langstore', 'info', 'Successfully synced');
+  // if(!res.ok) {
+  //   const error = res.json();
+  //   setStatus('langstore', 'error', error);
+  // }
 }
 
 export async function startLocalize() {

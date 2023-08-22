@@ -170,17 +170,18 @@ p.locui-project-label {
   padding: 0;
   display: grid;
   gap: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 li.locui-subproject {
   min-height: 320px;
-  border: 4px solid rgb(246 97 182);
-  background: rgb(255 100 194 / 30%);
+  border: 4px solid #5ec701;
+  background: #f5ff76;
   border-radius: 6px;
   padding: 18px;
   -webkit-backdrop-filter: blur(.3em);
   backdrop-filter: blur(.3em);
+  position: relative;
 }
 
 h3.locui-subproject-name {
@@ -216,13 +217,9 @@ button.locui-urls-heading-action {
   border: none;
   height: 36px;
   font-family: 'Adobe Clean', adobe-clean, sans-serif;
-  color: #FFF;
-  background: #FF1593;
   background-repeat: no-repeat;
   background-size: 18px;
   background-position: 12px center;
-  font-size: 16px;
-  font-weight: 700;
   padding: 0 18px;
   clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
   box-sizing: border-box;

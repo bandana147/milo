@@ -6,9 +6,9 @@ import {
   setStatus,
   languages,
   getSiteConfig,
-  projectStatus,
   previewPath,
 } from '../utils/state.js';
+import { getProjectStatus } from '../actions/index.js';
 
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
 const MOCK_REFERRER = 'https%3A%2F%2Fadobe.sharepoint.com%2F%3Ax%3A%2Fr%2Fsites%2Fadobecom%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257B94460FAC-CDEE-4B31-B8E0-AA5E3F45DCC5%257D%26file%3Dwesco-demo.xlsx';
@@ -59,6 +59,7 @@ async function loadDetails() {
     }, []);
     languages.value = projectLangs;
     urls.value = projectUrls;
+    await getProjectStatus();
     setStatus('details');
   } catch {
     setStatus('details', 'error', 'Error loading languages and URLs.');
@@ -78,27 +79,9 @@ async function loadHeading() {
   await preview(`${path}.json`);
 }
 
-async function getProjectStatus() {
-  projectStatus.value = {
-    projectStatus: 'not started',
-    languageStatus: {
-      vn_vi: {
-        done: 10,
-        error: 0,
-        total: 10,
-      },
-      in_hi: {
-        done: 8,
-        error: 1,
-        total: 10,
-      }
-    }
-  }
-}
 
 export default async function setDetails() {
   await loadHeading();
   await loadDetails();
   await loadLocales();
-  await getProjectStatus();
 }

@@ -4,7 +4,6 @@ import {
   findFragments,
   syncToLangstore,
   startLocalize,
-  rolloutFiles,
 } from './index.js';
 
 export default function Actions() {
@@ -15,19 +14,17 @@ export default function Actions() {
       </div>
       <div class=locui-url-heading-actions>
         <button 
-          class=locui-urls-heading-action
+          class="green-btn locui-urls-heading-action"
           disabled=${!spAccessToken.value}
           onClick=${findFragments}>Find Fragments</button>
         <button
           onClick=${syncToLangstore}
-          class=locui-urls-heading-action>
-          Sync to Langstore <span>(${urls.value[0].langstore.lang})</span></button>
-          ${projectStatus.value.projectStatus === 'not started' && html`<button 
-          class=locui-urls-heading-action
+          class="green-btn locui-urls-heading-action">
+          Sync to Langstore <span>(${urls.value[0].langstore.lang})</span>
+        </button>
+          ${projectStatus.value.status === 'not started' && html`<button 
+          class="green-btn locui-urls-heading-action"
           onClick=${startLocalize}>Localize</button>`}
-          ${projectStatus.value.projectStatus === 'translated' && html`<button 
-          class=locui-urls-heading-action
-          onClick=${rolloutFiles}>Rollout</button>`}
       </div>
     </div>
   `;
