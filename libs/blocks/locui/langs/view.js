@@ -4,8 +4,24 @@ import { languages, projectStatus } from '../utils/state.js';
 const statusLabel = {
   'waiting for incoming translation': 'In progress'
 }
+function SelectedLocales(item) {
+  const selectedLocales = item.Locales ? item.Locales.split('\n') : [];
+  const allLocales = item.locales;
+  const locales = selectedLocales.length > 0 ? selectedLocales : allLocales;
+
+  if (locales.length <= 0) {
+    return null;
+  }
+
+  return html`
+    <p class=locui-project-label>Locales</p>
+      <div class=locui-subproject-locales>
+      ${locales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
+    </div>
+  `
+}
+
 function Language({ item }) {
-  const hasLocales = item.locales?.length > 0;
   const { value = {}} = projectStatus;
   const langStatus = value[item.locales[0]]?.status;
   const status = value.projectStatus;
@@ -18,12 +34,7 @@ function Language({ item }) {
       <h3 class=locui-subproject-name>${item.Action}</h3>
       <p class=locui-project-label>Items</p>
       <h3 class=locui-subproject-name>${item.size}</h3>
-      ${hasLocales && html`
-        <p class=locui-project-label>Locales</p>
-        <div class=locui-subproject-locales>
-          ${item.locales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
-        </div>
-      `}
+      ${SelectedLocales(item)}
       <div class="language-status green-btn">
         <label>${langStatus || statusLabel[status] || 'Not started'}</label>
       </div>

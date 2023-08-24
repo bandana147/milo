@@ -105,8 +105,21 @@ export async function checkStatus(pollingInterval, status) {
   } catch (error) {
     console.error('Error:', error);
   }
-  await getProjectStatus();
-  setStatus('project', 'info', 'Successfully started syncing');
+}
+
+async function checkStatus() {
+  const pollingInterval = 5000;
+  try {
+    const response = await getProjectStatus();
+    if (response.status !== 'completed') {
+      console.log('Task is still in progress. Polling again in', pollingInterval, 'ms...');
+      setTimeout(checkStatus, pollingInterval);
+    } else {
+      setStatus('project', 'info', 'Project syncing completed');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
 export async function startLocalize() {

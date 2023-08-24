@@ -25,7 +25,7 @@ export default function Actions() {
           class="green-btn locui-urls-heading-action"
           disabled=${!spAccessToken.value}
           onClick=${findFragments}>Find Fragments</button>`}
-        ${status === 'created' && html`<button
+        ${status && html`<button
           onClick=${syncToLangstore}
           class="green-btn locui-urls-heading-action">
           Sync to Langstore <span>(${urls.value[0].langstore.lang})</span>
