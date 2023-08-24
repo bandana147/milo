@@ -1,5 +1,5 @@
 import { html } from '../../../deps/htm-preact.js';
-import { heading, user, urls, languages, statuses } from '../utils/state.js';
+import { heading, user, urls, languages, statuses, projectStatus } from '../utils/state.js';
 import setDetails from '../loc/index.js';
 
 async function handleRefresh() {
@@ -23,6 +23,19 @@ export default function Heading() {
                  target="_blank">Edit</a>`}
           ${heading.value.name && html`
             <button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
+        </div>
+        <div class=locui-project-status>
+        
+          <h2 class=locui-section-label>Status</h2>
+          <div class=locui-project-details-project>
+            ${projectStatus.value.projectStatusText || html`<div class="loader">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          `}
+          </div>
+      
         </div>
       </div>
       <div class=locui-project-heading-column>

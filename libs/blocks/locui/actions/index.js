@@ -111,8 +111,7 @@ async function checkStatus() {
   const pollingInterval = 5000;
   try {
     const response = await getProjectStatus();
-    if (response.status !== 'completed') {
-      console.log('Task is still in progress. Polling again in', pollingInterval, 'ms...');
+    if (response.status !== 'sync-done') {
       setTimeout(checkStatus, pollingInterval);
     } else {
       setStatus('project', 'info', 'Project syncing completed');

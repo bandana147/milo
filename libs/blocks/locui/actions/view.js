@@ -7,7 +7,7 @@ import {
   getProjectStatus
 } from './index.js';
 
-const SYNCED = 'sync to langstore completed';
+const SYNCED = 'sync-done';
 const ButtonLabel = {
   [SYNCED]: 'Start project',
   notStarted: 'Create project'

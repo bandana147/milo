@@ -61,6 +61,11 @@ main {
   border-radius: 2px;
 }
 
+.locui-project-status {
+  margin-top: 24px;
+  height: 60px;
+}
+
 .locui-status-toast-section {
   position: fixed;
   top: 20px;
