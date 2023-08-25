@@ -111,10 +111,10 @@ async function checkStatus() {
   const pollingInterval = 5000;
   try {
     const response = await getProjectStatus();
-    if (response.status !== 'sync-done') {
-      setTimeout(checkStatus, pollingInterval);
+    if (response.projectStatus !== status) {
+      setTimeout(()=> checkStatus(pollingInterval, status), pollingInterval);
     } else {
-      setStatus('project', 'info', 'Project syncing completed');
+      setStatus('project', 'info', response.projectStatusText);
     }
   } catch (error) {
     console.error('Error:', error);

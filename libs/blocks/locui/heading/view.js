@@ -25,7 +25,6 @@ export default function Heading() {
             <button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
         </div>
         <div class=locui-project-status>
-        
           <h2 class=locui-section-label>Status</h2>
           <div class=locui-project-details-project>
             ${projectStatus.value.projectStatusText || html`<div class="loader">

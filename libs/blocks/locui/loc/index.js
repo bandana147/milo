@@ -8,8 +8,9 @@ import {
   getSiteConfig,
   previewPath,
 } from '../utils/state.js';
-import { getProjectStatus } from '../actions/index.js';
+import { getProjectStatus, checkStatus } from '../actions/index.js';
 
+const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
 const MOCK_REFERRER = 'https%3A%2F%2Fadobe.sharepoint.com%2F%3Ax%3A%2Fr%2Fsites%2Fadobecom%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257B94460FAC-CDEE-4B31-B8E0-AA5E3F45DCC5%257D%26file%3Dwesco-demo.xlsx';
 
@@ -78,10 +79,18 @@ async function loadHeading() {
   await preview(`${path}.json`);
 }
 
+async function loadStatus() {
+  const status = await getProjectStatus();
+  const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status.projectStatus);
+  if (projectInProgress) {
+    checkStatus(10000, 'done')
+  }
+}
+
 
 export default async function setDetails() {
   await loadHeading();
   await loadDetails();
   await loadLocales();
-  await getProjectStatus();
+  await loadStatus();
 }
