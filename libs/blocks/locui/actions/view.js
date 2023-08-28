@@ -4,6 +4,7 @@ import {
   findFragments,
   syncToLangstore,
   startLocalize,
+  getProjectStatus,
 } from './index.js';
 
 const SYNCED = 'sync-done';
@@ -32,6 +33,9 @@ export default function Actions() {
           ${(!status || status === SYNCED) && html`<button 
           class="green-btn locui-urls-heading-action"
           onClick=${startLocalize}>${ButtonLabel[(status || 'notStarted')]}</button>`}
+          ${(status && status === 'waiting') && html`<button 
+          class="green-btn locui-urls-heading-action"
+          onClick=${getProjectStatus}>Get status</button>`}
       </div>
     </div>
   `;

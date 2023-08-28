@@ -85,7 +85,7 @@ async function loadStatus() {
   const status = await getProjectStatus();
   const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status.projectStatus);
   if (projectInProgress) {
-    checkStatus('done', 10000)
+    checkStatus('waiting', 10000)
   }
 }
 

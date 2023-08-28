@@ -102,7 +102,7 @@ export async function checkStatus(status, pollingInterval = Infinity) {
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
   } catch (error) {
-    console.error('Error:', error);
+    setStatus('project', 'error', `Error while fetching status - ${error}`);
   }
 }
 
@@ -128,7 +128,7 @@ export async function startLocalize() {
       const startResponse = await startProject(projectHash);
         if (startResponse.status === 201) {
           setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
-          await checkStatus('done', 10000);
+          await checkStatus('waiting', 10000);
         }
     } catch (error) {
       setStatus('project', 'error', 'Failed to start project');
@@ -145,7 +145,7 @@ export async function getProjectStatus() {
 
     if(!statusResponse.ok) {
       const error = statusResponse.json();
-      throw new Error(`Failed to get project status: ${error}`);
+      setStatus('project', 'error', `Failed to get project status: ${error}`);
     }
     const status = await statusResponse.json();
     projectStatus.value = status;
@@ -153,7 +153,7 @@ export async function getProjectStatus() {
     return status;
   } catch(err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
-    throw new Error(`Failed to get project status: ${err}`);
+    setStatus('project', 'error', `Failed to get project status: ${err}`);
   }
 }
 
