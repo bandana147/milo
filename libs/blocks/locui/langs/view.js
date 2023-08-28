@@ -20,8 +20,7 @@ function SelectedLocales(item) {
 
 function Language({ item }) {
   const { value = {}} = projectStatus;
-  const langStatus = value[item.locales[0]]?.status;
-  const status = value.projectStatus;
+  const langStatus = value[item.localeCode]?.status;
   
   return html`
     <li class=locui-subproject>
@@ -33,7 +32,7 @@ function Language({ item }) {
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
       <div class="language-status green-btn">
-        <label>${status || 'Not started'}</label>
+        <label>${langStatus || 'Not started'}</label>
       </div>
       ${langStatus === 'Translated' && html`<div class="green-btn rollout-btn">Rollout</div>`}
     </li>

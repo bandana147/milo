@@ -4,7 +4,6 @@ import {
   findFragments,
   syncToLangstore,
   startLocalize,
-  getProjectStatus
 } from './index.js';
 
 const SYNCED = 'sync-done';
@@ -25,7 +24,7 @@ export default function Actions() {
           class="green-btn locui-urls-heading-action"
           disabled=${!spAccessToken.value}
           onClick=${findFragments}>Find Fragments</button>`}
-        ${status && html`<button
+        ${status && status=== 'created' && html`<button
           onClick=${syncToLangstore}
           class="green-btn locui-urls-heading-action">
           Sync to Langstore <span>(${urls.value[0].langstore.lang})</span>
@@ -33,9 +32,6 @@ export default function Actions() {
           ${(!status || status === SYNCED) && html`<button 
           class="green-btn locui-urls-heading-action"
           onClick=${startLocalize}>${ButtonLabel[(status || 'notStarted')]}</button>`}
-          ${status && html`<button 
-          class="green-btn locui-urls-heading-action"
-          onClick=${getProjectStatus}>Get status</button>`}
       </div>
     </div>
   `;

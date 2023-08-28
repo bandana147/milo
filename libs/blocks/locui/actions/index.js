@@ -81,26 +81,25 @@ export async function findFragments() {
 }
 
 export async function syncToLangstore() {
-  setStatus('file');
   const projectHash = md5(previewPath.value);
   try {
   await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
     method: 'POST',
   });
   setStatus('project', 'info', 'Successfully started syncing');
-  checkStatus(5000, 'sync-done');
+  checkStatus('sync-done', 5000);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
   }
 }
 
-export async function checkStatus(pollingInterval, status) {
+export async function checkStatus(status, pollingInterval = Infinity) {
   try {
     const response = await getProjectStatus();
     if (response.projectStatus !== status) {
-      setTimeout(()=> checkStatus(pollingInterval, status), pollingInterval);
+      setTimeout(()=> checkStatus(status, pollingInterval), pollingInterval);
     } else {
-      setStatus('project', 'info', response.projectStatusText);
+      setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
   } catch (error) {
     console.error('Error:', error);
@@ -129,7 +128,7 @@ export async function startLocalize() {
       const startResponse = await startProject(projectHash);
         if (startResponse.status === 201) {
           setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
-          await getProjectStatus();
+          await checkStatus('done', 10000);
         }
     } catch (error) {
       setStatus('project', 'error', 'Failed to start project');

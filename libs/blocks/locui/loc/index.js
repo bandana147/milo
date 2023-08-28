@@ -40,6 +40,7 @@ async function loadLocales() {
       (locale) => language.Language === locale.language,
     );
     language.locales = found.livecopies.split(',');
+    language.localeCode = found.languagecode;
   });
   languages.value = [...languages.value];
 }
@@ -51,6 +52,7 @@ async function loadDetails() {
     const json = await resp.json();
     const jsonUrls = json.urls.data.map((item) => new URL(item.URL));
     const projectUrls = getUrls(jsonUrls);
+    console.log(json.languages.data);
     const projectLangs = json.languages.data.reduce((rdx, lang) => {
       if (LANG_ACTIONS.includes(lang.Action)) {
         lang.size = projectUrls.length;
@@ -83,7 +85,7 @@ async function loadStatus() {
   const status = await getProjectStatus();
   const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status.projectStatus);
   if (projectInProgress) {
-    checkStatus(10000, 'done')
+    checkStatus('done', 10000)
   }
 }
 
