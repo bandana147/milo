@@ -1,7 +1,7 @@
 import { decorateButtons } from '../../utils/decorate.js';
 import { loadStyle, getConfig, createTag } from '../../utils/utils.js';
 import { getMetadata } from '../section-metadata/section-metadata.js';
-import { decorateCommerce } from '../../features/merch.js';
+import { decorateLinkAnalytics } from '../../martech/attributes.js';
 
 const HALF = 'OneHalfCard';
 const HALF_HEIGHT = 'HalfHeightCard';
@@ -33,7 +33,14 @@ const addWrapper = (el, section, cardType) => {
 
   if (prevGrid) return;
 
-  const upClass = getUpFromSectionMetadata(section);
+  let upClass = getUpFromSectionMetadata(section);
+  // Authored w/ a typed out number reference... 'two-up' vs. '2-up'
+  const list = ['two-up', 'three-up', 'four-up', 'five-up'];
+  const idx = list.findIndex((i) => i.includes(upClass));
+  if (idx > -1) {
+    upClass = `${idx + 2}-up`;
+    section.classList.remove(list[idx]);
+  }
   const up = upClass?.replace('-', '') || '3up';
   const gridClass = `${gridCl} ${gridCl}--${up} ${gridCl}--with4xGutter${cardType === DOUBLE_WIDE ? ` ${gridCl}--doubleWideCards` : ''}`;
   const grid = createTag('div', { class: gridClass });
@@ -109,6 +116,8 @@ const addFooter = (links, container, merch) => {
 };
 
 const init = (el) => {
+  const headings = el.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  decorateLinkAnalytics(el, headings);
   const { miloLibs, codeRoot } = getConfig();
   const base = miloLibs || codeRoot;
   loadStyle(`${base}/deps/caas.css`);
@@ -152,11 +161,6 @@ const init = (el) => {
 
   if (cardType === HALF || cardType === PRODUCT) {
     addFooter(links, row, merch);
-  }
-
-  if (merch) {
-    const merchLinks = el.querySelectorAll('a[href*="tools/ost?osi="], a[href*="tools/ost/?osi="]');
-    decorateCommerce(merchLinks);
   }
 };
 
