@@ -46,8 +46,7 @@ export default function Url({ item, idx }) {
       </div>
       <div class=locui-url-dates>
         <h3 class=locui-url-label>Details</h3>
-        ${item.userInfo && html`<p class=locui-user-info><span class=info-title>Last Modified: </span>${formattedDate}</p>
-        <p class=locui-user-info><span class=info-title>Modified by: </span>${item.userInfo?.lastModifiedBy}</p>`}
+        ${item.userInfo && html`<p class=locui-user-info><span class=info-title>Modified by: </span>${item.userInfo?.lastModifiedBy}</p><p class=locui-user-info><span class=info-title>Last Modified: </span>${formattedDate}</p>`}
       </div>
     </li>
   `;

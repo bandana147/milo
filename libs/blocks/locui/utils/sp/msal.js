@@ -5,6 +5,7 @@ import { getSiteConfig, spAccessToken } from '../state.js';
 let msalConfig;
 
 const login = { redirectUri: '/tools/loc/spauth' };
+const siteKeys = ['clientId', 'authority', 'site', 'driveId', 'folderPath'];
 
 const cache = {
   cacheLocation: 'sessionStorage',
@@ -22,8 +23,16 @@ export function getMSALConfig() {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
     if (!msalConfig) {
-      const { sp } = await getSiteConfig();
-      const { clientId, authority, site, rootFolders, driveId } = sp.data[0];
+      const { configs } = await getSiteConfig();
+      const { data } = configs;
+      const configValues = {};
+      siteKeys.forEach((key) => {
+        const currentData = data.find((item) => (item.key === `prod.sharepoint.${key}`));
+        configValues[key] = currentData?.value;
+      });
+      const { clientId, authority, site, folderPath = '', driveId } = configValues;
+      const paths = folderPath.split('/');
+      const root = paths[paths.length - 1];
       const auth = { clientId, authority };
       const config = getConfig();
       const base = config.miloLibs || config.codeRoot;
@@ -34,7 +43,7 @@ export function getMSALConfig() {
         cache,
         telemetry,
         site,
-        baseUri: driveId ? `${site}/drives/${driveId}/root:${rootFolders}` : `${site}/drive/root:${rootFolders}`,
+        baseUri: driveId ? `${site}/drives/${driveId}/root:/${root}` : `${site}/drive/root:/${root}`,
         system: {
           loggerOptions: {
             logLevel: msal.LogLevel.Error,
