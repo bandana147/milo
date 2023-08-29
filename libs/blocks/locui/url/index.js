@@ -14,7 +14,6 @@ async function getDetails(path, fetchEditUrl = false) {
   const edit = { url: json.edit.url, status: json.edit.status, filename };
   const fileDetails = await checkItem(path);
 
-  // If file exist then show the file
   if (!json.edit.url && !fileDetails.error) {
     edit.url = 'fetchEditUrl';
     edit.status = 200;

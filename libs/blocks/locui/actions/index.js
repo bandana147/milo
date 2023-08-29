@@ -98,6 +98,7 @@ export async function checkStatus(status, pollingInterval = Infinity) {
     const response = await getProjectStatus();
     if (response.projectStatus !== status) {
       setTimeout(()=> checkStatus(status, pollingInterval), pollingInterval);
+      setStatus('project', 'info', status.projectStatusText)
     } else {
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
@@ -136,7 +137,7 @@ export async function startLocalize() {
   }
 }
 
-export async function getProjectStatus() {
+export async function getProjectStatus(showStatus) {
   const projectHash = md5(previewPath.value);
   try {
     const statusResponse = await fetch(`${apiUrl}/project-status?project=${projectHash}`, {
@@ -149,11 +150,11 @@ export async function getProjectStatus() {
     }
     const status = await statusResponse.json();
     projectStatus.value = status;
-    
+    showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
     return status;
   } catch(err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
-    setStatus('project', 'error', `Failed to get project status: ${err}`);
+    // setStatus('project', 'error', `Failed to get project status: ${err}`);
   }
 }
 

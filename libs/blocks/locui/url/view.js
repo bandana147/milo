@@ -9,19 +9,20 @@ async function handleAction(url, path, idx, type) {
 }
 
 function Actions({ label, parent, idx, type }) {
-  const isJsonFile = parent.pathname.toLowerCase().endsWith(".json");
+  const { pathname, actions, } = parent;
+  const isJsonFile = pathname.toLowerCase().endsWith(".json");
   return html`
     <h3 class=locui-url-label>${label}</h3>
     <div class=locui-url-source-actions>
       <button
-        class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''} ${parent.actions?.edit?.status !== 200 ? 'disabled' : ''}"
-        onClick=${() => { handleAction(parent.actions?.edit.url, parent.pathname, idx, type); }}>Edit</button>
+        class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''} ${actions?.edit?.status !== 200 ? 'disabled' : ''}"
+        onClick=${() => { handleAction(actions?.edit.url, pathname, idx, type); }}>Edit</button>
       <button
-        class="locui-url-action locui-url-action-view ${parent.actions?.preview?.status !== 200 ? 'disabled' : ''}"
-        onClick=${() => { handleAction(parent.actions?.preview.url, parent.pathname, idx, type); }}>Preview</button>
+        class="locui-url-action locui-url-action-view ${actions?.preview?.status !== 200 ? 'disabled' : ''}"
+        onClick=${() => { handleAction(actions?.preview.url, pathname, idx, type); }}>Preview</button>
       <button
-        class="locui-url-action locui-url-action-view ${parent.actions?.live?.status !== 200 ? 'disabled' : ''}"
-        onClick=${() => { handleAction(parent.actions?.live.url, parent.pathname, idx, type); }}>Live</button>
+        class="locui-url-action locui-url-action-view ${actions?.live?.status !== 200 ? 'disabled' : ''}"
+        onClick=${() => { handleAction(actions?.live.url, pathname, idx, type); }}>Live</button>
     </div>
   `;
 }

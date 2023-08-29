@@ -3,8 +3,7 @@ import { languages, projectStatus } from '../utils/state.js';
 
 function SelectedLocales(item) {
   const selectedLocales = item.Locales ? item.Locales.split('\n') : [];
-  const allLocales = item.locales;
-  const locales = selectedLocales.length > 0 ? selectedLocales : allLocales;
+  const locales = selectedLocales.length > 0 ? selectedLocales : item.locales;
 
   if (locales.length <= 0) {
     return null;
@@ -15,7 +14,7 @@ function SelectedLocales(item) {
       <div class=locui-subproject-locales>
       ${locales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
     </div>
-  `
+  `;
 }
 
 function Language({ item }) {

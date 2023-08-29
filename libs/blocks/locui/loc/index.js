@@ -52,7 +52,6 @@ async function loadDetails() {
     const json = await resp.json();
     const jsonUrls = json.urls.data.map((item) => new URL(item.URL));
     const projectUrls = getUrls(jsonUrls);
-    console.log(json.languages.data);
     const projectLangs = json.languages.data.reduce((rdx, lang) => {
       if (LANG_ACTIONS.includes(lang.Action)) {
         lang.size = projectUrls.length;
@@ -85,10 +84,9 @@ async function loadStatus() {
   const status = await getProjectStatus();
   const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status.projectStatus);
   if (projectInProgress) {
-    checkStatus('waiting', 10000)
+    checkStatus('waiting', 10000);
   }
 }
-
 
 export default async function setDetails() {
   await loadHeading();
