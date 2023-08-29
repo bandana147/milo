@@ -226,12 +226,29 @@ button.locui-urls-heading-action {
   border: none;
   height: 36px;
   font-family: 'Adobe Clean', adobe-clean, sans-serif;
+  color: #FFF;
+  background-color: #FF1593;
   background-repeat: no-repeat;
   background-size: 18px;
   background-position: 12px center;
+  font-size: 16px;
+  font-weight: 700;
   padding: 0 18px;
   clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
   box-sizing: border-box;
+}
+
+button.locui-urls-heading-action:hover {
+  cursor: pointer;
+}
+
+button.locui-urls-heading-action:active {
+  transform: scale(0.98);
+}
+
+button.locui-urls-heading-action:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
 }
 
 ul.locui-urls {
@@ -342,7 +359,7 @@ helix-sidekick {
   font-weight: 600;
 }
 
-.green-btn {
+.status-bar {
   background-color: #5ec701;
   color: #136E1B;
   font-size: 14px;

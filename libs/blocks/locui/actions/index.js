@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import updateExcelTable from '../utils/sp/excel.js';
-import { heading, setStatus, urls, previewPath, projectStatus } from '../utils/state.js';
+import { heading, setStatus, urls, previewPath, projectStatus, buttonStatus } from '../utils/state.js';
 import { origin, preview } from '../utils/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
@@ -45,19 +45,6 @@ async function findPageFragments(path) {
   return getUrls(fragmentUrls);
 }
 
-function createProject(projectUrl) {
-  return fetch(`${apiUrl}/create-project`, {
-    method: 'POST',
-    body: projectUrl
-  });
-}
-
-function startProject(projectHash) {
-  return fetch(`${apiUrl}/start-project?project=${projectHash}`, {
-    method: 'POST',
-  });
-}
-
 export async function findFragments() {
   setStatus('fragments', 'info', 'Finding fragments.');
   const found = urls.value.map((url) => findPageFragments(url.pathname));
@@ -81,15 +68,18 @@ export async function findFragments() {
 }
 
 export async function syncToLangstore() {
+  buttonStatus.value = { sync: { loading: true } };
   const projectHash = md5(previewPath.value);
   try {
-  await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
-    method: 'POST',
-  });
-  setStatus('project', 'info', 'Successfully started syncing');
-  checkStatus('sync-done', 5000);
+    await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
+      method: 'POST',
+    });
+    setStatus('project', 'info', 'Successfully started syncing');
+    checkStatus('sync-done', 5000);
+    buttonStatus.value = { sync: { loading: false } };
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
+    buttonStatus.value = { sync: { loading: false } };
   }
 }
 
@@ -97,8 +87,8 @@ export async function checkStatus(status, pollingInterval = Infinity) {
   try {
     const response = await getProjectStatus();
     if (response.projectStatus !== status) {
-      setTimeout(()=> checkStatus(status, pollingInterval), pollingInterval);
-      setStatus('project', 'info', status.projectStatusText)
+      setTimeout(() => checkStatus(status, pollingInterval), pollingInterval);
+      setStatus('project', 'info', response.projectStatusText)
     } else {
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
@@ -107,54 +97,66 @@ export async function checkStatus(status, pollingInterval = Infinity) {
   }
 }
 
-export async function startLocalize() {
+export async function createProject() {
+  buttonStatus.value = { create: { loading: true } };
+  const projectUrl = previewPath.value;
+  try {
+    setStatus('project', 'info', 'Creating project');
+    const createResponse = await fetch(`${apiUrl}/create-project`, {
+      method: 'POST',
+      body: projectUrl
+    });
+    if (createResponse.status === 201) {
+      setStatus('project', 'info', 'Project created successfully!', undefined, 1000);
+      await getProjectStatus();
+    }
+    buttonStatus.value = { create: { loading: false } };
+  } catch (error) {
+    setStatus('project', 'error', 'Failed to create project');
+    buttonStatus.value = { create: { loading: false } };
+  }
+}
+
+export async function startProject() {
+  buttonStatus.value = { start: { loading: true } };
   const projectUrl = previewPath.value;
   const projectHash = md5(projectUrl);
-  const status = projectStatus.value?.projectStatus;
-
-  if (!status) {
-    try {
-      setStatus('project', 'info', 'Creating project');
-      const createResponse = await createProject(projectUrl);
-      if (createResponse.status === 201) {
-        setStatus('project', 'info', 'Project created successfully!', undefined, 1000);
-        await getProjectStatus();
-      }
-    } catch (error) {
-      setStatus('project', 'error', 'Failed to create project');
+  setStatus('project', 'info', 'Starting project');
+  try {
+    const startResponse = await fetch(`${apiUrl}/start-project?project=${projectHash}`, {
+      method: 'POST',
+    });
+    if (startResponse.status === 201) {
+      setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
+      await checkStatus('waiting', 10000);
     }
-  } else {
-    setStatus('project', 'info', 'Starting project');
-    try {
-      const startResponse = await startProject(projectHash);
-        if (startResponse.status === 201) {
-          setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
-          await checkStatus('waiting', 10000);
-        }
-    } catch (error) {
-      setStatus('project', 'error', 'Failed to start project');
-    }
+    buttonStatus.value = { start: { loading: false } };
+  } catch (error) {
+    setStatus('project', 'error', 'Failed to start project');
+    buttonStatus.value = { start: { loading: false } };
   }
 }
 
 export async function getProjectStatus(showStatus) {
+  buttonStatus.value = { status: { loading: true } };
   const projectHash = md5(previewPath.value);
   try {
     const statusResponse = await fetch(`${apiUrl}/project-status?project=${projectHash}`, {
       method: 'GET',
     });
 
-    if(!statusResponse.ok) {
+    if (!statusResponse.ok) {
       const error = statusResponse.json();
       setStatus('project', 'error', `Failed to get project status: ${error}`);
     }
     const status = await statusResponse.json();
     projectStatus.value = status;
     showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
+    buttonStatus.value = { status: { loading: false } };
     return status;
-  } catch(err) {
+  } catch (err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
-    // setStatus('project', 'error', `Failed to get project status: ${err}`);
+    buttonStatus.value = { status: { loading: false } };
   }
 }
 

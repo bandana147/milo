@@ -12,7 +12,8 @@ export const siteConfig = signal(null);
 export const user = signal();
 export const spAccessToken = signal();
 export const previewPath = signal('')
-export const projectStatus = signal({})
+export const projectStatus = signal({});
+export const buttonStatus = signal({});
 
 export function setStatus(name, type, text, description, timeout) {
   const content = type && text ? { type, text, description } : null;

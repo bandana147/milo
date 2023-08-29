@@ -30,10 +30,10 @@ function Language({ item }) {
       <p class=locui-project-label>Items</p>
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
-      <div class="language-status green-btn">
+      <div class="language-status status-bar">
         <label>${langStatus || 'Not started'}</label>
       </div>
-      ${langStatus === 'Translated' && html`<div class="green-btn rollout-btn">Rollout</div>`}
+      ${langStatus === 'Translated' && html`<div class="status-bar rollout-btn">Rollout</div>`}
     </li>
   `;
 }
