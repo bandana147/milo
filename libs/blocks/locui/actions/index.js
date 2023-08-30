@@ -68,18 +68,17 @@ export async function findFragments() {
 }
 
 export async function syncToLangstore() {
-  buttonStatus.value = { sync: { loading: true } };
+  buttonStatus.value = { sync: { loading: true } }
   const projectHash = md5(previewPath.value);
   try {
     await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
       method: 'POST',
     });
     setStatus('project', 'info', 'Successfully started syncing');
-    checkStatus('sync-done', 5000);
-    buttonStatus.value = { sync: { loading: false } };
+    checkStatus('sync-done', 10000);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
-    buttonStatus.value = { sync: { loading: false } };
+    buttonStatus.value = { sync: { loading: false } }
   }
 }
 
@@ -108,6 +107,7 @@ export async function createProject() {
     });
     if (createResponse.status === 201) {
       setStatus('project', 'info', 'Project created successfully!', undefined, 1000);
+      projectStatus.value = { projectStatus: 'created' };
       await getProjectStatus();
     }
     buttonStatus.value = { create: { loading: false } };
@@ -138,7 +138,9 @@ export async function startProject() {
 }
 
 export async function getProjectStatus(showStatus) {
-  buttonStatus.value = { status: { loading: true } };
+  if (showStatus) {
+    buttonStatus.value = { status: { loading: true } };
+  }
   const projectHash = md5(previewPath.value);
   try {
     const statusResponse = await fetch(`${apiUrl}/project-status?project=${projectHash}`, {
@@ -152,12 +154,11 @@ export async function getProjectStatus(showStatus) {
     const status = await statusResponse.json();
     projectStatus.value = status;
     showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
-    buttonStatus.value = { status: { loading: false } };
     return status;
   } catch (err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
-    buttonStatus.value = { status: { loading: false } };
   }
+  buttonStatus.value = { status: { loading: false } };
 }
 
 export async function rolloutFiles() {

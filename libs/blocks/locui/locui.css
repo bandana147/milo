@@ -242,13 +242,13 @@ button.locui-urls-heading-action:hover {
   cursor: pointer;
 }
 
-button.locui-urls-heading-action:active {
-  transform: scale(0.98);
+button.locui-urls-heading-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-button.locui-urls-heading-action:disabled {
-  opacity: 0.8;
-  cursor: not-allowed;
+button.locui-urls-heading-action:active:enabled {
+  transform: scale(0.98);
 }
 
 ul.locui-urls {

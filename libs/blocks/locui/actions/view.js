@@ -9,6 +9,7 @@ const SYNCED = 'sync-done';
 export default function Actions() {
   const status = projectStatus.value?.projectStatus;
   const notStarted = !status;
+ 
   return html`
     <div class=locui-section>
       <div class=locui-section-heading>
@@ -25,14 +26,14 @@ export default function Actions() {
           class="locui-urls-heading-action ">
           Sync to Langstore <span>(${urls.value[0].langstore.lang})</span>
         </button>`}
-        ${status === SYNCED && html`<button 
-          class="locui-urls-heading-action"
-          disabled=${buttonStatus.value.start?.loading}
-          onClick=${startProject}>Start project</button>`}
         ${notStarted && html`<button 
           class="locui-urls-heading-action"
           disabled=${buttonStatus.value.create?.loading}
           onClick=${createProject}>Create project</button>`}
+        ${status === SYNCED && html`<button 
+          class="locui-urls-heading-action"
+          disabled=${buttonStatus.value.start?.loading}
+          onClick=${startProject}>Start project</button>`}
         ${(status && PROJECT_INPROGRESS_CODES.includes(status)) && html`<button 
           class="locui-urls-heading-action"
           disabled=${buttonStatus.value.status?.loading}
