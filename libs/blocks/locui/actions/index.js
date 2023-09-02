@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import updateExcelTable from '../utils/sp/excel.js';
-import { heading, setStatus, urls, previewPath, projectStatus, buttonStatus } from '../utils/state.js';
+import { heading, setStatus, urls, languages, previewPath, projectStatus, buttonStatus, synced } from '../utils/state.js';
 import { origin, preview } from '../utils/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
@@ -60,11 +60,26 @@ export async function findFragments() {
     return rdx;
   }, []);
   setStatus('fragments', 'info', `${forExcel.length} fragments found.`, null, 1500);
+
   if (forExcel.length > 0) {
+    const newLangs = languages.value.map(item=> {
+      item.size = item.size + forExcel.length;
+      return item;
+    });
+    languages.value = newLangs;
     urls.value = [...urls.value];
     updateExcelTable(forExcel);
     updateExcelJson();
   }
+}
+
+function checkfile() {
+  synced.value = true;
+  const newUrls = urls.value.map(url=> {
+    delete url.langstore.actions;
+    return url;
+  });
+  urls.value = newUrls;
 }
 
 export async function syncToLangstore() {
@@ -75,20 +90,23 @@ export async function syncToLangstore() {
       method: 'POST',
     });
     setStatus('project', 'info', 'Successfully started syncing');
-    checkStatus('sync-done', 10000);
+    checkStatus('sync-done', 5000, checkfile);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
     buttonStatus.value = { sync: { loading: false } }
   }
 }
 
-export async function checkStatus(status, pollingInterval = Infinity) {
+export async function checkStatus(status, pollingInterval = Infinity, callback) {
+  let timerId;
   try {
     const response = await getProjectStatus();
     if (response.projectStatus !== status) {
-      setTimeout(() => checkStatus(status, pollingInterval), pollingInterval);
-      setStatus('project', 'info', response.projectStatusText)
+      timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
+      setStatus('project', 'info', response.projectStatusText);
     } else {
+      callback();
+      clearTimeout(timerId);
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
   } catch (error) {
@@ -128,7 +146,7 @@ export async function startProject() {
     });
     if (startResponse.status === 201) {
       setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
-      await checkStatus('waiting', 10000);
+      await checkStatus('waiting', 5000);
     }
     buttonStatus.value = { start: { loading: false } };
   } catch (error) {
@@ -154,11 +172,12 @@ export async function getProjectStatus(showStatus) {
     const status = await statusResponse.json();
     projectStatus.value = status;
     showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
+    // buttonStatus.value = { status: { loading: false } };
     return status;
   } catch (err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
+    buttonStatus.value = { status: { loading: false } };
   }
-  buttonStatus.value = { status: { loading: false } };
 }
 
 export async function rolloutFiles() {

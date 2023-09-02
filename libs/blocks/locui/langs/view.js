@@ -45,7 +45,7 @@ export default function Langs() {
         <h2 class=locui-section-label>Languages</h2>
       </div>
       <ul class=locui-subprojects>
-        ${languages.value.map((proj) => html`<${Language} item=${proj} />`)}
+        ${languages.value.map((proj) => html`<${Language} key='${proj.Language}-${proj.size}' item=${proj} />`)}
       </ul>
     </div>
   `;

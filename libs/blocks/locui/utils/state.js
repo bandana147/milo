@@ -14,6 +14,7 @@ export const spAccessToken = signal();
 export const previewPath = signal('')
 export const projectStatus = signal({});
 export const buttonStatus = signal({});
+export const synced = signal(false)
 
 export function setStatus(name, type, text, description, timeout) {
   const content = type && text ? { type, text, description } : null;

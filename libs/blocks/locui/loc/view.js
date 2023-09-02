@@ -14,7 +14,6 @@ export default function Localization() {
     loginToSharePoint();
     setDetails();
   }, []);
-
   return html`
     <h1>Milo Localization</h1>
     ${heading.value.editUrl && html`<${Heading} />`}

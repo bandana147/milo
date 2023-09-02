@@ -82,7 +82,7 @@ async function loadHeading() {
 
 async function loadStatus() {
   const status = await getProjectStatus();
-  const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status.projectStatus);
+  const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
   if (projectInProgress) {
     checkStatus('waiting', 10000);
   }

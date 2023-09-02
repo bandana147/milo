@@ -27,10 +27,9 @@ function Actions({ label, parent, idx, type }) {
   `;
 }
 
-export default function Url({ item, idx }) {
+export default function ({ item, idx }) {
   useEffect(() => { setActions(idx); }, [idx]);
   const formattedDate = formatDate(item.userInfo?.lastModifiedDateTime);
-
   return html`
     <li class=locui-url>
       <div class=locui-url-details>

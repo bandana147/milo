@@ -45,12 +45,17 @@ export async function getUrl(path, idx, type) {
 }
 
 export default async function setActions(idx) {
-  if (!urls.value[idx].actions) {
-    const { actions, userInfo } = await getDetails(urls.value[idx].pathname);
-    urls.value[idx].actions = actions;
-    urls.value[idx].userInfo = userInfo;
-    const langStoreDetails = await getDetails(urls.value[idx].langstore.pathname);
-    urls.value[idx].langstore.actions = langStoreDetails.actions;
+  if (!urls.value[idx].actions || !urls.value[idx].langstore?.actions) {
+    if (!urls.value[idx].actions) {
+      const { actions, userInfo } = await getDetails(urls.value[idx].pathname);
+      urls.value[idx].actions = actions;
+      urls.value[idx].userInfo = userInfo;
+    }
+
+    if (!urls.value[idx].langstore?.actions) {
+      const langStoreDetails = await getDetails(urls.value[idx].langstore.pathname);
+      urls.value[idx].langstore.actions = langStoreDetails.actions;
+    }
     urls.value = [...urls.value];
   }
 }
