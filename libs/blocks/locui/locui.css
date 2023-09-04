@@ -202,7 +202,9 @@ h3.locui-subproject-name {
 div.locui-subproject-locales {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 18px;
+  margin-bottom: 48px;
+  max-height: 80px;
+  overflow-y: auto;
 }
 
 span.locui-subproject-locale {
@@ -377,8 +379,9 @@ helix-sidekick {
 .rollout-btn {
   position: absolute;
   padding: 4px 34px;
-  bottom: 24px;
+  bottom: 18px;
   right: 20px;
   cursor: pointer;
+  clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
 }
 
