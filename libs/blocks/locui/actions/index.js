@@ -105,7 +105,7 @@ export async function checkStatus(status, pollingInterval = Infinity, callback) 
       timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
       setStatus('project', 'info', response.projectStatusText);
     } else {
-      callback();
+      callback && callback();
       clearTimeout(timerId);
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
     }
@@ -172,7 +172,7 @@ export async function getProjectStatus(showStatus) {
     const status = await statusResponse.json();
     projectStatus.value = status;
     showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
-    // buttonStatus.value = { status: { loading: false } };
+    buttonStatus.value = { status: { loading: false } };
     return status;
   } catch (err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
@@ -180,6 +180,21 @@ export async function getProjectStatus(showStatus) {
   }
 }
 
-export async function rolloutFiles() {
-  setStatus('Files rolled out.');
+export async function rolloutFiles(languageCode) {
+  buttonStatus.value = { rollout: { loading: true } };
+  setStatus('project', 'info', 'Initiating rollout');
+  try {
+    const projectUrl = previewPath.value;
+    const projectHash = md5(projectUrl);
+    await fetch(`${apiUrl}/start-rollout?project=${projectHash}&languageCode=${languageCode}`, {
+      method: 'POST',
+    });
+
+    setStatus('project', 'info', 'Rollout started succesfully', undefined, 1000);
+    checkStatus('completed', 5000);
+    buttonStatus.value = { rollout: { loading: false } };
+  } catch (err) {
+    setStatus('project', 'error', 'Failed to roll out files');
+    buttonStatus.value = { rollout: { loading: false } };
+  }
 }
