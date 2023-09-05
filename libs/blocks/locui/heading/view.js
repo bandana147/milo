@@ -14,7 +14,7 @@ function Loader() {
 }
 
 export default function Heading() {
-  
+
   return html`
     <div class=locui-project-heading>
       <div class=locui-project-heading-column>

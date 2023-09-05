@@ -175,7 +175,7 @@ export async function getProjectStatus(showStatus) {
     buttonStatus.value = { status: { loading: false } };
     return status;
   } catch (err) {
-    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not started' };
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started' };
     buttonStatus.value = { status: { loading: false } };
   }
 }

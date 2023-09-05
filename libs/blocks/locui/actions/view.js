@@ -40,15 +40,13 @@ function ActionButtons(status) {
 
 export default function Actions() {
   const status = projectStatus.value?.projectStatus;
-  const notStarted = !status;
-
   return html`
     <div class=locui-section>
       <div class=locui-section-heading>
         <h2 class=locui-section-label>Actions</h2>
       </div>
       <div class=locui-url-heading-actions>
-      ${notStarted ? Loader() : ActionButtons(status)}
+      ${!projectStatus.value?.projectStatusText ? Loader() : ActionButtons(status)}
       </div>
     </div>
   `;

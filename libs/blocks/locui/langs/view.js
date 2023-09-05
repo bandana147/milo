@@ -31,8 +31,8 @@ function Language({ item }) {
       <p class=locui-project-label>Items</p>
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
-      ${langStatus && html`<div class="language-status status-bar">
-        <label>${value[item.localeCode]?.statusText} </label>
+      ${value.projectStatusText && html`<div class="language-status status-bar">
+        <label>${value[item.localeCode]?.statusText || value.projectStatusText} </label>
       </div>`}
       ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rolloutFiles(item.localeCode) }}>Rollout</div>`}
     </li>
