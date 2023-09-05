@@ -15,13 +15,16 @@ function Actions({ label, parent, idx, type }) {
     <h3 class=locui-url-label>${label}</h3>
     <div class=locui-url-source-actions>
       <button
-        class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''} ${actions?.edit?.status !== 200 ? 'disabled' : ''}"
+        class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''}"
+        disabled=${actions?.edit?.status !== 200}
         onClick=${() => { handleAction(actions?.edit.url, pathname, idx, type); }}>Edit</button>
       <button
-        class="locui-url-action locui-url-action-view ${actions?.preview?.status !== 200 ? 'disabled' : ''}"
+        class="locui-url-action locui-url-action-view"
+        disabled=${actions?.preview?.status !== 200}
         onClick=${() => { handleAction(actions?.preview.url, pathname, idx, type); }}>Preview</button>
       <button
-        class="locui-url-action locui-url-action-view ${actions?.live?.status !== 200 ? 'disabled' : ''}"
+        class="locui-url-action locui-url-action-view"
+        disabled=${actions?.live?.status !== 200}
         onClick=${() => { handleAction(actions?.live.url, pathname, idx, type); }}>Live</button>
     </div>
   `;

@@ -18,7 +18,7 @@ export default function Localization() {
     <h1>Milo Localization</h1>
     ${heading.value.editUrl && html`<${Heading} />`}
     ${languages.value.length > 0 && html`<${Langs} />`}
-    ${urls.value.length > 0 && projectStatus.value  && html`<${Actions} />`}
+    ${urls.value.length > 0 && html`<${Actions} />`}
     ${urls.value.length > 0 && html`<${Urls} />`}
     <${Status} />`;
 }

@@ -1,6 +1,6 @@
 import { html } from '../../../deps/htm-preact.js';
 import { languages, projectStatus, buttonStatus } from '../utils/state.js';
-import { rolloutFiles} from '../actions/index.js';
+import { rolloutFiles } from '../actions/index.js';
 
 function SelectedLocales(item) {
   const selectedLocales = item.Locales ? item.Locales.split('\n') : [];
@@ -19,9 +19,9 @@ function SelectedLocales(item) {
 }
 
 function Language({ item }) {
-  const { value = {}} = projectStatus;
+  const { value = {} } = projectStatus;
   const langStatus = value[item.localeCode]?.status;
-  
+
   return html`
     <li class=locui-subproject>
       <p class=locui-project-label>Language</p>
@@ -31,10 +31,10 @@ function Language({ item }) {
       <p class=locui-project-label>Items</p>
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
-      <div class="language-status status-bar">
-        <label>${langStatus || 'Not started'}</label>
-      </div>
-      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${()=> {rolloutFiles(item.localeCode)}}>Rollout</div>`}
+      ${langStatus && html`<div class="language-status status-bar">
+        <label>${value[item.localeCode]?.statusText} </label>
+      </div>`}
+      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rolloutFiles(item.localeCode) }}>Rollout</div>`}
     </li>
   `;
 }

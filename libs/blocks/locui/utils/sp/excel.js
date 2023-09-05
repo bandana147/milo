@@ -11,7 +11,7 @@ export default async function updateExcelTable(values) {
 
   const res = await fetch(path, options);
   if (!res.ok) {
-    setStatus('sharepoint', 'error', 'Couldn\'t add URLs to project.');
+    setStatus('sharepoint', 'error', 'Fragment found but couldn\'t add the URLs to project.');
     return;
   }
   setStatus('sharepoint');

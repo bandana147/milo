@@ -9,6 +9,10 @@ async function handleRefresh() {
   setDetails();
 }
 
+function Loader() {
+  return html`<div class=shimmer-loader/>`
+}
+
 export default function Heading() {
   
   return html`
@@ -20,12 +24,12 @@ export default function Heading() {
           ${heading.value.editUrl && html`<a class=locui-project-details-edit href="${heading.value.editUrl}" target="_blank">Edit</a>`}
           ${heading.value.name && html`<button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
         </div>
-        ${projectStatus.value.projectStatusText && html`<div class=locui-project-status>
+        <div class=locui-project-status>
           <h2 class=locui-section-label>Status</h2>
           <div class=locui-project-details-project>
-            ${projectStatus.value.projectStatusText}
+            ${projectStatus.value.projectStatusText || Loader()}
           </div>
-        </div>`}
+        </div>
       </div>
       <div class=locui-project-heading-column>
         <h2 class=locui-section-label>LOGGED IN</h2>
