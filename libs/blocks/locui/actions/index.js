@@ -45,6 +45,15 @@ async function findPageFragments(path) {
   return getUrls(fragmentUrls);
 }
 
+function updateFileDetails() {
+  synced.value = true;
+  const newUrls = urls.value.map(url=> {
+    delete url.langstore.actions;
+    return url;
+  });
+  urls.value = newUrls;
+}
+
 export async function findFragments() {
   setStatus('fragments', 'info', 'Finding fragments.');
   const found = urls.value.map((url) => findPageFragments(url.pathname));
@@ -73,15 +82,6 @@ export async function findFragments() {
   }
 }
 
-function checkfile() {
-  synced.value = true;
-  const newUrls = urls.value.map(url=> {
-    delete url.langstore.actions;
-    return url;
-  });
-  urls.value = newUrls;
-}
-
 export async function syncToLangstore() {
   buttonStatus.value = { sync: { loading: true } }
   const projectHash = md5(previewPath.value);
@@ -90,7 +90,7 @@ export async function syncToLangstore() {
       method: 'POST',
     });
     setStatus('project', 'info', 'Successfully started syncing');
-    checkStatus('sync-done', 5000, checkfile);
+    checkStatus('sync-done', 5000, updateFileDetails);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
     buttonStatus.value = { sync: { loading: false } }

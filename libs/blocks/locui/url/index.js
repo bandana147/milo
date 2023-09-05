@@ -1,6 +1,6 @@
 import { getStatus } from '../utils/franklin.js';
 import { urls, setStatus } from '../utils/state.js';
-import { checkItem } from '../utils/sp/file.js';
+import { getItem } from '../utils/sp/file.js';
 
 function getFileName(editUrl) {
   const url = new URL(editUrl);
@@ -12,7 +12,7 @@ async function getDetails(path, fetchEditUrl = false) {
   const json = await getStatus(path, fetchEditUrl);
   const filename = json.edit.url ? getFileName(json.edit.url) : undefined;
   const edit = { url: json.edit.url, status: json.edit.status, filename };
-  const fileDetails = await checkItem(path);
+  const fileDetails = await getItem(path);
 
   if (!json.edit.url && !fileDetails.error) {
     edit.url = 'fetchEditUrl';
