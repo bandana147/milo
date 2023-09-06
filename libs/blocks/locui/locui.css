@@ -63,6 +63,7 @@ main {
   background-color: #0f7c41;
   height: 26px;
   border-radius: 2px;
+  cursor: pointer;
 }
 
 .locui-project-status {
