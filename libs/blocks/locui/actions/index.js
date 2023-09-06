@@ -191,7 +191,6 @@ export async function rolloutFiles(languageCode) {
     });
 
     setStatus('project', 'info', 'Rollout started succesfully', undefined, 1000);
-    checkStatus('completed', 5000);
     buttonStatus.value = { rollout: { loading: false } };
   } catch (err) {
     setStatus('project', 'error', 'Failed to roll out files');
