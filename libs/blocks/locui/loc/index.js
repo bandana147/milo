@@ -39,8 +39,8 @@ async function loadLocales() {
     const found = config.locales.data.find(
       (locale) => language.Language === locale.language,
     );
-    language.locales = found.livecopies.split(',');
-    language.localeCode = found.languagecode;
+    language.locales = found?.livecopies.split(',');
+    language.localeCode = found?.languagecode;
   });
   languages.value = [...languages.value];
 }

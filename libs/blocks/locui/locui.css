@@ -314,8 +314,14 @@ button.locui-url-action {
   cursor: pointer;
 }
 
+button.locui-url-action.disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
 button.locui-url-action[disabled] {
   opacity: 0.25;
+  cursor: not-allowed;
 }
 
 button.locui-url-action:hover {
