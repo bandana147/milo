@@ -1,7 +1,6 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
-import setDetails from './index.js';
+import setDetails, { loginToSharePoint } from './index.js';
 import { heading, languages, urls } from '../utils/state.js';
-import loginToSharePoint from '../../../tools/sharepoint/login.js';
 
 import Heading from '../heading/view.js';
 import Langs from '../langs/view.js';
@@ -9,12 +8,9 @@ import Actions from '../actions/view.js';
 import Urls from '../urls/view.js';
 import Status from '../status/view.js';
 
-const TELEMETRY = { application: { appName: 'Adobe Localization UI' } };
-const scopes = ['files.readwrite', 'sites.readwrite.all'];
-
 export default function Localization() {
   useEffect(() => {
-    loginToSharePoint({ telemetry: TELEMETRY, scopes });
+    loginToSharePoint();
     setDetails();
   }, []);
   return html`

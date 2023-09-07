@@ -9,6 +9,7 @@ import {
   previewPath,
 } from '../utils/state.js';
 import { getProjectStatus, checkStatus } from '../actions/index.js';
+import login from '../../../tools/sharepoint/login.js';
 
 const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
@@ -95,6 +96,12 @@ async function loadStatus() {
   if (projectInProgress) {
     checkStatus('waiting', 10000);
   }
+}
+
+export async function loginToSharePoint() {
+  const telemetry = { application: { appName: 'Adobe Localization UI' } };
+  const scopes = ['files.readwrite', 'sites.readwrite.all'];
+  await login({ scopes, telemetry });
 }
 
 export default async function setDetails() {
