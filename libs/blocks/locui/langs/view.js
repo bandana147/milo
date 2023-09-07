@@ -4,16 +4,15 @@ import { rolloutFiles } from '../actions/index.js';
 
 function SelectedLocales(item) {
   const selectedLocales = item.Locales ? item.Locales.split('\n') : [];
-  const locales = selectedLocales.length > 0 ? selectedLocales : (item.locales || []);
 
-  if (locales.length <= 0) {
+  if (selectedLocales.length <= 0) {
     return null;
   }
 
   return html`
     <p class=locui-project-label>Locales</p>
       <div class=locui-subproject-locales>
-      ${locales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
+      ${selectedLocales.map((locale) => html`<span class=locui-subproject-locale>${locale}</span>`)}
     </div>
   `;
 }
@@ -28,6 +27,8 @@ function Language({ item }) {
       <h3 class=locui-subproject-name>${item.Language}</h3>
       <p class=locui-project-label>Action</p>
       <h3 class=locui-subproject-name>${item.Action}</h3>
+      ${item.Workflow && html`<p class=locui-project-label>Method</p>
+      <h3 class=locui-subproject-name>${item.Workflow}</h3>`}
       <p class=locui-project-label>Items</p>
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
