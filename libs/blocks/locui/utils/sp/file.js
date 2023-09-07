@@ -1,16 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import { getReqOptions } from '../../../../tools/sharepoint/msal.js';
 import getServiceConfig from '../../../../utils/service-config.js';
-
-function getSiteOrigin() {
-  const search = new URLSearchParams(window.location.search);
-  const repo = search.get('repo');
-  const owner = search.get('owner');
-  return repo && owner ? `https://main--${repo}--${owner}.hlx.live` : window.location.origin;
-}
+import { origin } from '../franklin.js';
 
 export async function getBaseUrl() {
-  const { sharepoint } = await getServiceConfig(getSiteOrigin());
+  const { sharepoint } = await getServiceConfig(origin);
   const { site, driveId, folderPath } = sharepoint;
   const paths = folderPath.split('/');
   const root = paths[paths.length - 1]; 

@@ -10,13 +10,6 @@ import getServiceConfig from '../../../utils/service-config.js';
 
 let apiUrl = '';
 
-function getSiteOrigin() {
-  const search = new URLSearchParams(window.location.search);
-  const repo = search.get('repo');
-  const owner = search.get('owner');
-  return repo && owner ? `https://main--${repo}--${owner}.hlx.live` : window.location.origin;
-}
-
 async function updateExcelJson() {
   let count = 1;
   const excelUpdated = setInterval(async () => {
@@ -165,7 +158,6 @@ export async function startProject() {
 
 export async function getProjectStatus(showStatus) {
   if (!apiUrl) {
-    const origin = getSiteOrigin();
     const { miloc } = await getServiceConfig(origin);
     apiUrl = miloc.url;
   }
