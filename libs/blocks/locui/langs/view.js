@@ -4,7 +4,7 @@ import { rolloutFiles } from '../actions/index.js';
 
 function SelectedLocales(item) {
   const selectedLocales = item.Locales ? item.Locales.split('\n') : [];
-  const locales = selectedLocales.length > 0 ? selectedLocales : item.locales;
+  const locales = selectedLocales.length > 0 ? selectedLocales : (item.locales || []);
 
   if (locales.length <= 0) {
     return null;

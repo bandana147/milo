@@ -76,6 +76,7 @@ async function loadHeading() {
   const path = resourcePath.replace(/\.[^/.]+$/, '');
   setStatus('details');
   const projectName = json.edit.name.split('.').shift().replace('-', ' ');
+  document.title = projectName;
   heading.value = { name: projectName, editUrl: json.edit.url, path };
   await preview(`${path}.json`);
 }
