@@ -51,6 +51,10 @@ async function loadDetails() {
     const resp = await fetch(previewPath.value);
     const json = await resp.json();
     const jsonUrls = json.urls.data.map((item) => new URL(item.URL));
+    if (jsonUrls.length <= 0) {
+      setStatus('details', 'error', 'No document URLs found!');
+      return;
+    }
     const projectUrls = getUrls(jsonUrls);
     const projectLangs = json.languages.data.reduce((rdx, lang) => {
       if (LANG_ACTIONS.includes(lang.Action)) {
@@ -59,11 +63,15 @@ async function loadDetails() {
       }
       return rdx;
     }, []);
+    if (projectLangs.length <= 0 ) {
+      setStatus('details', 'error', 'No language selected!');
+      return;
+    }
     languages.value = projectLangs;
     urls.value = projectUrls;
     setStatus('details');
-  } catch {
-    setStatus('details', 'error', 'Error loading languages and URLs.');
+  } catch(err) {
+    setStatus('details', 'error', `Error loading languages and URLs.: ${err}`);
   }
 }
 
