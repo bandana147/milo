@@ -1,5 +1,6 @@
 import { html } from '../../../deps/htm-preact.js';
-import { heading, user, urls, languages, statuses, projectStatus } from '../utils/state.js';
+import { heading, urls, languages, statuses, projectStatus } from '../utils/state.js';
+import { user } from '../../../tools/sharepoint/state.js';
 import setDetails from '../loc/index.js';
 
 async function handleRefresh() {

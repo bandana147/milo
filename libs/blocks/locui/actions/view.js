@@ -1,5 +1,7 @@
 import { html } from '../../../deps/htm-preact.js';
-import { spAccessToken, urls, projectStatus, buttonStatus } from '../utils/state.js';
+import { urls, projectStatus, buttonStatus } from '../utils/state.js';
+import { accessToken } from '../../../tools/sharepoint/state.js';
+
 import { findFragments, syncToLangstore, startProject, getProjectStatus, createProject } from './index.js';
 
 const SYNCED = 'sync-done';
@@ -15,7 +17,7 @@ function ActionButtons(status) {
   return html`
     ${notStarted && html`<button 
       class="locui-urls-heading-action"
-      disabled=${!spAccessToken.value}
+      disabled=${!accessToken.value}
       onClick=${findFragments}>Find Fragments</button>`}
     ${status && SHOW_SYNC_STATES.includes(status) && html`<button
       class="locui-urls-heading-action"

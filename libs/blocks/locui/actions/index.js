@@ -6,8 +6,17 @@ import { origin, preview } from '../utils/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
 import '../../../deps/md5.min.js';
+import getServiceConfig from '../../../utils/service-config.js';
 
-const apiUrl = 'https://14257-miloc-jsingler.adobeioruntime.net/api/v1/web/miloc-0.0.1';
+let apiUrl = '';
+let tryCount = 0;
+
+function getSiteOrigin() {
+  const search = new URLSearchParams(window.location.search);
+  const repo = search.get('repo');
+  const owner = search.get('owner');
+  return repo && owner ? `https://main--${repo}--${owner}.hlx.live` : window.location.origin;
+}
 
 async function updateExcelJson() {
   let count = 1;
@@ -86,7 +95,7 @@ export async function syncToLangstore() {
   buttonStatus.value = { sync: { loading: true } }
   const projectHash = md5(previewPath.value);
   try {
-    await fetch(`${apiUrl}/start-sync?project=${projectHash}`, {
+    await fetch(`${apiUrl}start-sync?project=${projectHash}`, {
       method: 'POST',
     });
     setStatus('project', 'info', 'Successfully started syncing');
@@ -96,15 +105,18 @@ export async function syncToLangstore() {
     buttonStatus.value = { sync: { loading: false } }
   }
 }
-
 export async function checkStatus(status, pollingInterval = Infinity, callback) {
   let timerId;
+
   try {
     const response = await getProjectStatus();
-    if (response.projectStatus !== status) {
+    if (response.projectStatus !== status && tryCount < 5) {
       timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
+      tryCount+=1;
+      console.log(tryCount)
       setStatus('project', 'info', response.projectStatusText);
     } else {
+      tryCount = 0;
       callback && callback();
       clearTimeout(timerId);
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
@@ -119,7 +131,7 @@ export async function createProject() {
   const projectUrl = previewPath.value;
   try {
     setStatus('project', 'info', 'Creating project');
-    const createResponse = await fetch(`${apiUrl}/create-project`, {
+    const createResponse = await fetch(`${apiUrl}create-project`, {
       method: 'POST',
       body: projectUrl
     });
@@ -156,12 +168,17 @@ export async function startProject() {
 }
 
 export async function getProjectStatus(showStatus) {
+  if (!apiUrl) {
+    const origin = getSiteOrigin();
+    const { miloc } = await getServiceConfig(origin);
+    apiUrl = miloc.url;
+  }
   if (showStatus) {
     buttonStatus.value = { status: { loading: true } };
   }
   const projectHash = md5(previewPath.value);
   try {
-    const statusResponse = await fetch(`${apiUrl}/project-status?project=${projectHash}`, {
+    const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, {
       method: 'GET',
     });
 
@@ -186,7 +203,7 @@ export async function rolloutFiles(languageCode) {
   try {
     const projectUrl = previewPath.value;
     const projectHash = md5(projectUrl);
-    await fetch(`${apiUrl}/start-rollout?project=${projectHash}&languageCode=${languageCode}`, {
+    await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}`, {
       method: 'POST',
     });
 
