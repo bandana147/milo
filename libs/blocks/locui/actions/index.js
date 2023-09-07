@@ -9,7 +9,6 @@ import '../../../deps/md5.min.js';
 import getServiceConfig from '../../../utils/service-config.js';
 
 let apiUrl = '';
-let tryCount = 0;
 
 function getSiteOrigin() {
   const search = new URLSearchParams(window.location.search);
@@ -110,13 +109,10 @@ export async function checkStatus(status, pollingInterval = Infinity, callback) 
 
   try {
     const response = await getProjectStatus();
-    if (response.projectStatus !== status && tryCount < 5) {
+    if (response.projectStatus !== status) {
       timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
-      tryCount+=1;
-      console.log(tryCount)
       setStatus('project', 'info', response.projectStatusText);
     } else {
-      tryCount = 0;
       callback && callback();
       clearTimeout(timerId);
       setStatus('project', 'info', response.projectStatusText, undefined, 1000);
