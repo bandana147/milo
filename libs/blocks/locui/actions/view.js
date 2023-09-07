@@ -2,9 +2,9 @@ import { html } from '../../../deps/htm-preact.js';
 import { spAccessToken, urls, projectStatus, buttonStatus } from '../utils/state.js';
 import { findFragments, syncToLangstore, startProject, getProjectStatus, createProject } from './index.js';
 
-const SHOW_SYNC_STATES = ['sync', 'created'];
-const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const SYNCED = 'sync-done';
+const SHOW_SYNC_STATES = ['sync', 'created', SYNCED];
+const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 
 function Loader() {
   return html`<div class="shimmer-loader loader-pink"/>`;
