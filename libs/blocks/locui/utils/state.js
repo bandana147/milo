@@ -1,5 +1,5 @@
 import { signal } from '../../../deps/htm-preact.js';
-import { origin } from './franklin.js';
+import { origin } from '../../../tools/sharepoint/franklin.js';
 
 const CONFIG = '/.milo/config.json';
 

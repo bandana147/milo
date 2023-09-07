@@ -1,6 +1,6 @@
-import { getStatus } from '../utils/franklin.js';
+import { getStatus } from '../../../tools/sharepoint/franklin.js';
 import { urls, setStatus } from '../utils/state.js';
-import { getItem } from '../utils/sp/file.js';
+import { getItem } from '../../../tools/sharepoint/file.js';
 
 function getFileName(editUrl) {
   const url = new URL(editUrl);

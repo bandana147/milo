@@ -1,5 +1,5 @@
 import { getConfig, getLocale } from '../../../utils/utils.js';
-import { getStatus, preview } from '../utils/franklin.js';
+import { getStatus, preview } from '../../../tools/sharepoint/franklin.js';
 import {
   urls,
   heading,

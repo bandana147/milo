@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
-import { getReqOptions } from '../../../../tools/sharepoint/msal.js';
-import getServiceConfig from '../../../../utils/service-config.js';
-import { origin } from '../franklin.js';
+import { getReqOptions } from './msal.js';
+import getServiceConfig from '../../utils/service-config.js';
+import { origin } from './franklin.js';
 
 export async function getBaseUrl() {
   const { sharepoint } = await getServiceConfig(origin);

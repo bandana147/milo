@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import updateExcelTable from '../utils/sp/excel.js';
+import updateExcelTable from '../../../tools/sharepoint/excel.js';
 import { heading, setStatus, urls, languages, previewPath, projectStatus, buttonStatus, synced } from '../utils/state.js';
-import { origin, preview } from '../utils/franklin.js';
+import { origin, preview } from '../../../tools/sharepoint/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
 import '../../../deps/md5.min.js';
@@ -78,7 +78,13 @@ export async function findFragments() {
     });
     languages.value = newLangs;
     urls.value = [...urls.value];
-    updateExcelTable(forExcel);
+    setStatus('sharepoint', 'info', 'Adding URLs to your project.');
+    const res = await updateExcelTable(forExcel, heading.value.path);
+    if (!res.ok) {
+      setStatus('sharepoint', 'error', 'Fragment found but couldn\'t add the URLs to project.');
+      return;
+    }
+    setStatus('sharepoint');
     updateExcelJson();
   }
 }
