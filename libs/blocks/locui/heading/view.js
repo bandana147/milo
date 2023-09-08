@@ -35,7 +35,7 @@ export default function Heading() {
       <div class=locui-project-heading-column>
         <h2 class=locui-section-label>LOGGED IN</h2>
         <div class=locui-project-details-name>
-          <span>${user}</span>
+          <span>${user.value}</span>
         </div>
       </div>
     </div>`;
