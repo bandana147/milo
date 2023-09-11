@@ -64,14 +64,21 @@ async function loadDetails() {
       }
       return rdx;
     }, []);
-    if (projectLangs.length <= 0 ) {
+
+    if (projectLangs.length <= 0) {
       setStatus('details', 'error', 'No language selected!');
+      return;
+    }
+    const emptyLocales = projectLangs.filter(item => !item.Locales);
+    if (emptyLocales.length > 0) {
+      const langs = emptyLocales.map(item => item.Language) || [];
+      setStatus('details', 'error', 'No locales were selected!', `Locales for ${langs.join(', ')} were not selected.`);
       return;
     }
     languages.value = projectLangs;
     urls.value = projectUrls;
     setStatus('details');
-  } catch(err) {
+  } catch (err) {
     setStatus('details', 'error', `Error loading languages and URLs.: ${err}`);
   }
 }
