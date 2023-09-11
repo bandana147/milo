@@ -74,7 +74,9 @@ export async function getVersions(telemetry, hlxOrigin, itemId) {
 
   return Promise.all([graph, sp, current]).then((result) => {
     const [graphVersions, spVersions, currVersion] = result;
-    return graphVersions.value.map((ver) => ({
+    const majorVersions = graphVersions?.value.filter((item) => item.id.indexOf('.0') !== -1) || [];
+
+    return majorVersions.map((ver) => ({
       id: ver.id,
       date: getPrettyDate(ver.lastModifiedDateTime),
       user: ver.lastModifiedBy.user.displayName,
