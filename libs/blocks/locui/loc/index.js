@@ -19,6 +19,11 @@ const urlParams = new URLSearchParams(window.location.search);
 
 let resourcePath;
 
+function removeFileExtension(filename) {
+  const lastIndex = filename.lastIndexOf('.');
+  return filename.substring(0, lastIndex);
+}
+
 export function getUrls(jsonUrls) {
   const { locales } = getConfig();
   // Assume all URLs will be the same locale as the first URL
@@ -91,7 +96,7 @@ async function loadHeading() {
   previewPath.value = json.preview.url;
   const path = resourcePath.replace(/\.[^/.]+$/, '');
   setStatus('details');
-  const projectName = json.edit.name.split('.').shift().replace('-', ' ');
+  const projectName = removeFileExtension(json.edit.name).replaceAll('-', ' ');
   document.title = projectName;
   heading.value = { name: projectName, editUrl: json.edit.url, path };
   await preview(`${path}.json`);
