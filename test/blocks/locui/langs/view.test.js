@@ -6,25 +6,25 @@ import { languages } from '../../../../libs/blocks/locui/utils/state.js';
 
 const selLanguages = [
   {
-      "Language": "Vietnamese",
-      "Action": "English Copy",
-      "Locales": "",
-      "Workflow": "",
-      "size": 3,
-      "locales": [
-          "vn_vi"
-      ],
-      "localeCode": "vi"
+    Language: 'Vietnamese',
+    Action: 'English Copy',
+    Locales: '',
+    Workflow: '',
+    size: 3,
+    locales: [
+      'vn_vi'
+    ],
+    localeCode: 'vi'
   },
   {
-      "Language": "Hindi",
-      "Action": "Translate",
-      "Locales": "",
-      "Workflow": "",
-      "size": 3,
-      "locales": [],
-      "localeCode": "hi"
-  }
+    Language: 'Hindi',
+    Action: 'Translate',
+    Locales: '',
+    Workflow: '',
+    size: 3,
+    locales: [],
+    localeCode: 'hi'
+  },
 ];
 
 describe('View', () => {

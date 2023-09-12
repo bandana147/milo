@@ -6,42 +6,42 @@ import { urls } from '../../../../libs/blocks/locui/utils/state.js';
 
 const docUrls = [{
   actions: {
-    "edit": {
-      "url": "fetchEditUrl",
-      "status": 200
+    edit: {
+      url: 'fetchEditUrl',
+      status: 200,
     },
-    "preview": {
-      "url": "https://locui--milo--adobecom.hlx.page/drafts/blaishram/document2",
-      "status": 200
+    preview: {
+      url: 'https://locui--milo--adobecom.hlx.page/drafts/blaishram/document2',
+      status: 200,
     },
-    "live": {
-      "url": "https://locui--milo--adobecom.hlx.live/drafts/blaishram/document2",
-      "status": 200
-    }
+    live: {
+      url: 'https://locui--milo--adobecom.hlx.live/drafts/blaishram/document2',
+      status: 200,
+    },
   },
   langStore: {
-    "lang": "en",
-    "pathname": "/langstore/en/drafts/blaishram/document2",
-    "actions": {
-      "edit": {
-        "url": "fetchEditUrl",
-        "status": 200
+    lang: 'en',
+    pathname: '/langstore/en/drafts/blaishram/document2',
+    actions: {
+      edit: {
+        url: 'fetchEditUrl',
+        status: 200,
       },
-      "preview": {
-        "url": "https://locui--milo--adobecom.hlx.page/langstore/en/drafts/blaishram/document2",
-        "status": 200
+      preview: {
+        url: 'https://locui--milo--adobecom.hlx.page/langstore/en/drafts/blaishram/document2',
+        status: 200,
       },
-      "live": {
-        "url": "https://locui--milo--adobecom.hlx.live/langstore/en/drafts/blaishram/document2",
-        "status": 404
-      }
-    }
+      live: {
+        url: 'https://locui--milo--adobecom.hlx.live/langstore/en/drafts/blaishram/document2',
+        status: 404,
+      },
+    },
   },
   userInfo: {
-    "lastModifiedBy": "Bandana Laishram",
-    "lastModifiedDateTime": "2023-07-21T06:11:46Z"
-  }
-}]
+    lastModifiedBy: 'Bandana Laishram',
+    lastModifiedDateTime: '2023-07-21T06:11:46Z',
+  },
+}];
 
 describe('View', () => {
   before(async () => {
@@ -51,8 +51,6 @@ describe('View', () => {
   });
 
   it('should display the correct title', async () => {
-    const payload = [{ id: 1, name: 'Test' }];
-    window.fetch = mockFetch({payload})
     const container = await waitForElement('.locui-section');
     const firstTitleElem = container.querySelector('h2').textContent;
     expect(firstTitleElem).to.equal('URLs');

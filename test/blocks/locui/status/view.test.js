@@ -5,10 +5,10 @@ import View from '../../../../libs/blocks/locui/status/view.js';
 import { statuses } from '../../../../libs/blocks/locui/utils/state.js';
 
 const status = [{
-    "type": "info",
-    "description": "Test description",
-    "text": "Success",
-  }];
+  type: 'info',
+  description: 'Test description',
+  text: 'Success',
+}];
 
 describe('View', () => {
   before(async () => {

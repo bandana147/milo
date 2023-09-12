@@ -6,36 +6,36 @@ import { languages, heading, projectStatus } from '../../../../libs/blocks/locui
 
 const selLanguages = [
   {
-      "Language": "Vietnamese",
-      "Action": "English Copy",
-      "Locales": "",
-      "Workflow": "",
-      "size": 3,
-      "locales": [
-          "vn_vi"
-      ],
-      "localeCode": "vi"
+    Language: 'Vietnamese',
+    Action: 'English Copy',
+    Locales: '',
+    Workflow: '',
+    size: 3,
+    locales: [
+      'vn_vi'
+    ],
+    localeCode: 'vi'
   },
   {
-      "Language": "Hindi",
-      "Action": "Translate",
-      "Locales": "",
-      "Workflow": "",
-      "size": 3,
-      "locales": [],
-      "localeCode": "hi"
-  }
+    Language: 'Hindi',
+    Action: 'Translate',
+    Locales: '',
+    Workflow: '',
+    size: 3,
+    locales: [],
+    localeCode: 'hi'
+  },
 ];
 
 describe('View', () => {
   before(async () => {
     languages.value = selLanguages;
     heading.value = {
-      "name": "fBook_001234d3ffplpbn",
-      "editUrl": "https://adobe.sharepoint.com/:x:/r/sites/adobecom/_layouts/15/Doc.aspx?sourcedoc={B117D213-406A-4B68-A1D0-73DD5E5B56BE}",
-      "path": "/drafts/blaishram/fbook-001234d3ffplpbn"
+      name: 'fBook_001234d3ffplpbn',
+      editUrl: 'https://adobe.sharepoint.com/:x:/r/sites/adobecom/_layouts/15/Doc.aspx?sourcedoc={B117D213-406A-4B68-A1D0-73DD5E5B56BE}',
+      path: '/drafts/blaishram/fbook-001234d3ffplpbn'
     };
-    projectStatus.value = { projectStatusText: 'Waiting'}
+    projectStatus.value = { projectStatusText: 'Waiting' };
     const review = html`<${View} />`;
     render(review, document.body);
   });
