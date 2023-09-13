@@ -82,7 +82,7 @@ main {
   position: relative;
   border-radius: 4px;
   margin-bottom: 20px;
-  width: 420px;
+  min-width: 420px;
 }
 
 .locui-status-toast-type-info {
@@ -99,6 +99,7 @@ main {
   margin: 0 16px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .locui-status-toast-content-type {
@@ -391,6 +392,17 @@ helix-sidekick {
   right: 20px;
   cursor: pointer;
   clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
+}
+
+.locui-status-toast-button {
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.has-description .locui-status-toast-button {
+  margin-right: 24px;
 }
 
 .shimmer-loader {

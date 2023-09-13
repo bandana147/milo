@@ -14,8 +14,9 @@ export const projectStatus = signal({});
 export const buttonStatus = signal({});
 export const synced = signal(false);
 
-export function setStatus(name, type, text, description, timeout) {
-  const content = type && text ? { type, text, description } : null;
+export function setStatus(name, type, text, extra = {}) {
+  const { description, timeout, action } = extra;
+  const content = type && text ? { type, text, description, action } : null;
   statuses.value = { ...statuses.value, [name]: content };
   if (timeout) {
     setTimeout(() => {

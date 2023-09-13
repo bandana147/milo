@@ -20,7 +20,7 @@ async function updateExcelJson() {
     count += 1;
     if (count > 10 || json.urls.data.length === urls.value.length) {
       clearInterval(excelUpdated);
-      setStatus('excel', 'info', 'Excel refreshed.', null, 1500);
+      setStatus('excel', 'info', 'Excel refreshed.', { timeout: 1500 });
     }
   }, 1000);
 }
@@ -48,7 +48,7 @@ async function findPageFragments(path) {
 
 function updateFileDetails() {
   synced.value = true;
-  const newUrls = urls.value.map(url=> {
+  const newUrls = urls.value.map(url => {
     delete url.langstore.actions;
     return url;
   });
@@ -69,10 +69,10 @@ export async function findFragments() {
     }
     return rdx;
   }, []);
-  setStatus('fragments', 'info', `${forExcel.length} fragments found.`, null, 1500);
+  setStatus('fragments', 'info', `${forExcel.length} fragments found.`, { timeout: 1500 });
 
   if (forExcel.length > 0) {
-    const newLangs = languages.value.map(item=> {
+    const newLangs = languages.value.map(item => {
       item.size = item.size + forExcel.length;
       return item;
     });
@@ -114,7 +114,7 @@ export async function checkStatus(status, pollingInterval = Infinity, callback) 
     } else {
       callback && callback();
       clearTimeout(timerId);
-      setStatus('project', 'info', response.projectStatusText, undefined, 1000);
+      setStatus('project', 'info', response.projectStatusText, { timeout: 1000 });
     }
   } catch (error) {
     setStatus('project', 'error', `Error while fetching status - ${error}`);
@@ -131,7 +131,7 @@ export async function createProject() {
       body: projectUrl
     });
     if (createResponse.status === 201) {
-      setStatus('project', 'info', 'Project created successfully!', undefined, 1000);
+      setStatus('project', 'info', 'Project created successfully!', { timeout: 1000 });
       projectStatus.value = { projectStatus: 'created' };
       await getProjectStatus();
     }
@@ -152,7 +152,7 @@ export async function startProject() {
       method: 'POST',
     });
     if (startResponse.status === 201) {
-      setStatus('project', 'info', 'Project started successfully!', undefined, 1000);
+      setStatus('project', 'info', 'Project started successfully!', { timeout: 1000 });
       await checkStatus('waiting', 5000);
     }
     buttonStatus.value = { start: { loading: false } };
@@ -182,7 +182,7 @@ export async function getProjectStatus(showStatus) {
     }
     const status = await statusResponse.json();
     projectStatus.value = status;
-    showStatus && setStatus('project', 'info', status.projectStatusText, undefined, 1000);
+    showStatus && setStatus('project', 'info', status.projectStatusText, { timeout: 1000 });
     buttonStatus.value = { status: { loading: false } };
     return status;
   } catch (err) {
@@ -201,7 +201,7 @@ export async function rolloutFiles(languageCode) {
       method: 'POST',
     });
 
-    setStatus('project', 'info', 'Rollout started succesfully', undefined, 1000);
+    setStatus('project', 'info', 'Rollout started succesfully', { timeout: 1000 });
     buttonStatus.value = { rollout: { loading: false } };
   } catch (err) {
     setStatus('project', 'error', 'Failed to roll out files');

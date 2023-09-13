@@ -5,14 +5,23 @@ function toggleDesc(e) {
   e.target.closest('.locui-status-toast').classList.toggle('open');
 }
 
+function onClickAction(e, status) {
+  e.stopPropagation();
+  status.action.callback();
+}
+
 function Toast({ status }) {
   return html`
     <div onClick=${toggleDesc}
       class="locui-status-toast locui-status-toast-type-${status.type}
       ${status.description && 'has-description'}">
       <div class=locui-status-toast-content>
-        <span class=locui-status-toast-content-type>${status.type}</span>
-        <span class=locui-status-toast-text>${status.text}</span>
+        <div>
+          <span class=locui-status-toast-content-type>${status.type}</span>
+          <span class=locui-status-toast-text>${status.text}</span>
+        </div>
+        ${status.action && html`
+        <div class=locui-status-toast-button onclick=${(e) => { onClickAction(e, status) }}>${status.action.label}</div>`}
       </div>
       ${status.description && html`
         <p class=locui-status-toast-description>${status.description}</p>
