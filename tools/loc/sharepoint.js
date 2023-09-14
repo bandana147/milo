@@ -199,8 +199,7 @@ async function getFilesData(filePaths, isFloodgate) {
 
 async function getFile(doc) {
   if (doc && doc.sp && doc.sp.status === 200) {
-    const test = doc.sp['@microsoft.graph.downloadUrl'];
-    const response = await fetch(doc.sp['@microsoft.graph.downloadUrl']);
+    const response = await fetchWithRetry(doc.sp['@microsoft.graph.downloadUrl']);
     return response.blob();
   }
   return undefined;
@@ -326,9 +325,6 @@ async function getFileMetadata(filePath) {
   validateConnection();
   const { sp } = await getConfig();
   const options = getAuthorizedRequestOption();
-
-  console.log(`${sp.api.file.get.baseURI}`);
-
   const itemFields = await fetch(`${sp.api.file.get.baseURI}${filePath}:/listItem/fields`, options);
   if (itemFields.ok) {
     return itemFields.json();
