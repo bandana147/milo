@@ -7,5 +7,5 @@ export default async function updateExcelTable(values, fileName) {
   const baseUri = await getBaseUrl();
   const path = `${baseUri}${excel}:/workbook/tables/URL/rows/add`;
   const options = getReqOptions({ body: { values }, method: 'POST' });
-  return await fetch(path, options);
+  return fetch(path, options);
 }

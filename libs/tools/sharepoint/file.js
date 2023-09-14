@@ -7,7 +7,7 @@ export async function getBaseUrl() {
   const { sharepoint } = await getServiceConfig(origin);
   const { site, driveId, folderPath } = sharepoint;
   const paths = folderPath.split('/');
-  const root = paths[paths.length - 1]; 
+  const root = paths[paths.length - 1];
   const baseUrl = driveId ? `${site}/drives/${driveId}/root:/${root}` : `${site}/drive/root:/${root}`;
   return baseUrl;
 }

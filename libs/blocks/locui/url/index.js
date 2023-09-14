@@ -24,12 +24,12 @@ async function getDetails(path, fetchEditUrl = false) {
     actions: {
       edit,
       preview: { url: json.preview.url, status: json.preview.status },
-      live: { url: json.live.url, status: json.live.status }
+      live: { url: json.live.url, status: json.live.status },
     },
     userInfo: {
       lastModifiedBy: fileDetails.lastModifiedBy?.user?.displayName,
-      lastModifiedDateTime: fileDetails.lastModifiedDateTime
-    }
+      lastModifiedDateTime: fileDetails.lastModifiedDateTime,
+    },
   };
 }
 

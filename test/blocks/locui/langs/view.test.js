@@ -12,9 +12,9 @@ const selLanguages = [
     Workflow: '',
     size: 3,
     locales: [
-      'vn_vi'
+      'vn_vi',
     ],
-    localeCode: 'vi'
+    localeCode: 'vi',
   },
   {
     Language: 'Hindi',
@@ -23,7 +23,7 @@ const selLanguages = [
     Workflow: '',
     size: 3,
     locales: [],
-    localeCode: 'hi'
+    localeCode: 'hi',
   },
 ];
 

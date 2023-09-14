@@ -1,7 +1,18 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
+/* global md5 */
+
 import updateExcelTable from '../../../tools/sharepoint/excel.js';
-import { heading, setStatus, urls, languages, previewPath, projectStatus, buttonStatus, synced } from '../utils/state.js';
+import {
+  urls,
+  synced,
+  heading,
+  setStatus,
+  languages,
+  previewPath,
+  projectStatus,
+  buttonStatus,
+} from '../utils/state.js';
 import { origin, preview } from '../../../tools/sharepoint/franklin.js';
 import { decorateSections } from '../../../utils/utils.js';
 import { getUrls } from '../loc/index.js';
@@ -23,6 +34,36 @@ async function updateExcelJson() {
       setStatus('excel', 'info', 'Excel refreshed.', { timeout: 1500 });
     }
   }, 1000);
+}
+
+export async function getProjectStatus(showStatus) {
+  if (!apiUrl) {
+    const { miloc } = await getServiceConfig(origin);
+    apiUrl = miloc.url;
+  }
+  if (showStatus) {
+    buttonStatus.value = { status: { loading: true } };
+  }
+  const projectHash = md5(previewPath.value);
+  try {
+    const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, { method: 'GET' });
+
+    if (!statusResponse.ok) {
+      const error = statusResponse.json();
+      setStatus('project', 'error', `Failed to get project status: ${error}`);
+    }
+    const status = await statusResponse.json();
+    projectStatus.value = status;
+    if (showStatus) {
+      setStatus('project', 'info', status.projectStatusText, { timeout: 1000 });
+    }
+    buttonStatus.value = { status: { loading: false } };
+    return status;
+  } catch (err) {
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started' };
+    buttonStatus.value = { status: { loading: false } };
+    return { error: err };
+  }
 }
 
 async function findPageFragments(path) {
@@ -48,11 +89,31 @@ async function findPageFragments(path) {
 
 function updateFileDetails() {
   synced.value = true;
-  const newUrls = urls.value.map(url => {
+  const newUrls = urls.value.map((url) => {
     delete url.langstore.actions;
     return url;
   });
   urls.value = newUrls;
+}
+
+export async function checkStatus(status, pollingInterval, callback) {
+  let timerId;
+
+  try {
+    const response = await getProjectStatus();
+    if (response.projectStatus !== status) {
+      timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
+      setStatus('project', 'info', response.projectStatusText);
+    } else {
+      if (callback) {
+        callback();
+      }
+      clearTimeout(timerId);
+      setStatus('project', 'info', response.projectStatusText, { timeout: 1000 });
+    }
+  } catch (error) {
+    setStatus('project', 'error', `Error while fetching status - ${error}`);
+  }
 }
 
 export async function findFragments() {
@@ -72,8 +133,8 @@ export async function findFragments() {
   setStatus('fragments', 'info', `${forExcel.length} fragments found.`, { timeout: 1500 });
 
   if (forExcel.length > 0) {
-    const newLangs = languages.value.map(item => {
-      item.size = item.size + forExcel.length;
+    const newLangs = languages.value.map((item) => {
+      item.size += forExcel.length;
       return item;
     });
     languages.value = newLangs;
@@ -90,34 +151,15 @@ export async function findFragments() {
 }
 
 export async function syncToLangstore() {
-  buttonStatus.value = { sync: { loading: true } }
+  buttonStatus.value = { sync: { loading: true } };
   const projectHash = md5(previewPath.value);
   try {
-    await fetch(`${apiUrl}start-sync?project=${projectHash}`, {
-      method: 'POST',
-    });
+    await fetch(`${apiUrl}start-sync?project=${projectHash}`, { method: 'POST' });
     setStatus('project', 'info', 'Successfully started syncing');
     checkStatus('sync-done', 5000, updateFileDetails);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
-    buttonStatus.value = { sync: { loading: false } }
-  }
-}
-export async function checkStatus(status, pollingInterval = Infinity, callback) {
-  let timerId;
-
-  try {
-    const response = await getProjectStatus();
-    if (response.projectStatus !== status) {
-      timerId = setTimeout(() => checkStatus(status, pollingInterval, callback), pollingInterval);
-      setStatus('project', 'info', response.projectStatusText);
-    } else {
-      callback && callback();
-      clearTimeout(timerId);
-      setStatus('project', 'info', response.projectStatusText, { timeout: 1000 });
-    }
-  } catch (error) {
-    setStatus('project', 'error', `Error while fetching status - ${error}`);
+    buttonStatus.value = { sync: { loading: false } };
   }
 }
 
@@ -128,7 +170,7 @@ export async function createProject() {
     setStatus('project', 'info', 'Creating project');
     const createResponse = await fetch(`${apiUrl}create-project`, {
       method: 'POST',
-      body: projectUrl
+      body: projectUrl,
     });
     if (createResponse.status === 201) {
       setStatus('project', 'info', 'Project created successfully!', { timeout: 1000 });
@@ -148,9 +190,7 @@ export async function startProject() {
   const projectHash = md5(projectUrl);
   setStatus('project', 'info', 'Starting project');
   try {
-    const startResponse = await fetch(`${apiUrl}/start-project?project=${projectHash}`, {
-      method: 'POST',
-    });
+    const startResponse = await fetch(`${apiUrl}/start-project?project=${projectHash}`, { method: 'POST' });
     if (startResponse.status === 201) {
       setStatus('project', 'info', 'Project started successfully!', { timeout: 1000 });
       await checkStatus('waiting', 5000);
@@ -162,45 +202,13 @@ export async function startProject() {
   }
 }
 
-export async function getProjectStatus(showStatus) {
-  if (!apiUrl) {
-    const { miloc } = await getServiceConfig(origin);
-    apiUrl = miloc.url;
-  }
-  if (showStatus) {
-    buttonStatus.value = { status: { loading: true } };
-  }
-  const projectHash = md5(previewPath.value);
-  try {
-    const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, {
-      method: 'GET',
-    });
-
-    if (!statusResponse.ok) {
-      const error = statusResponse.json();
-      setStatus('project', 'error', `Failed to get project status: ${error}`);
-    }
-    const status = await statusResponse.json();
-    projectStatus.value = status;
-    showStatus && setStatus('project', 'info', status.projectStatusText, { timeout: 1000 });
-    buttonStatus.value = { status: { loading: false } };
-    return status;
-  } catch (err) {
-    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started' };
-    buttonStatus.value = { status: { loading: false } };
-  }
-}
-
 export async function rolloutFiles(languageCode) {
   buttonStatus.value = { rollout: { loading: true } };
   setStatus('project', 'info', 'Initiating rollout');
   try {
     const projectUrl = previewPath.value;
     const projectHash = md5(projectUrl);
-    await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}`, {
-      method: 'POST',
-    });
-
+    await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}`, { method: 'POST' });
     setStatus('project', 'info', 'Rollout started succesfully', { timeout: 1000 });
     buttonStatus.value = { rollout: { loading: false } };
   } catch (err) {

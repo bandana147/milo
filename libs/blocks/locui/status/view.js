@@ -21,7 +21,7 @@ function Toast({ status }) {
           <span class=locui-status-toast-text>${status.text}</span>
         </div>
         ${status.action && html`
-        <div class=locui-status-toast-button onclick=${(e) => { onClickAction(e, status) }}>${status.action.label}</div>`}
+        <div class=locui-status-toast-button onclick=${(e) => { onClickAction(e, status); }}>${status.action.label}</div>`}
       </div>
       ${status.description && html`
         <p class=locui-status-toast-description>${status.description}</p>

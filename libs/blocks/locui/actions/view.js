@@ -35,8 +35,7 @@ function ActionButtons(status) {
     ${(status && PROJECT_INPROGRESS_CODES.includes(status)) && html`<button 
       class="locui-urls-heading-action"
       disabled=${buttonStatus.value.status?.loading}
-      onClick=${() => { getProjectStatus(true) }}>Get status</button>`
-    }
+      onClick=${() => { getProjectStatus(true); }}>Get status</button>`}
   `;
 }
 

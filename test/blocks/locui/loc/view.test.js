@@ -8,7 +8,6 @@ import { mockFetch } from '../../../helpers/generalHelpers.js';
 const ogFetch = window.fetch;
 
 describe('View', () => {
-
   afterEach(() => {
     // Do not build up any test state - reset window.fetch to it's original state
     window.fetch = ogFetch;
@@ -30,10 +29,10 @@ describe('View', () => {
 
   it('should display the correct title', async () => {
     const payload = [{ id: 1, name: 'Test' }];
-    window.fetch = mockFetch({payload})
+    window.fetch = mockFetch({ payload });
     const container = await waitForElement('.locui');
     const firstTitleElem = container.querySelector('h1')[0];
-    console.log(firstTitleElem, 'firstTitleElem')
+    console.log(firstTitleElem, 'firstTitleElem');
     expect(firstTitleElem).to.equal('Milo Localizationd');
   });
 });

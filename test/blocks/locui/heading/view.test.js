@@ -12,9 +12,9 @@ const selLanguages = [
     Workflow: '',
     size: 3,
     locales: [
-      'vn_vi'
+      'vn_vi',
     ],
-    localeCode: 'vi'
+    localeCode: 'vi',
   },
   {
     Language: 'Hindi',
@@ -23,7 +23,7 @@ const selLanguages = [
     Workflow: '',
     size: 3,
     locales: [],
-    localeCode: 'hi'
+    localeCode: 'hi',
   },
 ];
 
@@ -33,7 +33,7 @@ describe('View', () => {
     heading.value = {
       name: 'fBook_001234d3ffplpbn',
       editUrl: 'https://adobe.sharepoint.com/:x:/r/sites/adobecom/_layouts/15/Doc.aspx?sourcedoc={B117D213-406A-4B68-A1D0-73DD5E5B56BE}',
-      path: '/drafts/blaishram/fbook-001234d3ffplpbn'
+      path: '/drafts/blaishram/fbook-001234d3ffplpbn',
     };
     projectStatus.value = { projectStatusText: 'Waiting' };
     const review = html`<${View} />`;

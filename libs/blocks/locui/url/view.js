@@ -2,15 +2,16 @@ import { html, useEffect } from '../../../deps/htm-preact.js';
 import setActions, { getUrl, formatDate } from './index.js';
 
 async function handleAction(url, path, idx, type) {
+  let docUrl = url;
   if (url === 'fetchEditUrl') {
-    url = await getUrl(path, idx, type)
+    docUrl = await getUrl(path, idx, type);
   }
-  window.open(url, '_blank');
+  window.open(docUrl, '_blank');
 }
 
 function Actions({ label, parent, idx, type }) {
-  const { pathname, actions, } = parent;
-  const isJsonFile = pathname.toLowerCase().endsWith(".json");
+  const { pathname, actions } = parent;
+  const isJsonFile = pathname.toLowerCase().endsWith('.json');
   return html`
     <h3 class=locui-url-label>${label}</h3>
     <div class=locui-url-source-actions>
@@ -30,7 +31,7 @@ function Actions({ label, parent, idx, type }) {
   `;
 }
 
-export default function ({ item, idx }) {
+export default function Url({ item, idx }) {
   useEffect(() => { setActions(idx); }, [idx]);
   const formattedDate = formatDate(item.userInfo?.lastModifiedDateTime);
   return html`

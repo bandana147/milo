@@ -35,7 +35,7 @@ function Language({ item }) {
       ${value.projectStatusText && html`<div class="language-status status-bar">
         <label>${langStatus || 'Not started'} </label>
       </div>`}
-      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rolloutFiles(item.localeCode) }}>Rollout</div>`}
+      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rolloutFiles(item.localeCode); }}>Rollout</div>`}
     </li>
   `;
 }
