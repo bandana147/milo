@@ -33,10 +33,11 @@ async function findPageFragments(path) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   decorateSections(doc, true);
-  const fragments = [...doc.querySelectorAll('.fragment')];
+  const fragments = [...doc.querySelectorAll('.fragment'), ...doc.querySelectorAll('img[alt*="/fragments/"]')];
   const fragmentUrls = fragments.reduce((rdx, fragment) => {
+    const url = fragment.tagName === 'A' ? fragment.href : fragment.alt;
     // Normalize the fragment path to support production urls.
-    const pathname = new URL(fragment.href).pathname.replace('.html', '');
+    const pathname = new URL(url).pathname.replace('.html', '');
     const fragmentUrl = new URL(`${origin}${pathname}`);
     // Look for duplicates that are already in the urls
     const dupe = urls.value.some((url) => url.href === fragmentUrl.href);
