@@ -2,38 +2,27 @@
 /* eslint-disable no-restricted-syntax */
 /* global md5 */
 
-import updateExcelTable from '../../../tools/sharepoint/excel.js';
 import {
   urls,
   synced,
-  heading,
   setStatus,
-  languages,
   previewPath,
   projectStatus,
   buttonStatus,
 } from '../utils/state.js';
-import { origin, preview } from '../../../tools/sharepoint/franklin.js';
-import { decorateSections } from '../../../utils/utils.js';
-import { getUrls } from '../loc/index.js';
+import { origin } from '../../../tools/sharepoint/franklin.js';
 import '../../../deps/md5.min.js';
 import getServiceConfig from '../../../utils/service-config.js';
 
 let apiUrl = '';
 
-async function updateExcelJson() {
-  let count = 1;
-  const excelUpdated = setInterval(async () => {
-    setStatus('excel', 'info', `Refreshing project. Try #${count}`);
-    const previewResp = await preview(`${heading.value.path}.json`);
-    const resp = await fetch(previewResp.preview.url);
-    const json = await resp.json();
-    count += 1;
-    if (count > 10 || json.urls.data.length === urls.value.length) {
-      clearInterval(excelUpdated);
-      setStatus('excel', 'info', 'Excel refreshed.', { timeout: 1500 });
-    }
-  }, 1000);
+function updateFileDetails() {
+  synced.value = true;
+  const newUrls = urls.value.map((url) => {
+    delete url.langstore.actions;
+    return url;
+  });
+  urls.value = newUrls;
 }
 
 export async function getProjectStatus(showStatus) {
@@ -66,36 +55,6 @@ export async function getProjectStatus(showStatus) {
   }
 }
 
-async function findPageFragments(path) {
-  const resp = await fetch(`${origin}${path}`);
-  if (!resp.ok) return [];
-  const html = await resp.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  decorateSections(doc, true);
-  const fragments = [...doc.querySelectorAll('.fragment')];
-  const fragmentUrls = fragments.reduce((rdx, fragment) => {
-    // Normalize the fragment path to support production urls.
-    const pathname = new URL(fragment.href).pathname.replace('.html', '');
-    const fragmentUrl = new URL(`${origin}${pathname}`);
-    // Look for duplicates that are already in the urls
-    const dupe = urls.value.some((url) => url.href === fragmentUrl.href);
-    if (!dupe) rdx.push(fragmentUrl);
-    return rdx;
-  }, []);
-  if (fragmentUrls.length === 0) return [];
-  return getUrls(fragmentUrls);
-}
-
-function updateFileDetails() {
-  synced.value = true;
-  const newUrls = urls.value.map((url) => {
-    delete url.langstore.actions;
-    return url;
-  });
-  urls.value = newUrls;
-}
-
 export async function checkStatus(status, pollingInterval, callback) {
   let timerId;
 
@@ -113,40 +72,6 @@ export async function checkStatus(status, pollingInterval, callback) {
     }
   } catch (error) {
     setStatus('project', 'error', `Error while fetching status - ${error}`);
-  }
-}
-
-export async function findFragments() {
-  setStatus('fragments', 'info', 'Finding fragments.');
-  const found = urls.value.map((url) => findPageFragments(url.pathname));
-  const pageFragments = await Promise.all(found);
-  // For each page, loop through all the found fragments
-  const forExcel = pageFragments.reduce((rdx, fragments) => {
-    if (fragments.length > 0) {
-      fragments.forEach((fragment) => {
-        urls.value.push(fragment);
-        rdx.push([fragment.href]);
-      });
-    }
-    return rdx;
-  }, []);
-  setStatus('fragments', 'info', `${forExcel.length} fragments found.`, { timeout: 1500 });
-
-  if (forExcel.length > 0) {
-    const newLangs = languages.value.map((item) => {
-      item.size += forExcel.length;
-      return item;
-    });
-    languages.value = newLangs;
-    urls.value = [...urls.value];
-    setStatus('sharepoint', 'info', 'Adding URLs to your project.');
-    const res = await updateExcelTable(forExcel, heading.value.path);
-    if (!res.ok) {
-      setStatus('sharepoint', 'error', 'Fragment found but couldn\'t add the URLs to project.');
-      return;
-    }
-    setStatus('sharepoint');
-    updateExcelJson();
   }
 }
 

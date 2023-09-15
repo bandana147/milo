@@ -30,3 +30,11 @@ export async function getItem(path) {
   const json = await resp.json();
   return json;
 }
+
+export async function updateExcelTable(values, fileName) {
+  const excel = `${fileName}.xlsx`;
+  const baseUri = await getBaseUrl();
+  const path = `${baseUri}${excel}:/workbook/tables/URL/rows/add`;
+  const options = getReqOptions({ body: { values }, method: 'POST' });
+  return fetch(path, options);
+}

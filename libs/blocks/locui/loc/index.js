@@ -1,4 +1,3 @@
-import { getConfig, getLocale } from '../../../utils/utils.js';
 import { getStatus, preview } from '../../../tools/sharepoint/franklin.js';
 import {
   urls,
@@ -10,6 +9,7 @@ import {
 } from '../utils/state.js';
 import { getProjectStatus, checkStatus } from '../actions/index.js';
 import login from '../../../tools/sharepoint/login.js';
+import { getUrls } from '../../../tools/sharepoint/franklin.js';
 
 const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
@@ -22,21 +22,6 @@ let resourcePath;
 function removeFileExtension(filename) {
   const lastIndex = filename.lastIndexOf('.');
   return filename.substring(0, lastIndex);
-}
-
-export function getUrls(jsonUrls) {
-  const { locales } = getConfig();
-  // Assume all URLs will be the same locale as the first URL
-  const locale = getLocale(locales, jsonUrls[0].pathname);
-  const langstorePrefix = locale.prefix ? `/langstore${locale.prefix}` : '/langstore/en';
-  // Loop through each url to get langstore information
-  return jsonUrls.map((url) => {
-    url.langstore = {
-      lang: locale.prefix ? locale.prefix.replace('/', '') : 'en',
-      pathname: url.pathname.replace(locale.prefix, langstorePrefix),
-    };
-    return url;
-  });
 }
 
 async function loadLocales() {

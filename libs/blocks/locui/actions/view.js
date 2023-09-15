@@ -1,8 +1,8 @@
 import { html } from '../../../deps/htm-preact.js';
 import { urls, projectStatus, buttonStatus } from '../utils/state.js';
 import { accessToken } from '../../../tools/sharepoint/state.js';
-
-import { findFragments, syncToLangstore, startProject, getProjectStatus, createProject } from './index.js';
+import { syncToLangstore, startProject, getProjectStatus, createProject } from './index.js';
+import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
 const SYNCED = 'sync-done';
 const SHOW_SYNC_STATES = ['sync', 'created', SYNCED];
