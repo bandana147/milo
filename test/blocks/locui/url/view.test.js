@@ -20,7 +20,7 @@ const docUrls = [{
       status: 200,
     },
   },
-  langStore: {
+  langstore: {
     lang: 'en',
     pathname: '/langstore/en/drafts/blaishram/document2',
     actions: {
@@ -46,7 +46,6 @@ const docUrls = [{
 
 describe('View', () => {
   before(async () => {
-    urls.value = docUrls;
     const review = html`<${View} item=${docUrls[0]} idx=${0}/>`;
     render(review, document.body);
   });
@@ -59,10 +58,10 @@ describe('View', () => {
     expect(firstTitleElem).to.equal('Path');
   });
 
-  // it('should refresh languages when refresh button is clicked', async () => {
-  //   const container = await waitForElement('.locui-status-toast-section');
-  //   const toggleContainer = container.querySelector('.locui-status-toast');
-  //   toggleContainer.click();
-  //   expect(toggleContainer.classList[3]).to.equal('open');
-  // });
+  it('should call handleClick when button is clicked', async () => {
+    const container = await waitForElement('.locui-url');
+    const toggleContainer = container.querySelector('.locui-url-action');
+    toggleContainer.click();
+    expect(toggleContainer.classList[0]).to.equal('open');
+  });
 });

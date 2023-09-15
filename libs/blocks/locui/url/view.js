@@ -10,7 +10,7 @@ async function handleAction(url, path, idx, type) {
 }
 
 function Actions({ label, parent, idx, type }) {
-  const { pathname, actions } = parent;
+  const { pathname = '', actions } = parent;
   const isJsonFile = pathname.toLowerCase().endsWith('.json');
   return html`
     <h3 class=locui-url-label>${label}</h3>
