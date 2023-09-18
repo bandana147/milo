@@ -58,8 +58,9 @@ function getFragmentLinksFromUrlHtml(urlHtml, isFloodgate) {
   updateDomWithBaseUrl(dom, baseUrl);
   const baseUrlOrigin = getOriginFromLink(baseUrl);
   const { links } = dom;
-  for (let i = 0; i < links.length; i += 1) {
-    const linkHref = links[i].href;
+  const linkUrls = [...links, ...dom.querySelectorAll('img[alt*="/fragments/"]')]
+  for (let i = 0; i < linkUrls.length; i += 1) {
+    const linkHref = linkUrls[i].tagName === 'A' ? linkUrls[i].href : linkUrls[i].alt;
     const sanitizedUrl = getSanitizedUrl(linkHref);
     if ((isLocalFragment(linkHref, baseUrlOrigin) 
           || (isFloodgate && isReferencedAsset(linkHref, baseUrlOrigin))) 
