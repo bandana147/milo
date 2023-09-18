@@ -40,7 +40,7 @@ async function findPageFragments(path) {
     const pathname = new URL(url).pathname.replace('.html', '');
     const fragmentUrl = new URL(`${origin}${pathname}`);
     // Look for duplicates that are already in the urls
-    const dupe = urls.value.some((url) => url.href === fragmentUrl.href);
+    const dupe = [...urls.value, ...rdx].some((url) => url.href === fragmentUrl.href);
     if (!dupe) rdx.push(fragmentUrl);
     return rdx;
   }, []);
