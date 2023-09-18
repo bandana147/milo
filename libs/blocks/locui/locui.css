@@ -224,7 +224,8 @@ div.locui-url-heading-actions {
   gap: 12px;
 }
 
-button.locui-urls-heading-action {
+button.locui-urls-heading-action,
+button.login-action {
   outline: transparent solid 0;
   transition: outline 300ms;
   border: none;
@@ -378,7 +379,7 @@ helix-sidekick {
   text-transform: uppercase;
 }
 
-.language-status{
+.language-status {
   position: absolute;
   padding: 4px 12px;
   top: 24px;
@@ -412,6 +413,20 @@ helix-sidekick {
   margin-top: 8px;
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+.login-error-container {
+  width: 500px;
+  margin: 120px auto;
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.login-error-container p {
+  margin-bottom: 8px;
 }
 
 @keyframes shimmer {

@@ -4,6 +4,7 @@ import {
   heading,
   setStatus,
   languages,
+  showLogin,
   getSiteConfig,
   previewPath,
 } from '../utils/state.js';
@@ -98,7 +99,12 @@ async function loadStatus() {
 export async function loginToSharePoint() {
   const telemetry = { application: { appName: 'Adobe Localization UI' } };
   const scopes = ['files.readwrite', 'sites.readwrite.all'];
-  await login({ scopes, telemetry });
+  try {
+    await login({ scopes, telemetry });
+    showLogin.value = false;
+  } catch {
+    showLogin.value = true;
+  }
 }
 
 export default async function setDetails() {

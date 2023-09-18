@@ -13,6 +13,7 @@ export const previewPath = signal('');
 export const projectStatus = signal({});
 export const buttonStatus = signal({});
 export const synced = signal(false);
+export const showLogin = signal(false);
 
 export function setStatus(name, type, text, extra = {}) {
   const { description, timeout, action } = extra;

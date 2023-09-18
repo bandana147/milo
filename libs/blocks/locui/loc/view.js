@@ -1,6 +1,6 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
 import setDetails, { loginToSharePoint } from './index.js';
-import { heading, languages, urls } from '../utils/state.js';
+import { heading, languages, urls, showLogin } from '../utils/state.js';
 
 import Heading from '../heading/view.js';
 import Langs from '../langs/view.js';
@@ -13,11 +13,14 @@ export default function Localization() {
     loginToSharePoint();
     setDetails();
   }, []);
+
   return html`
     <h1>Milo Localization</h1>
+    ${showLogin.value ? html`<div class=login-error-container><p>The login popup was blocked. Please use the button below.</p>
+    <button class=login-action onClick="${loginToSharePoint}">Open login</button></div>`: html`
     ${heading.value.editUrl && html`<${Heading} />`}
     ${languages.value.length > 0 && html`<${Langs} />`}
     ${urls.value.length > 0 && html`<${Actions} />`}
-    ${urls.value.length > 0 && html`<${Urls} />`}
+    ${urls.value.length > 0 && html`<${Urls} />`}`}
     <${Status} />`;
 }
