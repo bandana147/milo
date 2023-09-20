@@ -1,10 +1,11 @@
 import { html } from '../../../deps/htm-preact.js';
 import { languages, siteConfig, projectStatus, buttonStatus } from '../utils/state.js';
-import { rollOutFiles, checkStatus } from '../actions/index.js';
+import { rollOutFiles } from '../actions/index.js';
 
 function isAltLangTranslated(languageCode) {
   const locales = siteConfig.value.locales?.data;
   const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
+  if(!altLang) return true;
   return projectStatus.value[altLang]?.status === 'translated';
 }
 

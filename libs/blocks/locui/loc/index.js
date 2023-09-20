@@ -84,9 +84,8 @@ async function loadHeading() {
 
 async function loadStatus() {
   const status = await getProjectStatus();
-  const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
-  // const rolloutInProgress = status.some((loc)=> loc.status?)
-  if (projectInProgress) {
+  const projectNotCompleted = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
+  if (projectNotCompleted) {
     checkStatus('completed', 10000);
   }
 }

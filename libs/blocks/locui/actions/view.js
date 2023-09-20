@@ -1,8 +1,15 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages, projectStatus, buttonStatus } from '../utils/state.js';
+import { languages, projectStatus, buttonStatus, siteConfig } from '../utils/state.js';
 import { accessToken } from '../../../tools/sharepoint/state.js';
 import { sendForLocalization, rollOutFiles } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
+
+function isAltLangTranslated(languageCode) {
+  const locales = siteConfig.value.locales?.data;
+  const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
+  if(!altLang) return true;
+  return projectStatus.value[altLang]?.status === 'translated';
+}
 
 function ActionButtons(status, isRolloutReady) {
   const notStarted = !status;
@@ -25,8 +32,10 @@ function ActionButtons(status, isRolloutReady) {
 export default function Actions() {
   const status = projectStatus.value?.projectStatus;
   const localeCodes = languages.value.map((lang) => lang.localeCode);
-  const isRolloutReady = localeCodes.some(locale => projectStatus.value[locale]?.status === 'translated');
-
+  const isRolloutReady = localeCodes.some(locale => {
+    return projectStatus.value[locale]?.status === 'translated' && isAltLangTranslated(locale);
+  });
+   
   if (!projectStatus.value.loading && (!status || isRolloutReady)) {
     return html`
     <div class=locui-section>
