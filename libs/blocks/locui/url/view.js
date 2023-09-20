@@ -1,7 +1,7 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
 import setActions, { getUrl, formatDate } from './index.js';
 
-async function handleAction(url, path, idx, type) {
+export async function handleAction(url, path, idx, type) {
   let docUrl = url;
   if (url === 'fetchEditUrl') {
     docUrl = await getUrl(path, idx, type);
