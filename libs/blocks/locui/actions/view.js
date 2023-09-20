@@ -1,12 +1,11 @@
 import { html } from '../../../deps/htm-preact.js';
 import { languages, projectStatus, buttonStatus } from '../utils/state.js';
 import { accessToken } from '../../../tools/sharepoint/state.js';
-import { sendForLocalization, rollOutAll } from './index.js';
+import { sendForLocalization, rollOutFiles } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
 function ActionButtons(status, isRolloutReady) {
   const notStarted = !status;
-  console.log(notStarted)
   return html`
     ${notStarted && html`<button 
       class="locui-urls-heading-action"
@@ -19,7 +18,7 @@ function ActionButtons(status, isRolloutReady) {
     ${isRolloutReady && html`<button 
       class="locui-urls-heading-action"
       disabled=${buttonStatus.value.rollout?.loading}
-      onClick=${rollOutAll}>Rollout all</button>`}
+      onClick=${()=> rollOutFiles('all')}>Rollout all</button>`}
   `;
 }
 

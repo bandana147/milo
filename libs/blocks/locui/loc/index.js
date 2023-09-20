@@ -87,7 +87,7 @@ async function loadStatus() {
   const projectInProgress = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
   // const rolloutInProgress = status.some((loc)=> loc.status?)
   if (projectInProgress) {
-    checkStatus('waiting', 10000);
+    checkStatus('completed', 10000);
   }
 }
 

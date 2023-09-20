@@ -6,6 +6,7 @@ import {
   urls,
   synced,
   setStatus,
+  siteConfig,
   previewPath,
   projectStatus,
   buttonStatus,
@@ -95,8 +96,7 @@ export async function createProject() {
       body: projectUrl,
     });
     if (createResponse.status === 201) {
-      setStatus('project', 'info', 'Project created successfully!', { timeout: 1000 });
-      projectStatus.value = { projectStatus: 'created' };
+      setStatus('project', 'info', 'Project created successfully!', { timeout: 3000 });
       await getProjectStatus();
     }
   } catch (error) {
@@ -112,7 +112,7 @@ export async function startProject() {
     const startResponse = await fetch(`${apiUrl}/start-project?project=${projectHash}`, { method: 'POST' });
     if (startResponse.status === 201) {
       setStatus('project', 'info', 'Project started successfully!', { timeout: 1000 });
-      await checkStatus('waiting', 5000);
+      await checkStatus('completed', 5000);
     }
   } catch (error) {
     setStatus('project', 'error', 'Failed to start project');
@@ -131,7 +131,7 @@ export async function sendForLocalization() {
   }
 }
 
-export async function rolloutFiles(languageCode) {
+export async function rollout(languageCode) {
   const curLocale = languages.value.find((lang) => lang.localeCode === languageCode);
   buttonStatus.value = { rollout: { loading: true } };
   setStatus(languageCode, 'info', `Initiating rollout for ${curLocale.Language}`);
@@ -147,10 +147,19 @@ export async function rolloutFiles(languageCode) {
   }
 }
 
-export function rollOutAll() {
-  const localeCodes = languages.value.map((lang) => lang.localeCode);
-  const rolloutReadyLocales = localeCodes.filter(locale => projectStatus.value[locale].status === 'translated');
+export function rollOutFiles(languageCode) {
+  let rolloutReadyLocales = [languageCode];
+  if (languageCode === 'all') {
+    const localeCodes = languages.value.map((lang) => lang.localeCode);
+    rolloutReadyLocales = localeCodes.filter(locale => projectStatus.value[locale].status === 'translated');
+  } 
+  const locales = siteConfig.value.locales?.data;
+  const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
+  if (altLang) {
+    rolloutReadyLocales.push(altLang);
+  }
+ 
   rolloutReadyLocales.forEach(async (code) => {
-    await rolloutFiles(code);
+    await rollout(code);
   })
 }

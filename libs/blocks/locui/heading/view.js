@@ -27,10 +27,10 @@ export default function Heading() {
         </div>
         <div class=locui-project-status>
             <h2 class=locui-section-label>Status</h2>
-          <div class=locui-project-details-project>
+          ${projectStatus.value.projectStatusText && html`<div class=locui-project-details-project>
             <span>${projectStatus.value.projectStatusText}</span>
             <button class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
-          </div>
+          </div>`}
         </div>
       </div>
       <div class=locui-project-heading-column>
