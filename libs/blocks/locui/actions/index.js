@@ -48,7 +48,7 @@ export async function getProjectStatus(showStatus) {
     projectStatus.value = { ...status, fetched: true };
     return status;
   } catch (err) {
-    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: false };
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: true };
     return { error: err };
   }
 }
