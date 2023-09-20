@@ -2,10 +2,18 @@ import { html } from '../../../deps/htm-preact.js';
 import { languages, siteConfig, projectStatus, buttonStatus } from '../utils/state.js';
 import { rollOutFiles, checkStatus } from '../actions/index.js';
 
-function isAltLangDone(languageCode) {
+function isAltLangTranslated(languageCode) {
   const locales = siteConfig.value.locales?.data;
   const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
   return projectStatus.value[altLang]?.status === 'translated';
+}
+
+function getStatusLabel(langStatus, localeCode) {
+  let label = langStatus;
+  if (langStatus === 'translated' && !isAltLangTranslated(localeCode)) {
+   label = 'In progress';
+  }
+  return label || 'Not started';
 }
 
 function SelectedLocales(item) {
@@ -40,9 +48,9 @@ function Language({ item }) {
       <h3 class=locui-subproject-name>${item.size}</h3>
       ${SelectedLocales(item)}
       ${value.projectStatusText && html`<div class="language-status status-bar">
-        <label>${langStatus || 'Not started'} </label>
+        <label>${getStatusLabel(langStatus, item.localeCode)} </label>
       </div>`}
-      ${langStatus === 'translated' && isAltLangDone(item.localeCode) && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rollOutFiles(item.localeCode); }}>Rollout</div>`}
+      ${langStatus === 'translated' && isAltLangTranslated(item.localeCode) && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rollOutFiles(item.localeCode); }}>Rollout</div>`}
     </li>
   `;
 }
