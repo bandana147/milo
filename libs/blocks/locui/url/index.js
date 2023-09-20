@@ -9,10 +9,11 @@ function getFileName(editUrl) {
 
 async function getDetails(path, fetchEditUrl = false) {
   setStatus('url', 'info', 'Getting URL details.');
-  const json = await getStatus(path, fetchEditUrl);
+  const pathname = path.endsWith('/') ? path.slice(0, -1) + '/index' : path;
+  const json = await getStatus(pathname, fetchEditUrl);
   const filename = json.edit.url ? getFileName(json.edit.url) : undefined;
   const edit = { url: json.edit.url, status: json.edit.status, filename };
-  const fileDetails = await getItem(path);
+  const fileDetails = await getItem(pathname);
 
   if (!json.edit.url && !fileDetails.error) {
     edit.url = 'fetchEditUrl';

@@ -1,6 +1,7 @@
 import { html } from '../../../deps/htm-preact.js';
 import { heading, urls, languages, statuses, projectStatus } from '../utils/state.js';
 import { user } from '../../../tools/sharepoint/state.js';
+import { getProjectStatus } from '../actions/index.js';
 import setDetails from '../loc/index.js';
 
 async function handleRefresh() {
@@ -10,8 +11,8 @@ async function handleRefresh() {
   setDetails();
 }
 
-function Loader() {
-  return html`<div class=shimmer-loader/>`;
+function refreshProjectStatus() {
+  getProjectStatus(true);
 }
 
 export default function Heading() {
@@ -25,9 +26,12 @@ export default function Heading() {
           ${heading.value.name && html`<button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
         </div>
         <div class=locui-project-status>
-          <h2 class=locui-section-label>Status</h2>
+          <div>
+            <h2 class=locui-section-label>Status</h2>
+            <button class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
+          </div>
           <div class=locui-project-details-project>
-            ${projectStatus.value.projectStatusText || Loader()}
+            <span>${projectStatus.value.projectStatusText}</span>
           </div>
         </div>
       </div>
