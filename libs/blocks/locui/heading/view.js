@@ -26,12 +26,10 @@ export default function Heading() {
           ${heading.value.name && html`<button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
         </div>
         <div class=locui-project-status>
-          <div>
             <h2 class=locui-section-label>Status</h2>
-            <button class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
-          </div>
           <div class=locui-project-details-project>
             <span>${projectStatus.value.projectStatusText}</span>
+            <button class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
           </div>
         </div>
       </div>

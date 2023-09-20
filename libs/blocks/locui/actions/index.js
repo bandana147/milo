@@ -9,6 +9,7 @@ import {
   previewPath,
   projectStatus,
   buttonStatus,
+  languages,
 } from '../utils/state.js';
 import { origin } from '../../../tools/sharepoint/franklin.js';
 import '../../../deps/md5.min.js';
@@ -35,7 +36,7 @@ export async function getProjectStatus(showStatus) {
   if (showStatus) {
     setStatus('project', 'info', 'Getting latest project status', { timeout: 1000 });
   }
-
+  projectStatus.value = { ...projectStatus.value, loading: true };
   const projectHash = md5(previewPath.value);
   try {
     const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, { method: 'GET' });
@@ -44,30 +45,30 @@ export async function getProjectStatus(showStatus) {
       setStatus('project', 'error', `Failed to get project status: ${error}`);
     }
     const status = await statusResponse.json();
-    projectStatus.value = status;
-    buttonStatus.value = { status: { loading: false } };
+    projectStatus.value = { ...status, loading: false };
     return status;
   } catch (err) {
-    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started' };
-    buttonStatus.value = { status: { loading: false } };
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', loading: false };
     return { error: err };
   }
 }
 
 export async function checkStatus(status, pollingInterval, callback, languageCode) {
   let timerId;
+  const curLocale = languages.value.find((lang) => lang.localeCode === languageCode);
+
   try {
     const response = await getProjectStatus();
     const expectedStatus = languageCode ? response[languageCode].status : response.projectStatus;
     if (expectedStatus !== status) {
       timerId = setTimeout(() => checkStatus(status, pollingInterval, callback, languageCode), pollingInterval);
-      languageCode && setStatus('project', 'info', response[languageCode]?.statusText);
+      languageCode && setStatus(languageCode, 'info', `${response[languageCode]?.statusText} ${curLocale.Language}`);
     } else {
       if (callback) {
         callback();
       }
       clearTimeout(timerId);
-      languageCode && setStatus('project', 'info', response[languageCode]?.statusText, { timeout: 1000 });
+      languageCode && setStatus(languageCode, 'info', `${response[languageCode]?.statusText} ${curLocale.Language}`, { timeout: 1000 });
     }
   } catch (error) {
     setStatus('project', 'error', `Error while fetching status - ${error}`);
@@ -75,21 +76,17 @@ export async function checkStatus(status, pollingInterval, callback, languageCod
 }
 
 export async function syncToLangstore() {
-  buttonStatus.value = { sync: { loading: true } };
   const projectHash = md5(previewPath.value);
   try {
-    setStatus('project', 'info', 'Starting project sync');
+    setStatus('project', 'info', 'Starting project sync', { timeout: 2000 });
     await fetch(`${apiUrl}start-sync?project=${projectHash}`, { method: 'POST' });
-    setStatus('project', 'info', 'Successfully started syncing');
     checkStatus('sync-done', 5000, onSyncComplete);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
-    buttonStatus.value = { sync: { loading: false } };
   }
 }
 
 export async function createProject() {
-  buttonStatus.value = { create: { loading: true } };
   const projectUrl = previewPath.value;
   try {
     setStatus('project', 'info', 'Creating project');
@@ -102,10 +99,8 @@ export async function createProject() {
       projectStatus.value = { projectStatus: 'created' };
       await getProjectStatus();
     }
-    buttonStatus.value = { create: { loading: false } };
   } catch (error) {
     setStatus('project', 'error', 'Failed to create project');
-    buttonStatus.value = { create: { loading: false } };
   }
 }
 
@@ -137,15 +132,25 @@ export async function sendForLocalization() {
 }
 
 export async function rolloutFiles(languageCode) {
+  const curLocale = languages.value.find((lang) => lang.localeCode === languageCode);
   buttonStatus.value = { rollout: { loading: true } };
-  setStatus('project', 'info', 'Initiating rollout');
+  setStatus(languageCode, 'info', `Initiating rollout for ${curLocale.Language}`);
   try {
     const projectUrl = previewPath.value;
     const projectHash = md5(projectUrl);
     await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}`, { method: 'POST' });
     await checkStatus('completed', 5000, undefined, languageCode);
+    buttonStatus.value = { rollout: { loading: false } };
   } catch (err) {
     setStatus('project', 'error', 'Failed to roll out files', { timeout: 2000 });
     buttonStatus.value = { rollout: { loading: false } };
   }
+}
+
+export function rollOutAll() {
+  const localeCodes = languages.value.map((lang) => lang.localeCode);
+  const rolloutReadyLocales = localeCodes.filter(locale => projectStatus.value[locale].status === 'translated');
+  rolloutReadyLocales.forEach(async (code) => {
+    await rolloutFiles(code);
+  })
 }

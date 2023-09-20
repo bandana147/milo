@@ -71,14 +71,6 @@ main {
   height: 60px;
 }
 
-.locui-project-status > div {
-  display: flex;
-}
-
-.locui-project-status > div button {
-  margin-left: 12px;
-}
-
 .locui-status-toast-section {
   position: fixed;
   top: 20px;
