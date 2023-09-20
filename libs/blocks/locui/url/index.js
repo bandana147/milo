@@ -2,12 +2,12 @@ import { getStatus } from '../../../tools/sharepoint/franklin.js';
 import { urls, setStatus } from '../utils/state.js';
 import { getItem } from '../../../tools/sharepoint/file.js';
 
-function getFileName(editUrl) {
+export function getFileName(editUrl) {
   const url = new URL(editUrl);
   return url.searchParams.get('file');
 }
 
-async function getDetails(path, fetchEditUrl = false) {
+export async function getDetails(path, fetchEditUrl = false) {
   setStatus('url', 'info', 'Getting URL details.');
   const pathname = path.endsWith('/') ? path.slice(0, -1) + '/index' : path;
   const json = await getStatus(pathname, fetchEditUrl);
