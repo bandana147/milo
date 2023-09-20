@@ -36,7 +36,7 @@ export default function Actions() {
     return projectStatus.value[locale]?.status === 'translated' && isAltLangTranslated(locale);
   });
    
-  if (!projectStatus.value.loading && (!status || isRolloutReady)) {
+  if (projectStatus.value.fetched && (!status || isRolloutReady)) {
     return html`
     <div class=locui-section>
       <div class=locui-section-heading>

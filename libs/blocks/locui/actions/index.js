@@ -37,7 +37,6 @@ export async function getProjectStatus(showStatus) {
   if (showStatus) {
     setStatus('project', 'info', 'Getting latest project status', { timeout: 1000 });
   }
-  projectStatus.value = { ...projectStatus.value, loading: true };
   const projectHash = md5(previewPath.value);
   try {
     const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, { method: 'GET' });
@@ -46,10 +45,10 @@ export async function getProjectStatus(showStatus) {
       setStatus('project', 'error', `Failed to get project status: ${error}`);
     }
     const status = await statusResponse.json();
-    projectStatus.value = { ...status, loading: false };
+    projectStatus.value = { ...status, fetched: true };
     return status;
   } catch (err) {
-    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', loading: false };
+    projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: false };
     return { error: err };
   }
 }
