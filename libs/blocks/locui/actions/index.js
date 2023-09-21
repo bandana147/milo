@@ -25,7 +25,6 @@ async function onSyncComplete() {
     return url;
   });
   urls.value = newUrls;
-  await startProject();
 }
 
 export async function getProjectStatus(showStatus) {
@@ -76,13 +75,15 @@ export async function checkStatus(status, pollingInterval, callback, languageCod
 }
 
 export async function syncToLangstore() {
-  const projectHash = md5(previewPath.value);
   try {
+    await createProject();
+    const projectHash = md5(previewPath.value);
     setStatus('project', 'info', 'Starting project sync', { timeout: 2000 });
     await fetch(`${apiUrl}start-sync?project=${projectHash}`, { method: 'POST' });
     checkStatus('sync-done', 5000, onSyncComplete);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
+    buttonStatus.value = { sync: { loading: false } };
   }
 }
 
@@ -118,18 +119,6 @@ export async function startProject() {
   }
 }
 
-export async function sendForLocalization() {
-  buttonStatus.value = { start: { loading: true } };
-  try {
-    await createProject();
-    await syncToLangstore();
-    buttonStatus.value = { start: { loading: false } };
-  } catch (error) {
-    setStatus('project', 'error', 'Failed to send project for localization');
-    buttonStatus.value = { start: { loading: false } };
-  }
-}
-
 export async function rollout(languageCode) {
   const curLocale = languages.value.find((lang) => lang.localeCode === languageCode);
   buttonStatus.value = { rollout: { loading: true } };
@@ -152,12 +141,6 @@ export function rollOutFiles(languageCode) {
     const localeCodes = languages.value.map((lang) => lang.localeCode);
     rolloutReadyLocales = localeCodes.filter(locale => projectStatus.value[locale].status === 'translated');
   } 
-  const locales = siteConfig.value.locales?.data;
-  const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
-  if (altLang) {
-    rolloutReadyLocales.push(altLang);
-  }
- 
   rolloutReadyLocales.forEach(async (code) => {
     await rollout(code);
   })

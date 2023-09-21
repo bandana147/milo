@@ -15,7 +15,6 @@ import { getUrls } from '../../../tools/sharepoint/franklin.js';
 const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
 const MOCK_REFERRER = 'https%3A%2F%2Fadobe.sharepoint.com%2F%3Ax%3A%2Fr%2Fsites%2Fadobecom%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257B94460FAC-CDEE-4B31-B8E0-AA5E3F45DCC5%257D%26file%3Dwesco-demo.xlsx';
-
 const urlParams = new URLSearchParams(window.location.search);
 
 let resourcePath;
@@ -27,14 +26,27 @@ function removeFileExtension(filename) {
 
 async function loadLocales() {
   const config = await getSiteConfig();
+  const selectedLanguages = [];
   languages.value.forEach((language) => {
     const found = config.locales.data.find(
       (locale) => language.Language === locale.language,
     );
     language.locales = found?.livecopies.split(',');
     language.localeCode = found?.languagecode;
+    selectedLanguages.push(language);
+    if (found.altLanguagecode) {
+      let altLang = config.locales.data.find(
+        (locale) => locale.languagecode === found.altLanguagecode,
+      );
+      altLang.locales = altLang?.livecopies.split(',');
+      altLang.localeCode = altLang?.languagecode;
+      altLang.Action = language.Action;
+      altLang.Workflow = altLang.workflow;
+      altLang.Language = altLang.language;
+      selectedLanguages.push(altLang);
+    }
   });
-  languages.value = [...languages.value];
+  languages.value = [...selectedLanguages];
 }
 
 async function loadDetails() {

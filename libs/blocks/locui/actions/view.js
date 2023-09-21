@@ -1,53 +1,70 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages, projectStatus, buttonStatus, siteConfig } from '../utils/state.js';
+import { urls, languages, projectStatus, buttonStatus } from '../utils/state.js';
 import { accessToken } from '../../../tools/sharepoint/state.js';
-import { sendForLocalization, rollOutFiles } from './index.js';
+import { syncToLangstore, startProject, rollOutFiles } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
-function isAltLangTranslated(languageCode) {
-  const locales = siteConfig.value.locales?.data;
-  const altLang = locales?.find(lang=> lang.languagecode === languageCode)?.altLanguagecode;
-  if(!altLang) return true;
-  return projectStatus.value[altLang]?.status === 'translated';
+const SYNCED = 'sync-done';
+
+const StatusActions = {
+  'notStarted': ['findFragments', 'sync'],
+  'sync': ['sync'],
+  'sync-done': ['start'],
+  'rollout': ['rollout']
 }
 
-function ActionButtons(status, isRolloutReady) {
-  const notStarted = !status;
+const ActionConfig = {
+  findFragments: {
+    action: findFragments,
+    label: 'Find Fragments'
+  },
+  sync: {
+    action: syncToLangstore,
+    label: `Sync to Langstore(en)`,
+    disabled: buttonStatus.value.sync?.loading,
+  },
+  start: {
+    action: startProject,
+    label: `Send for localization`,
+    disabled: buttonStatus.value.start?.loading,
+  },
+  rollout: {
+    action: () => rollOutFiles('all'),
+    label: 'Rollout all',
+    disabled: buttonStatus.value.rollout?.loading,
+  },
+}
+
+function ActionButtons(config) {
   return html`
-    ${notStarted && html`<button 
+    <button
       class="locui-urls-heading-action"
-      disabled=${!accessToken.value}
-      onClick=${findFragments}>Find Fragments</button>`}
-    ${notStarted && html`<button 
-      class="locui-urls-heading-action"
-      disabled=${buttonStatus.value.start?.loading}
-      onClick=${sendForLocalization}>Send for localization</button>`}
-    ${isRolloutReady && html`<button 
-      class="locui-urls-heading-action"
-      disabled=${buttonStatus.value.rollout?.loading}
-      onClick=${()=> rollOutFiles('all')}>Rollout all</button>`}
-  `;
+      onClick=${config.action}
+      disabled=${config.disabled}>${config.label}</button>`;
 }
 
 export default function Actions() {
   const status = projectStatus.value?.projectStatus;
-  const localeCodes = languages.value.map((lang) => lang.localeCode);
-  const isRolloutReady = localeCodes.some(locale => {
-    return projectStatus.value[locale]?.status === 'translated' && isAltLangTranslated(locale);
-  });
-   
-  if (projectStatus.value.fetched && (!status || isRolloutReady)) {
-    return html`
-    <div class=locui-section>
-      <div class=locui-section-heading>
-        <h2 class=locui-section-label>Actions</h2>
-      </div>
-      <div class=locui-url-heading-actions>
-      ${ActionButtons(status, isRolloutReady)}
-      </div>
-    </div>
-  `;
+  if (projectStatus.value.fetched) {
+    const actions = StatusActions[projectStatus.value.projectStatus || 'notStarted'] || [];
+    const localeCodes = languages.value.map((lang) => lang.localeCode);
+    const isRolloutReady = localeCodes.some(locale => projectStatus.value[locale]?.status === 'translated');
+    if (isRolloutReady) {
+      actions.push('rollout');
+    }
+    if (actions.length > 0) {
+      return html`
+        <div class=locui-section>
+          <div class=locui-section-heading>
+            <h2 class=locui-section-label>Actions</h2>
+          </div>
+          <div class=locui-url-heading-actions>
+          ${actions.map(action => ActionButtons(ActionConfig[action]))}
+          </div>
+        </div>`;
+    } else {
+      return null;
+    }
   }
-
-  return null; 
+  return null;
 }
