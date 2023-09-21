@@ -187,7 +187,7 @@ p.locui-project-label {
 li.locui-subproject {
   min-height: 320px;
   border: 4px solid #5ec701;
-  background: #f5ff76;
+  background: #f5ff76b3;
   border-radius: 6px;
   padding: 18px;
   -webkit-backdrop-filter: blur(.3em);
@@ -404,7 +404,7 @@ helix-sidekick {
 }
 
 .status-bar {
-  background-color: #5ec701;
+  background-color: #5ec701bd;
   color: #136E1B;
   font-size: 14px;
   font-weight: 500;
