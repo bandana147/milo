@@ -1,4 +1,5 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
+import { loadStatus, projectStatus } from '../utils/state.js';
 import setActions, { getUrl, formatDate } from './index.js';
 
 async function handleAction(url, path, idx, type) {
@@ -15,10 +16,13 @@ function Actions({ label, parent, idx, type }) {
   return html`
     <h3 class=locui-url-label>${label}</h3>
     <div class=locui-url-source-actions>
-      <button
-        class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''}"
-        disabled=${actions?.edit?.status !== 200}
-        onClick=${() => { handleAction(actions?.edit.url, pathname, idx, type); }}>Edit</button>
+      <div class="locui-url-action-wrapper ${loadStatus.value[`fetchingUrl${pathname}`] ? 'loading' : ''}">
+        <button
+          class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''}"
+          disabled=${actions?.edit?.status !== 200}
+          onClick=${() => { handleAction(actions?.edit.url, pathname, idx, type); }}>Edit</button>
+          ${loadStatus.value[`fetchingUrl${pathname}`] && html`<a class=locui-url-source-actions-loader />`}
+      </div>
       <button
         class="locui-url-action locui-url-action-view"
         disabled=${actions?.preview?.status !== 200}

@@ -11,7 +11,7 @@ export const urls = signal([]);
 export const siteConfig = signal(null);
 export const previewPath = signal('');
 export const projectStatus = signal({});
-export const buttonStatus = signal({});
+export const loadStatus = signal({});
 export const synced = signal(false);
 export const showLogin = signal(false);
 

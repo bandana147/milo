@@ -1,5 +1,5 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages, siteConfig, projectStatus, buttonStatus } from '../utils/state.js';
+import { languages, siteConfig, projectStatus, loadStatus } from '../utils/state.js';
 import { rollOutFiles } from '../actions/index.js';
 
 function SelectedLocales(item) {
@@ -36,7 +36,7 @@ function Language({ item }) {
       ${value.projectStatusText && html`<div class="language-status status-bar">
         <label>${langStatus || 'Not started'} </label>
       </div>`}
-      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${buttonStatus.value.rollout} onclick=${() => { rollOutFiles(item.localeCode); }}>Rollout</div>`}
+      ${langStatus === 'translated' && html`<div class="status-bar rollout-btn" disabled=${loadStatus.value.rollingOut} onclick=${() => { rollOutFiles(item.localeCode); }}>Rollout</div>`}
     </li>
   `;
 }

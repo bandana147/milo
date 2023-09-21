@@ -1,5 +1,5 @@
 import { html } from '../../../deps/htm-preact.js';
-import { urls, languages, projectStatus, buttonStatus } from '../utils/state.js';
+import { urls, languages, projectStatus, loadStatus } from '../utils/state.js';
 import { accessToken } from '../../../tools/sharepoint/state.js';
 import { syncToLangstore, startProject, rollOutFiles } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
@@ -21,17 +21,17 @@ const ActionConfig = {
   sync: {
     action: syncToLangstore,
     label: `Sync to Langstore(en)`,
-    disabled: buttonStatus.value.sync?.loading,
+    disabled: loadStatus.value.syncing,
   },
   start: {
     action: startProject,
     label: `Send for localization`,
-    disabled: buttonStatus.value.start?.loading,
+    disabled: loadStatus.value.starting,
   },
   rollout: {
     action: () => rollOutFiles('all'),
     label: 'Rollout all',
-    disabled: buttonStatus.value.rollout?.loading,
+    disabled: loadStatus.value.rollingOut,
   },
 }
 
@@ -44,7 +44,6 @@ function ActionButtons(config) {
 }
 
 export default function Actions() {
-  const status = projectStatus.value?.projectStatus;
   if (projectStatus.value.fetched) {
     const actions = StatusActions[projectStatus.value.projectStatus || 'notStarted'] || [];
     const localeCodes = languages.value.map((lang) => lang.localeCode);

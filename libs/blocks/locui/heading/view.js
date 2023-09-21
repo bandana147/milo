@@ -23,13 +23,13 @@ export default function Heading() {
         <div class=locui-project-details-project>
           <span>${heading.value.name}</span>
           ${heading.value.editUrl && html`<a class=locui-project-details-edit href="${heading.value.editUrl}" target="_blank">Edit</a>`}
-          ${heading.value.name && html`<button class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
+          ${heading.value.name && html`<a class=locui-project-details-refresh onClick=${handleRefresh}>Refresh</a>`}
         </div>
         <div class=locui-project-status>
             <h2 class=locui-section-label>Status</h2>
           ${projectStatus.value.projectStatusText && html`<div class=locui-project-details-project>
             <span>${projectStatus.value.projectStatusText}</span>
-            <button class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
+            <a class=locui-project-details-refresh onClick=${refreshProjectStatus}>Refresh</a>
           </div>`}
         </div>
       </div>

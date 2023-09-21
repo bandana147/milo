@@ -1,5 +1,5 @@
 import { getStatus } from '../../../tools/sharepoint/franklin.js';
-import { urls, setStatus } from '../utils/state.js';
+import { urls, setStatus, loadStatus } from '../utils/state.js';
 import { getItem } from '../../../tools/sharepoint/file.js';
 
 function getFileName(editUrl) {
@@ -8,7 +8,7 @@ function getFileName(editUrl) {
 }
 
 async function getDetails(path, fetchEditUrl = false) {
-  setStatus('url', 'info', 'Getting URL details.');
+  !fetchEditUrl && setStatus('url', 'info', 'Getting URL details.');
   const pathname = path.endsWith('/') ? path.slice(0, -1) + '/index' : path;
   const json = await getStatus(pathname, fetchEditUrl);
   const filename = json.edit.url ? getFileName(json.edit.url) : undefined;
@@ -35,6 +35,7 @@ async function getDetails(path, fetchEditUrl = false) {
 }
 
 export async function getUrl(path, idx, type) {
+  loadStatus.value = { [`fetchingUrl${path}`]: true };
   const { actions, userInfo } = await getDetails(path, 'auto');
   if (type === 'langstore') {
     urls.value[idx].langstore.actions = actions;
@@ -42,6 +43,7 @@ export async function getUrl(path, idx, type) {
     urls.value[idx].actions = actions;
   }
   urls.value[idx].userInfo = userInfo;
+  loadStatus.value = { [`fetchingUrl${path}`]: false };
   return actions.edit.url;
 }
 
