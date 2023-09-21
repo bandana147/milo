@@ -1,7 +1,6 @@
 import { html } from '../../../deps/htm-preact.js';
-import { urls, languages, projectStatus, loadStatus } from '../utils/state.js';
-import { accessToken } from '../../../tools/sharepoint/state.js';
-import { syncToLangstore, startProject, rollOutFiles } from './index.js';
+import { languages, projectStatus, loadStatus } from '../utils/state.js';
+import { syncToLangstore, startProject, rollout } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
 const SYNCED = 'sync-done';
@@ -10,7 +9,8 @@ const StatusActions = {
   'notStarted': ['findFragments', 'sync'],
   'sync': ['sync'],
   'sync-done': ['start'],
-  'rollout': ['rollout']
+  'rollout': ['rollout'],
+  'completed': ['rollout']
 }
 
 const ActionConfig = {
@@ -29,9 +29,9 @@ const ActionConfig = {
     disabled: loadStatus.value.starting,
   },
   rollout: {
-    action: () => rollOutFiles('all'),
+    action: () => rollout('all'),
     label: 'Rollout all',
-    disabled: loadStatus.value.rollingOut,
+    disabled: loadStatus.value['rollingOut-all'],
   },
 }
 
@@ -43,11 +43,15 @@ function ActionButtons(config) {
       disabled=${config.disabled}>${config.label}</button>`;
 }
 
+function huithu() {
+  loadStatus.value = { fetching: true }
+}
+
 export default function Actions() {
   if (projectStatus.value.fetched) {
     const actions = StatusActions[projectStatus.value.projectStatus || 'notStarted'] || [];
     const localeCodes = languages.value.map((lang) => lang.localeCode);
-    const isRolloutReady = localeCodes.some(locale => projectStatus.value[locale]?.status === 'translated');
+    const isRolloutReady = localeCodes.some(locale => ['translated', 'completed'].includes(projectStatus.value[locale]?.status));
     if (isRolloutReady) {
       actions.push('rollout');
     }
@@ -55,7 +59,7 @@ export default function Actions() {
       return html`
         <div class=locui-section>
           <div class=locui-section-heading>
-            <h2 class=locui-section-label>Actions</h2>
+            <h2 class=locui-section-label onclick=${huithu}>Actions</h2>
           </div>
           <div class=locui-url-heading-actions>
           ${actions.map(action => ActionButtons(ActionConfig[action]))}

@@ -48,6 +48,7 @@ export async function getUrl(path, idx, type) {
 }
 
 export default async function setActions(idx) {
+  loadStatus.value = { synching: true };
   if (!urls.value[idx].actions || !urls.value[idx].langstore?.actions) {
     if (!urls.value[idx].actions) {
       const { actions, userInfo } = await getDetails(urls.value[idx].pathname);

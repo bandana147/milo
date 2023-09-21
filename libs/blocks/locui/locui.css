@@ -427,6 +427,11 @@ helix-sidekick {
   clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
 }
 
+.rollout-btn.disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
 .locui-status-toast-button {
   text-decoration: underline;
   font-weight: 500;
