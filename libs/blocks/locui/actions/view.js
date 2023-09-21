@@ -7,7 +7,6 @@ const SYNCED = 'sync-done';
 
 const StatusActions = {
   'notStarted': ['findFragments', 'sync'],
-  'sync': ['sync'],
   'sync-done': ['start'],
   'rollout': ['rollout'],
   'completed': ['rollout']

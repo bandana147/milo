@@ -63,7 +63,7 @@ export async function checkStatus(status, pollingInterval, callback, languageCod
     if (expectedStatus !== status) {
       timerId = setTimeout(() => checkStatus(status, pollingInterval, callback, languageCode), pollingInterval);
     } else {
-      languageCode && setStatus('project', 'info', 'Rollout completed');
+      languageCode && setStatus('project', 'info', 'Rollout completed', { timeout: 2000 });
       if (callback) {
         callback();
       }
