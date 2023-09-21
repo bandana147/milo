@@ -4,7 +4,7 @@ import { rollout } from '../actions/index.js';
 
 function SelectedLocales(item) {
   const defaultLocales = siteConfig.value?.locales?.data?.find(lang=> lang.languagecode === item.localeCode)?.livecopies;
-  const selectedLocales = item.Locales ? item.Locales.split('\n') : ( defaultLocales|| '').split(',');
+  const selectedLocales = item.locales || ( defaultLocales|| '').split(',');
 
   if (selectedLocales.length <= 0) {
     return null;

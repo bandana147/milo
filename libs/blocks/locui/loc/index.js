@@ -24,28 +24,44 @@ function removeFileExtension(filename) {
   return filename.substring(0, lastIndex);
 }
 
+function getArrayFromString(string) {
+  const trimmedLocales = string.replace(/\s+/g, '');
+    return trimmedLocales.split(',');
+}
+
 async function loadLocales() {
   const config = await getSiteConfig();
   const selectedLanguages = [];
+
   languages.value.forEach((language) => {
-    const found = config.locales.data.find(
-      (locale) => language.Language === locale.language,
-    );
-    language.locales = found?.livecopies.split(',');
-    language.localeCode = found?.languagecode;
-    selectedLanguages.push(language);
+    const found = config.locales.data.find((locale) => language.Language === locale.language);
+    const selectedLangArr = language.Locales.replace(/\s+/g, '').split(',');
+    const livecopiesArr = found?.livecopies.replace(/\s+/g, '').split(',');
+    
+    //If selected locales has language livecopies then add
+    if (livecopiesArr.some(lang=> selectedLangArr.includes(lang))) {
+      const locales = livecopiesArr.filter(lang => selectedLangArr.includes(lang));
+      language.locales = locales;
+      language.localeCode = found?.languagecode;
+      selectedLanguages.push(language);
+    }
+    
     if (found.altLanguagecode) {
-      let altLang = config.locales.data.find(
-        (locale) => locale.languagecode === found.altLanguagecode,
-      );
-      altLang.locales = altLang?.livecopies.split(',');
-      altLang.localeCode = altLang?.languagecode;
-      altLang.Action = language.Action;
-      altLang.Workflow = altLang.workflow;
-      altLang.Language = altLang.language;
-      selectedLanguages.push(altLang);
+      let altLang = config.locales.data.find((locale) => locale.languagecode === found.altLanguagecode);
+      const altLangArr = altLang?.livecopies.replace(/\s+/g, '').split(',');
+      //If selected locales has alt lang livecopies then add 
+      if (altLangArr.some(lang=> selectedLangArr.includes(lang))) {
+        const locales = altLangArr.filter(lang => selectedLangArr.includes(lang));
+        altLang.locales = locales;
+        altLang.localeCode = altLang?.languagecode;
+        altLang.Action = language.Action;
+        altLang.Workflow = altLang.workflow;
+        altLang.Language = altLang.language;
+        selectedLanguages.push(altLang);
+      }
     }
   });
+
   languages.value = [...selectedLanguages];
 }
 
