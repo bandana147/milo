@@ -8,7 +8,7 @@ import {
   getSiteConfig,
   previewPath,
 } from '../utils/state.js';
-import { getProjectStatus, checkStatus } from '../actions/index.js';
+import { getProjectStatus, pollProjectStatus } from '../actions/index.js';
 import login from '../../../tools/sharepoint/login.js';
 import { getUrls } from '../../../tools/sharepoint/franklin.js';
 
@@ -109,7 +109,7 @@ async function loadStatus() {
   const status = await getProjectStatus();
   const projectNotCompleted = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
   if (projectNotCompleted) {
-    checkStatus('completed', 10000);
+    pollProjectStatus('completed', 10000);
   }
 }
 
