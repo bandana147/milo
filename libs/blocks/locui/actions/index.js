@@ -44,18 +44,18 @@ export async function getProjectStatus(showStatus) {
     buttonStatus.value = { ...buttonStatus.value, fetchingStatus: false };
     const status = await statusResponse.json();
     projectStatus.value = { ...status, fetched: true };
-    return status;
   } catch (err) {
     buttonStatus.value = { ...buttonStatus.value, fetchingStatus: false };
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: true };
-    return { error: err };
+    throw new Error(`Error while fetching status - ${err}`)
   }
 }
 
 export async function pollProjectStatus(status, pollingInterval, callback, languageCode) {
   let timerId;
   try {
-    const response = await getProjectStatus();
+    await getProjectStatus();
+    const response = projectStatus.value;
     const expectedStatus = languageCode ? response[languageCode]?.status : response.projectStatus;
     if (expectedStatus !== status) {
       timerId = setTimeout(() => pollProjectStatus(status, pollingInterval, callback, languageCode), pollingInterval);
@@ -131,7 +131,8 @@ export async function rollout(languageCode) {
     let reroll = false;
     if (languageCode === 'all') {
       const localeCodes = languages.value.map((lang) => lang.localeCode);
-      reroll = localeCodes.some(locale => projectStatus.value[locale]?.status === 'completed') && localeCodes.every(locale => projectStatus.value[locale]?.status !== 'translated');
+      reroll = localeCodes.some((locale) => projectStatus.value[locale]?.status === 'completed') && 
+        localeCodes.every((locale) => projectStatus.value[locale]?.status !== 'translated');
     } else {
       reroll =  projectStatus.value[languageCode].status === 'completed';
     }

@@ -3,8 +3,9 @@ import { urls, languages, siteConfig, projectStatus, buttonStatus } from '../uti
 import { rollout } from '../actions/index.js';
 
 function SelectedLocales(item) {
-  const defaultLocales = siteConfig.value?.locales?.data?.find(lang=> lang.languagecode === item.localeCode)?.livecopies;
-  const selectedLocales = item.locales || ( defaultLocales|| '').split(',');
+  const data = siteConfig.value?.locales?.data || [];
+  const defaultLocales = data.find((lang) => lang.languagecode === item.localeCode)?.livecopies;
+  const selectedLocales = item.locales || (defaultLocales || '').split(',');
 
   return html`
     <p class=locui-project-label>Locales</p>
@@ -17,6 +18,7 @@ function SelectedLocales(item) {
 function Language({ item }) {
   const { value = {} } = projectStatus;
   const langStatus = value[item.localeCode]?.status;
+  const showRollout = ['translated', 'completed'].includes(langStatus);
   return html`
     <li class=locui-subproject>
       <p class=locui-project-label>Language</p>
@@ -31,7 +33,9 @@ function Language({ item }) {
       ${value.projectStatusText && html`<div class="language-status status-bar">
         <label>${langStatus || 'Not started'} </label>
       </div>`}
-      ${['translated', 'completed'].includes(langStatus) && html`<div class="status-bar rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled': ''}" onclick=${() => { rollout(item.localeCode); }}>Rollout</div>`}
+      ${showRollout && html
+      `<div class="status-bar rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled' : ''}"
+        onclick=${() => { rollout(item.localeCode); }}>Rollout</div>`}
     </li>
   `;
 }

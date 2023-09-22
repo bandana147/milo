@@ -25,7 +25,7 @@ export default function Heading() {
             <h2 class=locui-section-label>Status</h2>
           ${projectStatus.value.projectStatusText && html`<div class=locui-project-details-project>
             <span>${projectStatus.value.projectStatusText}</span>
-            <a class=locui-project-details-refresh onClick=${()=> getProjectStatus(true)}>Refresh</a>
+            <a class=locui-project-details-refresh onClick=${() => getProjectStatus(true)}>Refresh</a>
           </div>`}
         </div>
       </div>

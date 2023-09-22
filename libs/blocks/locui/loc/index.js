@@ -1,4 +1,4 @@
-import { getStatus, preview } from '../../../tools/sharepoint/franklin.js';
+import { getStatus, preview, getUrls } from '../../../tools/sharepoint/franklin.js';
 import {
   urls,
   heading,
@@ -7,10 +7,10 @@ import {
   showLogin,
   getSiteConfig,
   previewPath,
+  projectStatus,
 } from '../utils/state.js';
 import { getProjectStatus, pollProjectStatus } from '../actions/index.js';
 import login from '../../../tools/sharepoint/login.js';
-import { getUrls } from '../../../tools/sharepoint/franklin.js';
 
 const PROJECT_INPROGRESS_CODES = ['download', 'start-glaas', 'export', 'waiting', 'incoming', 'rollout'];
 const LANG_ACTIONS = ['Translate', 'English Copy', 'Rollout'];
@@ -33,7 +33,7 @@ async function loadLocales() {
     const selectedLangArr = language.Locales.split('\n');
     const livecopiesArr = found?.livecopies.replace(/\s+/g, '').split(',');
 
-    //If selected locales has language livecopies then add to language card
+    //If selected locales has language livecopies then add to language card 
     if (livecopiesArr.some(lang => selectedLangArr.includes(lang))) {
       const locales = livecopiesArr.filter(lang => selectedLangArr.includes(lang));
       language.locales = locales;
@@ -42,11 +42,12 @@ async function loadLocales() {
     }
 
     if (found.altLanguagecode) {
-      let altLang = config.locales.data.find((locale) => locale.languagecode === found.altLanguagecode);
+      const { data = [] } = config.locales;
+      let altLang = data.find((locale) => locale.languagecode === found.altLanguagecode);
       const altLangArr = altLang?.livecopies.replace(/\s+/g, '').split(',');
-      //If selected locales has alt lang livecopies then add to language card
-      if (altLangArr.some(lang => selectedLangArr.includes(lang))) {
-        const locales = altLangArr.filter(lang => selectedLangArr.includes(lang));
+      //If selected locales has alt lang livecopies then add to language card 
+      if (altLangArr.some((lang) => selectedLangArr.includes(lang))) {
+        const locales = altLangArr.filter((lang) => selectedLangArr.includes(lang));
         altLang.locales = locales;
         altLang.localeCode = altLang?.languagecode;
         altLang.Action = language.Action;
@@ -105,8 +106,8 @@ async function loadHeading() {
 }
 
 async function loadStatus() {
-  const status = await getProjectStatus();
-  const projectNotCompleted = PROJECT_INPROGRESS_CODES.includes(status?.projectStatus);
+  await getProjectStatus();
+  const projectNotCompleted = PROJECT_INPROGRESS_CODES.includes(projectStatus.value?.projectStatus);
   if (projectNotCompleted) {
     pollProjectStatus('completed', 10000);
   }

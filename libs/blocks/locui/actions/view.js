@@ -4,16 +4,16 @@ import { syncToLangstore, startProject, rollout } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
 const StatusActions = {
-  'notStarted': ['findFragments', 'sync'],
+  notStarted: ['findFragments', 'sync'],
   'sync-done': ['start'],
-  'rollout': ['rollout'],
-  'completed': ['rollout']
-}
+  rollout: ['rollout'],
+  completed: ['rollout'],
+};
 
 const ActionConfig = {
   findFragments: {
     action: findFragments,
-    label: 'Find Fragments'
+    label: 'Find Fragments',
   },
   sync: {
     action: syncToLangstore,
@@ -30,7 +30,7 @@ const ActionConfig = {
     label: 'Rollout all',
     disabled: buttonStatus.value['rollingOut-all'],
   },
-}
+};
 
 function ActionButtons(config) {
   return html`
@@ -45,7 +45,7 @@ export default function Actions() {
   if (projectStatus.value.fetched) {
     const actions = StatusActions[projectStatus.value.projectStatus || 'notStarted'] || [];
     const localeCodes = languages.value.map((lang) => lang.localeCode);
-    const isRolloutReady = localeCodes.some(locale => ['translated', 'completed'].includes(projectStatus.value[locale]?.status));
+    const isRolloutReady = localeCodes.some((locale) => ['translated', 'completed'].includes(projectStatus.value[locale]?.status));
     if (isRolloutReady) {
       actions.push('rollout');
     }
@@ -56,7 +56,7 @@ export default function Actions() {
             <h2 class=locui-section-label>Actions</h2>
           </div>
           <div class=locui-url-heading-actions>
-          ${actions.map(action => ActionButtons(ActionConfig[action]))}
+          ${actions.map((action) => ActionButtons(ActionConfig[action]))}
           </div>
         </div>`;
     }
