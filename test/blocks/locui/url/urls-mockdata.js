@@ -92,6 +92,7 @@ export const mockPayload = {
       'write',
     ],
   },
+  resourcePath: 'some/drafts/blaishram/document2',
 };
 export const docUrls = [{
   actions: {
