@@ -27,6 +27,8 @@ async function onSyncComplete() {
 }
 
 export async function getProjectStatus(showStatus) {
+  if (buttonStatus.value.fetchingStatus) return;
+
   if (!apiUrl) {
     const { miloc } = await getServiceConfig(origin);
     apiUrl = miloc.url;
@@ -37,11 +39,14 @@ export async function getProjectStatus(showStatus) {
   }
   const projectHash = md5(previewPath.value);
   try {
+    buttonStatus.value = { ...buttonStatus.value, fetchingStatus: true };
     const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, { method: 'GET' });
+    buttonStatus.value = { ...buttonStatus.value, fetchingStatus: false };
     const status = await statusResponse.json();
     projectStatus.value = { ...status, fetched: true };
     return status;
   } catch (err) {
+    buttonStatus.value = { ...buttonStatus.value, fetchingStatus: false };
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: true };
     return { error: err };
   }
@@ -49,7 +54,6 @@ export async function getProjectStatus(showStatus) {
 
 export async function pollProjectStatus(status, pollingInterval, callback, languageCode) {
   let timerId;
-
   try {
     const response = await getProjectStatus();
     const expectedStatus = languageCode ? response[languageCode]?.status : response.projectStatus;
@@ -83,6 +87,7 @@ export async function syncToLangstore() {
 
 export async function createProject() {
   const projectUrl = previewPath.value;
+
   try {
     setStatus('project', 'info', 'Creating project');
     const createResponse = await fetch(`${apiUrl}create-project`, {
