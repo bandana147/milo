@@ -3,8 +3,6 @@ import { languages, projectStatus, loadStatus } from '../utils/state.js';
 import { syncToLangstore, startProject, rollout } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
-const SYNCED = 'sync-done';
-
 const StatusActions = {
   'notStarted': ['findFragments', 'sync'],
   'sync-done': ['start'],
@@ -39,11 +37,8 @@ function ActionButtons(config) {
     <button
       class="locui-urls-heading-action"
       onClick=${config.action}
-      disabled=${config.disabled}>${config.label}</button>`;
-}
-
-function huithu() {
-  loadStatus.value = { fetching: true }
+      disabled=${config.disabled}>${config.label}
+    </button>`;
 }
 
 export default function Actions() {
@@ -58,14 +53,12 @@ export default function Actions() {
       return html`
         <div class=locui-section>
           <div class=locui-section-heading>
-            <h2 class=locui-section-label onclick=${huithu}>Actions</h2>
+            <h2 class=locui-section-label>Actions</h2>
           </div>
           <div class=locui-url-heading-actions>
           ${actions.map(action => ActionButtons(ActionConfig[action]))}
           </div>
         </div>`;
-    } else {
-      return null;
     }
   }
   return null;

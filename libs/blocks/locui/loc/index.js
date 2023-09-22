@@ -32,20 +32,20 @@ async function loadLocales() {
     const found = config.locales.data.find((locale) => language.Language === locale.language);
     const selectedLangArr = language.Locales.split('\n');
     const livecopiesArr = found?.livecopies.replace(/\s+/g, '').split(',');
-    
-    //If selected locales has language livecopies then add
-    if (livecopiesArr.some(lang=> selectedLangArr.includes(lang))) {
+
+    //If selected locales has language livecopies then add to language card
+    if (livecopiesArr.some(lang => selectedLangArr.includes(lang))) {
       const locales = livecopiesArr.filter(lang => selectedLangArr.includes(lang));
       language.locales = locales;
       language.localeCode = found?.languagecode;
       selectedLanguages.push(language);
     }
-    
+
     if (found.altLanguagecode) {
       let altLang = config.locales.data.find((locale) => locale.languagecode === found.altLanguagecode);
       const altLangArr = altLang?.livecopies.replace(/\s+/g, '').split(',');
-      //If selected locales has alt lang livecopies then add 
-      if (altLangArr.some(lang=> selectedLangArr.includes(lang))) {
+      //If selected locales has alt lang livecopies then add to language card
+      if (altLangArr.some(lang => selectedLangArr.includes(lang))) {
         const locales = altLangArr.filter(lang => selectedLangArr.includes(lang));
         altLang.locales = locales;
         altLang.localeCode = altLang?.languagecode;

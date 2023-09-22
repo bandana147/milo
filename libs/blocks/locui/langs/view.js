@@ -6,10 +6,6 @@ function SelectedLocales(item) {
   const defaultLocales = siteConfig.value?.locales?.data?.find(lang=> lang.languagecode === item.localeCode)?.livecopies;
   const selectedLocales = item.locales || ( defaultLocales|| '').split(',');
 
-  if (selectedLocales.length <= 0) {
-    return null;
-  }
-
   return html`
     <p class=locui-project-label>Locales</p>
       <div class=locui-subproject-locales>
