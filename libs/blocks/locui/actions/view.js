@@ -1,5 +1,5 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages, projectStatus, loadStatus } from '../utils/state.js';
+import { languages, projectStatus, buttonStatus } from '../utils/state.js';
 import { syncToLangstore, startProject, rollout } from './index.js';
 import { findFragments } from '../../../tools/sharepoint/franklin.js';
 
@@ -18,17 +18,17 @@ const ActionConfig = {
   sync: {
     action: syncToLangstore,
     label: `Sync to Langstore(en)`,
-    disabled: loadStatus.value.syncing,
+    disabled: buttonStatus.value.syncing,
   },
   start: {
     action: startProject,
     label: `Send for localization`,
-    disabled: loadStatus.value.starting,
+    disabled: buttonStatus.value.starting,
   },
   rollout: {
     action: () => rollout('all'),
     label: 'Rollout all',
-    disabled: loadStatus.value['rollingOut-all'],
+    disabled: buttonStatus.value['rollingOut-all'],
   },
 }
 

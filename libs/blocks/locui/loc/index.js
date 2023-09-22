@@ -73,7 +73,6 @@ async function loadDetails() {
     const projectUrls = getUrls(jsonUrls);
     const projectLangs = json.languages.data.reduce((rdx, lang) => {
       if (LANG_ACTIONS.includes(lang.Action)) {
-        lang.size = projectUrls.length;
         rdx.push(lang);
       }
       return rdx;

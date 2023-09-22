@@ -1,5 +1,5 @@
 import { getStatus } from '../../../tools/sharepoint/franklin.js';
-import { urls, setStatus, loadStatus } from '../utils/state.js';
+import { urls, setStatus, buttonStatus } from '../utils/state.js';
 import { getItem } from '../../../tools/sharepoint/file.js';
 
 function getFileName(editUrl) {
@@ -35,7 +35,6 @@ async function getDetails(path, fetchEditUrl = false) {
 }
 
 export async function getUrl(path, idx, type) {
-  loadStatus.value = { [`fetchingUrl${path}`]: true };
   const { actions, userInfo } = await getDetails(path, 'auto');
   if (type === 'langstore') {
     urls.value[idx].langstore.actions = actions;
@@ -43,12 +42,10 @@ export async function getUrl(path, idx, type) {
     urls.value[idx].actions = actions;
   }
   urls.value[idx].userInfo = userInfo;
-  loadStatus.value = { [`fetchingUrl${path}`]: false };
   return actions.edit.url;
 }
 
 export default async function setActions(idx) {
-  loadStatus.value = { synching: true };
   if (!urls.value[idx].actions || !urls.value[idx].langstore?.actions) {
     if (!urls.value[idx].actions) {
       const { actions, userInfo } = await getDetails(urls.value[idx].pathname);

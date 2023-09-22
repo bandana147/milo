@@ -352,7 +352,6 @@ button.locui-url-action-view {
   background: url('./img/spectrum-refresh.svg');
   width: 26px;
   height: 26px;
-  display: block;
   background-repeat: no-repeat;
   background-position: 50%;
   border-radius: 50%;
@@ -362,6 +361,7 @@ button.locui-url-action-view {
   position: absolute;
   top: 24%;
   right: 36%;
+  display: none;
 }
 
 .locui-url-action-wrapper {
@@ -370,6 +370,10 @@ button.locui-url-action-view {
 
 .locui-url-action-wrapper.loading .locui-url-action-edit {
   background: none;
+}
+
+.locui-url-action-wrapper.loading .locui-url-source-actions-loader {
+  display: block;
 }
 
 @keyframes rotate {
@@ -456,4 +460,5 @@ helix-sidekick {
 .login-error-container p {
   margin-bottom: 8px;
 }
+
 

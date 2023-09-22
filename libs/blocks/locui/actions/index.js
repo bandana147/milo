@@ -8,7 +8,7 @@ import {
   setStatus,
   previewPath,
   projectStatus,
-  loadStatus,
+  buttonStatus,
   languages,
 } from '../utils/state.js';
 import { origin } from '../../../tools/sharepoint/franklin.js';
@@ -27,7 +27,6 @@ async function onSyncComplete() {
 }
 
 export async function getProjectStatus(showStatus) {
-  loadStatus.value = { fetchingStatus: true };
   if (!apiUrl) {
     const { miloc } = await getServiceConfig(origin);
     apiUrl = miloc.url;
@@ -41,12 +40,9 @@ export async function getProjectStatus(showStatus) {
     const statusResponse = await fetch(`${apiUrl}project-status?project=${projectHash}`, { method: 'GET' });
     const status = await statusResponse.json();
     projectStatus.value = { ...status, fetched: true };
-    loadStatus.value = { fetchingStatus: false };
     return status;
   } catch (err) {
     projectStatus.value = { ...projectStatus.value, projectStatusText: 'Not Started', fetched: true };
-    loadStatus.value = { fetchingStatus: false };
-    setStatus('project', 'error', `Failed to get project status: ${err}`);
     return { error: err };
   }
 }
@@ -77,11 +73,11 @@ export async function syncToLangstore() {
     const projectHash = md5(previewPath.value);
     setStatus('project', 'info', 'Starting project sync', { timeout: 2000 });
     await fetch(`${apiUrl}start-sync?project=${projectHash}`, { method: 'POST' });
-    loadStatus.value = { syncing: false };
+    buttonStatus.value = { syncing: false };
     pollProjectStatus('sync-done', 5000, onSyncComplete);
   } catch (error) {
     setStatus('project', 'error', `Syncing failed: ${error}`);
-    loadStatus.value = { syncing: false };
+    buttonStatus.value = { syncing: false };
   }
 }
 
@@ -106,23 +102,23 @@ export async function startProject() {
   const projectUrl = previewPath.value;
   const projectHash = md5(projectUrl);
   setStatus('project', 'info', 'Starting project');
-  loadStatus.value = { starting: true };
+  buttonStatus.value = { starting: true };
 
   try {
     const startResponse = await fetch(`${apiUrl}/start-project?project=${projectHash}`, { method: 'POST' });
-    loadStatus.value = { starting: false };
+    buttonStatus.value = { starting: false };
     if (startResponse.status === 201) {
       setStatus('project', 'info', 'Project started successfully!', { timeout: 1000 });
       await pollProjectStatus('completed', 5000);
     }
   } catch (error) {
     setStatus('project', 'error', 'Failed to start project');
-    loadStatus.value = { starting: false };
+    buttonStatus.value = { starting: false };
   }
 }
 
 export async function rollout(languageCode) {
-  loadStatus.value = { ...loadStatus.value, [`rollingOut-${languageCode}`]: true };
+  buttonStatus.value = { ...buttonStatus.value, [`rollingOut-${languageCode}`]: true };
   setStatus('project', 'info', 'Initiating rollout');
   try {
     const projectUrl = previewPath.value;
@@ -136,11 +132,11 @@ export async function rollout(languageCode) {
     }
     await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}&reroll=${reroll}`, { method: 'POST' });
     setStatus('project');
-    loadStatus.value = { ...loadStatus.value, [`rollingOut-${languageCode}`]: false };
+    buttonStatus.value = { ...buttonStatus.value, [`rollingOut-${languageCode}`]: false };
     await pollProjectStatus('completed', 5000, undefined, languageCode);
   } catch (err) {
     setStatus('project', 'error', 'Failed to roll out files', { timeout: 2000 });
-    loadStatus.value = { ...loadStatus.value, [`rollingOut-${languageCode}`]: false };
+    buttonStatus.value = { ...buttonStatus.value, [`rollingOut-${languageCode}`]: false };
   }
 }
 

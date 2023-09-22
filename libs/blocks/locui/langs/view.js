@@ -1,5 +1,5 @@
 import { html } from '../../../deps/htm-preact.js';
-import { languages, siteConfig, projectStatus, loadStatus } from '../utils/state.js';
+import { urls, languages, siteConfig, projectStatus, buttonStatus } from '../utils/state.js';
 import { rollout } from '../actions/index.js';
 
 function SelectedLocales(item) {
@@ -17,7 +17,6 @@ function SelectedLocales(item) {
 function Language({ item }) {
   const { value = {} } = projectStatus;
   const langStatus = value[item.localeCode]?.status;
-
   return html`
     <li class=locui-subproject>
       <p class=locui-project-label>Language</p>
@@ -27,12 +26,12 @@ function Language({ item }) {
       ${item.Workflow && html`<p class=locui-project-label>Method</p>
       <h3 class=locui-subproject-name>${item.Workflow}</h3>`}
       <p class=locui-project-label>Items</p>
-      <h3 class=locui-subproject-name>${item.size}</h3>
+      <h3 class=locui-subproject-name>${urls.value.length}</h3>
       ${SelectedLocales(item)}
       ${value.projectStatusText && html`<div class="language-status status-bar">
         <label>${langStatus || 'Not started'} </label>
       </div>`}
-      ${['translated', 'completed'].includes(langStatus) && html`<div class="status-bar rollout-btn ${loadStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled': ''}" onclick=${() => { rollout(item.localeCode); }}>Rollout</div>`}
+      ${['translated', 'completed'].includes(langStatus) && html`<div class="status-bar rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled': ''}" onclick=${() => { rollout(item.localeCode); }}>Rollout</div>`}
     </li>
   `;
 }

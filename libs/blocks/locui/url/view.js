@@ -1,10 +1,12 @@
 import { html, useEffect } from '../../../deps/htm-preact.js';
 import setActions, { getUrl, formatDate } from './index.js';
 
-async function handleAction(url, path, idx, type) {
+async function handleAction(el, url, path, idx, type) {
+  el.target.parentElement.classList.add('loading');
   let docUrl = url;
   if (url === 'fetchEditUrl') {
     docUrl = await getUrl(path, idx, type);
+    el.target.parentElement.classList.remove('loading');
   }
   window.open(docUrl, '_blank');
 }
@@ -19,7 +21,8 @@ function Actions({ label, parent, idx, type }) {
         <button
           class="locui-url-action locui-url-action-edit ${isJsonFile ? 'xlsx' : ''}"
           disabled=${actions?.edit?.status !== 200}
-          onClick=${() => { handleAction(actions?.edit.url, pathname, idx, type); }}>Edit</button>
+          onClick=${(el) => { handleAction(el, actions?.edit.url, pathname, idx, type); }}>Edit</button>
+          <a class=locui-url-source-actions-loader />
       </div>
       <button
         class="locui-url-action locui-url-action-view"
