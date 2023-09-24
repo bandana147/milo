@@ -34,7 +34,7 @@ async function loadLocales() {
     const livecopiesArr = found?.livecopies.replace(/\s+/g, '').split(',');
 
     //If selected locales has language livecopies then add to language card 
-    if (livecopiesArr.some(lang => selectedLangArr.includes(lang))) {
+    if (livecopiesArr.some(lang => selectedLangArr.includes(lang)) || language.Action === 'Translate') {
       const locales = livecopiesArr.filter(lang => selectedLangArr.includes(lang));
       language.locales = locales;
       language.localeCode = found?.languagecode;
