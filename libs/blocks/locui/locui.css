@@ -235,12 +235,31 @@ li.locui-subproject {
   text-transform: uppercase;
 }
 
+.rollout-btn {
+  position: absolute;
+  padding: 4px 34px;
+  bottom: 18px;
+  right: 20px;
+  cursor: pointer;
+  clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
+  background-color: #5ec701bd;
+  color: #136E1B;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
 .locui-subproject.translated {
   border-color: #093;
   background: rgb(149 230 195 / 20%);
 }
 
 .locui-subproject.translated .language-status {
+  background: #093;
+  color: #FFF;
+}
+
+.locui-subproject.translated .rollout-btn {
   background: #093;
   color: #FFF;
 }
@@ -437,20 +456,6 @@ helix-sidekick {
 
 .info-title {
   font-weight: 600;
-}
-
-.rollout-btn {
-  position: absolute;
-  padding: 4px 34px;
-  bottom: 18px;
-  right: 20px;
-  cursor: pointer;
-  clip-path: polygon(0% 0%, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), 100% 100%, 0% 100%, 0% 100%);
-  background-color: #5ec701bd;
-  color: #136E1B;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
 }
 
 .rollout-btn.disabled {

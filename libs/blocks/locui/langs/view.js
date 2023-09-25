@@ -23,7 +23,7 @@ function Language({ item }) {
   const doneCount = value[item.localeCode]?.done || 0;
 
   return html`
-    <li class="locui-subproject ${item.status || 'not-started'}">
+    <li class="locui-subproject ${langStatus || 'not-started'}">
       <p class=locui-project-label>Language</p>
       <h3 class=locui-subproject-name>${item.Language}</h3>
       <p class=locui-project-label>Action</p>
