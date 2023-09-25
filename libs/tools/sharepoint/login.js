@@ -10,7 +10,8 @@ export default async function login({ scopes, extraScopes, telemetry = {} }) {
     await pca.loginPopup(msalConfig.login);
     [tmpAccount] = pca.getAllAccounts();
   }
-  user.value = tmpAccount.username;
+  user.value = tmpAccount.name;
+
   const reqDetails = { account: tmpAccount, scopes };
   try {
     const res = await pca.acquireTokenSilent(reqDetails);

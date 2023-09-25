@@ -136,6 +136,7 @@ export async function rollout(languageCode) {
     } else {
       reroll =  projectStatus.value[languageCode].status === 'completed';
     }
+    projectStatus.value = { ...projectStatus.value, [languageCode]: { ...projectStatus.value[languageCode], status: 'rolling-out'}}
     await fetch(`${apiUrl}start-rollout?project=${projectHash}&languageCode=${languageCode}&reroll=${reroll}`, { method: 'POST' });
     setStatus('project');
     buttonStatus.value = { ...buttonStatus.value, [`rollingOut-${languageCode}`]: false };

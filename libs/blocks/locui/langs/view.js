@@ -46,7 +46,7 @@ function Language({ item }) {
       </div>`}
       ${showRollout && html
       `<div class="status-bar rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled' : ''}"
-        onclick=${() => { rollout(item.localeCode); }}>Rollout</div>`}
+        onclick=${() => { rollout(item.localeCode); }}>${langStatus === 'completed' ? 'Re rollout' : 'Rollout' }</div>`}
     </li>
   `;
 }
