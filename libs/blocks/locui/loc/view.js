@@ -19,8 +19,8 @@ export default function Localization() {
     ${showLogin.value ? html`<div class=login-error-container><p>The login popup was blocked. Please use the button below.</p>
     <button class=login-action onClick="${loginToSharePoint}">Open login</button></div>`: html`
     ${heading.value.editUrl && html`<${Heading} />`}
-    ${languages.value.length > 0 && html`<${Langs} />`}
     ${urls.value.length > 0 && html`<${Actions} />`}
+    ${languages.value.length > 0 && html`<${Langs} />`}
     ${urls.value.length > 0 && html`<${Urls} />`}`}
     <${Status} />`;
 }
