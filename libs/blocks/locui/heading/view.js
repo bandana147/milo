@@ -1,7 +1,6 @@
 import { html } from '../../../deps/htm-preact.js';
 import { heading, urls, languages, statuses, projectStatus } from '../utils/state.js';
 import { user } from '../../../tools/sharepoint/state.js';
-import { getProjectStatus } from '../actions/index.js';
 import setDetails from '../loc/index.js';
 
 async function handleRefresh() {
@@ -25,7 +24,6 @@ export default function Heading() {
             <h2 class=locui-section-label>Status</h2>
           ${projectStatus.value.projectStatusText && html`<div class=locui-project-details-project>
             <span>${projectStatus.value.projectStatusText}</span>
-            <a class=locui-project-details-refresh onClick=${() => getProjectStatus(true)}>Refresh</a>
           </div>`}
         </div>
       </div>

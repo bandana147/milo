@@ -19,6 +19,9 @@ function Language({ item }) {
   const { value = {} } = projectStatus;
   const langStatus = value[item.localeCode]?.status;
   const showRollout = ['translated', 'completed'].includes(langStatus);
+  const doneTitle = langStatus === 'translated' || langStatus === 'in-progress' ? 'Translated' : 'Rolled out';
+  const doneCount = value[item.localeCode]?.done || 0;
+
   return html`
     <li class=locui-subproject>
       <p class=locui-project-label>Language</p>
@@ -27,8 +30,16 @@ function Language({ item }) {
       <h3 class=locui-subproject-name>${item.Action}</h3>
       ${item.Workflow && html`<p class=locui-project-label>Method</p>
       <h3 class=locui-subproject-name>${item.Workflow}</h3>`}
-      <p class=locui-project-label>Items</p>
-      <h3 class=locui-subproject-name>${urls.value.length}</h3>
+      <div class=item-count-wrapper>
+        <div>
+          <p class=locui-project-label>Items</p>
+          <h3 class=locui-subproject-name>${urls.value.length}</h3>
+        </div>
+        ${doneCount > 0 && html`<div>
+          <p class=locui-project-label>${doneTitle}</p>
+          <h3 class=locui-subproject-name>${doneCount}</h3>
+        </div>`}
+      </div>
       ${SelectedLocales(item)}
       ${value.projectStatusText && html`<div class="language-status status-bar">
         <label>${langStatus || 'Not started'} </label>
