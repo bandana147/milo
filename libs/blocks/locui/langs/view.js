@@ -23,7 +23,7 @@ function Language({ item }) {
   const doneCount = value[item.localeCode]?.done || 0;
 
   return html`
-    <li class=locui-subproject>
+    <li class="locui-subproject ${item.status || 'not-started'}">
       <p class=locui-project-label>Language</p>
       <h3 class=locui-subproject-name>${item.Language}</h3>
       <p class=locui-project-label>Action</p>
@@ -41,11 +41,11 @@ function Language({ item }) {
         </div>`}
       </div>
       ${SelectedLocales(item)}
-      ${value.projectStatusText && html`<div class="language-status status-bar">
+      ${value.projectStatusText && html`<div class="language-status">
         <label>${langStatus || 'Not started'} </label>
       </div>`}
       ${showRollout && html
-      `<div class="status-bar rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled' : ''}"
+      `<div class="rollout-btn ${buttonStatus.value[`rollingOut-${item.localeCode}`] ? 'disabled' : ''}"
         onclick=${() => { rollout(item.localeCode); }}>${langStatus === 'completed' ? 'Re rollout' : 'Rollout' }</div>`}
     </li>
   `;
