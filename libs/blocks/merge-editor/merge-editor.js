@@ -3,7 +3,7 @@ function importCSS(cssFilePath) {
   link.rel = 'stylesheet';
   link.type = 'text/css';
   link.href = cssFilePath;
-  document.head.appendChild(link);
+  document.head.appendChild(`${window.location.origin}/${link}`);
 }
 
 export default async function init(el) { 
@@ -11,5 +11,5 @@ export default async function init(el) {
   rootEl.id = 'root';
   el.append(rootEl)
   await import('../../deps/merge-editor/merge-editor-bundle.js');
-  importCSS('./libs/deps/merge-editor/merge-editor-main.css');
+  importCSS('libs/deps/merge-editor/merge-editor-main.css');
 }
