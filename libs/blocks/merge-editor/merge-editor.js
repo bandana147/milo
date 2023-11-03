@@ -2,8 +2,8 @@ function importCSS(cssFilePath) {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';
-  link.href = cssFilePath;
-  document.head.appendChild(`${window.location.origin}/${link}`);
+  link.href = `${window.location.origin}/${cssFilePath}`;
+  document.head.appendChild(link);
 }
 
 export default async function init(el) { 
