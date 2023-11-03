@@ -11,5 +11,5 @@ export default async function init(el) {
   rootEl.id = 'root';
   el.append(rootEl)
   await import('../../deps/merge-editor/merge-editor-bundle.js');
-  importCSS('../../deps/merge-editor/merge-editor-main.css');
+  importCSS('./libs/deps/merge-editor/merge-editor-main.css');
 }
