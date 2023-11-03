@@ -10,6 +10,6 @@ export default async function init(el) {
   const rootEl = document.createElement('div');
   rootEl.id = 'root';
   el.append(rootEl)
-  await import('../../../build/merge-editor/merge-editor-bundle.js');
-  importCSS('../../../build/merge-editor/merge-editor-main.css');
+  await import('../../deps/merge-editor/merge-editor-bundle.js');
+  importCSS('../../deps/merge-editor/merge-editor-main.css');
 }
