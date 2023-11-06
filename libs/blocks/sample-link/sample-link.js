@@ -1,5 +1,6 @@
 import parseMarkdown from '../../../tools/loc/helix/parseMarkdown.bundle.js';
-import { mdast2docx } from '../../../tools/loc/helix/mdast2docx.bundle.js';
+// import { mdast2docx } from '../../../tools/loc/helix/mdast2docx.bundle.js';
+import { mdast2docx } from './mdast2docx.bundle.js';
 
 async function getMD() {
     const md = await fetch('https://merge-editor--milo--bandana147.hlx.page/drafts/cmillar/adobe-digital-experiences-case-study.md').then((response) => response.text());
