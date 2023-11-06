@@ -1,8 +1,8 @@
-import parseMarkdown from '../../../tools/loc/helix/parseMarkdown.js';
+import parseMarkdown from '../../../tools/loc/helix/parseMarkdown.bundle.js';
 import { mdast2docx } from '../../../tools/loc/helix/mdast2docx.bundle.js';
 
 async function getMD() {
-    const md = await fetch('assets/doc-from-sp.md').then((response) => response.text());
+    const md = await fetch('https://merge-editor--milo--bandana147.hlx.page/drafts/cmillar/adobe-digital-experiences-case-study.md').then((response) => response.text());
     console.log(md);
 
     console.log('Converting MD to MDAST');
