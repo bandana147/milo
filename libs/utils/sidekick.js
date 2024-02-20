@@ -14,6 +14,11 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
     window.open(`${resultsUrl}${encodeURIComponent(window.location.href)}`, 'check-schema');
   };
 
+  const previewed = () => {
+    debugger
+    console.log('Previewed');
+  };
+
   const preflightListener = async () => {
     const preflight = createTag('div', { class: 'preflight' });
     const content = await loadBlock(preflight);
@@ -35,4 +40,5 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   sk.addEventListener('custom:send-to-caas', sendToCaasListener);
   sk.addEventListener('custom:check-schema', checkSchemaListener);
   sk.addEventListener('custom:preflight', preflightListener);
+  sk.addEventListener('updated', previewed);
 }
