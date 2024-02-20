@@ -14,13 +14,13 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
     window.open(`${resultsUrl}${encodeURIComponent(window.location.href)}`, 'check-schema');
   };
 
-  const previewed = () => {
+  const previewed = async () => {
     localStorage.previewed = true;
-    console.log('Previewed');
+    window.open('www.google.com');
   };
-  const published = () => {
+  const published = async () => {
     localStorage.published = true;
-    console.log('Published');
+    window.open('www.facebook.com');
   };
 
   const preflightListener = async () => {
