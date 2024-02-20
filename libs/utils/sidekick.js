@@ -18,6 +18,10 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
     debugger
     console.log('Previewed');
   };
+  const published = () => {
+    debugger
+    console.log('Published');
+  };
 
   const preflightListener = async () => {
     const preflight = createTag('div', { class: 'preflight' });
@@ -40,5 +44,6 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   sk.addEventListener('custom:send-to-caas', sendToCaasListener);
   sk.addEventListener('custom:check-schema', checkSchemaListener);
   sk.addEventListener('custom:preflight', preflightListener);
-  sk.addEventListener('published', previewed);
+  sk.addEventListener('published', published);
+  sk.addEventListener('previewed', previewed);
 }
