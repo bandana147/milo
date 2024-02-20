@@ -15,11 +15,11 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   };
 
   const previewed = () => {
-    debugger
+    localStorage.previewed = true;
     console.log('Previewed');
   };
   const published = () => {
-    debugger
+    localStorage.published = true;
     console.log('Published');
   };
 
