@@ -1,4 +1,4 @@
-import { createTag } from './utils.js';
+import { createTag, getConfig } from './utils.js';
 
 export function decorateButtons(el, size) {
   const buttons = el.querySelectorAll('em a, strong a, p > a strong');
@@ -15,6 +15,10 @@ export function decorateButtons(el, size) {
       if (size) button.classList.add(size); /* button-l, button-xl */
       parent.insertAdjacentElement('afterend', button);
       parent.remove();
+    }
+    const config = getConfig();
+    if (config.button?.passParams) {
+      config.button.passParams(button);
     }
     const actionArea = button.closest('p, div');
     if (actionArea) {
