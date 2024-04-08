@@ -276,6 +276,19 @@ header.global-navigation {
   color: rgb(255, 255, 255);
 }
 
+.feds-cta--secondary-filled {
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(13, 102, 208);
+  color: rgb(13, 102, 208);
+}
+
+.feds-cta--secondary-filled:hover,
+.feds-cta--secondary-filled:focus {
+  background-color: rgb(20, 115, 230);
+  border-color: rgb(20, 115, 230);
+  color: rgb(255, 255, 255);
+}
+
 /* Search */
 .feds-search {
   order: -1;

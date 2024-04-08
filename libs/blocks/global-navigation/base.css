@@ -111,6 +111,10 @@
   align-items: center;
 }
 
+.feds-navLink--bold {
+  font-weight: 600;
+}
+
 /* Desktop styles */
 @media (min-width: 900px) {
   .feds-navLink,
@@ -280,5 +284,9 @@
 
   .feds-navLink--ai-gradient {
     background: linear-gradient(90deg, #bce3ff, #ffe9d3, #f8d5e4);
+  }
+
+  .feds-navLink--gray-gradient {
+    background: #eaeaea;
   }
 }

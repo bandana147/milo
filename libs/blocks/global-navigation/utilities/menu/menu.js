@@ -96,7 +96,12 @@ const decorateElements = ({ elem, className = 'feds-navLink', itemIndex = { posi
 
     // If the link is wrapped in a 'strong' or 'em' tag, make it a CTA
     if (link.parentElement.tagName === 'STRONG' || link.parentElement.tagName === 'EM') {
-      const type = link.parentElement.tagName === 'EM' ? 'secondaryCta' : 'primaryCta';
+      let type = '';
+      if (link.parentElement.tagName === 'EM') {
+        type = link.parentElement.parentElement?.tagName === 'STRONG' ? 'secondaryFilledCta' : 'secondaryCta';
+      } else {
+        type = 'primaryCta';
+      }
       // Remove its 'em' or 'strong' wrapper
       link.parentElement.replaceWith(link);
 
