@@ -263,6 +263,18 @@ describe('global navigation utilities', () => {
       expect(el.children[0].getAttribute('daa-ll')).to.equal('test');
       expect(el.children[0].textContent.trim()).to.equal('test');
     });
+
+    it('should return a fragment for a secondary filled cta', () => {
+      const elem = toFragment`<a href="test">test</a>`;
+      const el = decorateCta({ elem, type: 'secondaryFilledCta' });
+      expect(el.tagName).to.equal('DIV');
+      expect(el.className).to.equal('feds-cta-wrapper');
+      expect(el.children[0].tagName).to.equal('A');
+      expect(el.children[0].className).to.equal('feds-cta feds-cta--secondary-filled');
+      expect(el.children[0].getAttribute('href')).to.equal('test');
+      expect(el.children[0].getAttribute('daa-ll')).to.equal('test');
+      expect(el.children[0].textContent.trim()).to.equal('test');
+    });
   });
 
   describe('active logic', () => {
