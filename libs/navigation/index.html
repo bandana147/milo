@@ -1,7 +1,7 @@
 <html>
   <head>
     <script type="module">
-      const contentroot = new URLSearchParams(window.location.search).get('contentroot') || '/federal/home';
+      const contentRoot = new URLSearchParams(window.location.search).get('contentroot') || '/federal/home';
       const env = new URLSearchParams(window.location.search).get('env') || 'qa';
       import loadfooter from 'https://feds--milo--adobecom.hlx.page/libs/navigation/footer.js';
       loadfooter({ contentRoot, env });
