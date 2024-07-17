@@ -1,5 +1,11 @@
 <html>
   <head>
+    <style>
+      img {
+        height: 859px;
+        border-bottom: 1px solid lightgray;
+      }
+    </style>
     <script type="module">
       const contentRoot = new URLSearchParams(window.location.search).get('contentroot') || '/federal/home';
       const env = new URLSearchParams(window.location.search).get('env') || 'qa';
@@ -7,14 +13,13 @@
       loadfooter({ contentRoot, env });
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      main { padding: 60px}
-    </style>
   </head>
   <body>
     <header class="global-navigation"></header>
     <main>
-      <section>Project content</section>
+      <section>
+        <img src="./homepage.png" />
+      </section>
     </main>
   </body>
 </html>
