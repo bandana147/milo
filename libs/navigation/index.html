@@ -7,10 +7,12 @@
       }
     </style>
     <script type="module">
-      const contentRoot = new URLSearchParams(window.location.search).get('contentroot') || '/federal/home';
+      const authoringPath = new URLSearchParams(window.location.search).get('authoringpath') || '/federal/home';
       const env = new URLSearchParams(window.location.search).get('env') || 'qa';
+      const privacyId = new URLSearchParams(window.location.search).get('privacyid');
+
       import loadfooter from 'https://feds--milo--adobecom.hlx.page/libs/navigation/footer.js';
-      loadfooter({ contentRoot, env });
+      loadfooter({ authoringPath, env, privacyId });
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
