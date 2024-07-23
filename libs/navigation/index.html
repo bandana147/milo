@@ -13,7 +13,7 @@
       const locale = new URLSearchParams(window.location.search).get('locale');
 
       import loadfooter from 'https://feds--milo--adobecom.hlx.page/libs/navigation/footer.js';
-      loadfooter({ authoringPath, env, privacyId, locale });
+      loadfooter({ env, locale, footer: { authoringPath, privacyId }});
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
