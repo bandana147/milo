@@ -12,7 +12,7 @@
       const imsClientId = new URLSearchParams(window.location.search).get('imsclientid');
       const locale = new URLSearchParams(window.location.search).get('locale');
 
-      import loadfooter from 'https://gnav--milo--adobecom.hlx.page/libs/navigation/navigation.js';
+      import loadfooter from `https://${env}--milo--adobecom.hlx.page/libs/navigation/navigation.js`;
       loadfooter({ authoringPath, env, imsClientId, locale });
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
