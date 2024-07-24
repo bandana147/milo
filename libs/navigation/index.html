@@ -9,14 +9,7 @@
         border-bottom: 1px solid lightgray;
       }
     </style>
-    <script type="module">
-      const authoringPath = new URLSearchParams(window.location.search).get('authoringpath') || '/federal/home';
-      const env = new URLSearchParams(window.location.search).get('env') || 'qa';
-      const privacyId = new URLSearchParams(window.location.search).get('privacyid');
-      const locale = new URLSearchParams(window.location.search).get('locale');
-
-      import loadfooter from 'https://stage--milo--adobecom.hlx.page/libs/navigation/navigation.js';
-      loadfooter({ env, locale, footer: { authoringPath, privacyId }});
+    <script type="module" src="./index.js">
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
