@@ -150,8 +150,10 @@ const PROMO_PARAM = 'promo';
 function getEnv(conf) {
   const { host } = window.location;
   const query = PAGE_URL.searchParams.get('env');
+  const configEnv = conf.env;
 
   if (query) return { ...ENVS[query], consumer: conf[query] };
+  if (configEnv) return { ...ENVS[configEnv], consumer: conf[configEnv] };
   if (host.includes('localhost')) return { ...ENVS.local, consumer: conf.local };
   /* c8 ignore start */
   if (host.includes(`${SLD}.page`)
