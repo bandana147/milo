@@ -1,7 +1,7 @@
 name: Dynamic PR Template
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
       - name: Update PR description
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const testUrls = process.env.TEST_URLS.split('\n');
             const prNumber = context.issue.number;
