@@ -1,8 +1,13 @@
 name: Dynamic PR Template
 
 on:
-  pull_request:
+  pull_reques_target:
     types: [opened, synchronize, reopened]
+
+# Add permissions block
+permissions:
+  pull-requests: write
+  contents: read
 
 jobs:
   update-template:
