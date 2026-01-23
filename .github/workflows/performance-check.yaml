@@ -144,6 +144,22 @@ jobs:
                 comment += `| ${pageName} | ${lcpCell} | ${clsCell} | ${tbtCell} | ${jsCell} | ${statusCell} |\n`;
               }
               
+              comment += '\n<details>\n<summary>📦 Heaviest resources (top 5 per page)</summary>\n\n';
+              for (const result of results) {
+                const pageName = result.name || new URL(result.url).pathname || '/';
+                comment += `**${pageName}**\n`;
+                if (result.topResources && result.topResources.length) {
+                  for (const res of result.topResources) {
+                    const sizeKb = res.size ? (res.size / 1024).toFixed(1) : '0.0';
+                    comment += `- ${sizeKb}KB — ${res.name}\n`;
+                  }
+                } else {
+                  comment += '- No resource data collected\n';
+                }
+                comment += '\n';
+              }
+              comment += '</details>\n';
+              
               comment += '\n<details>\n<summary>📋 Budget Thresholds</summary>\n\n';
               comment += '| Metric | Budget | Description |\n';
               comment += '|--------|--------|-------------|\n';

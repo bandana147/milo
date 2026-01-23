@@ -101,6 +101,7 @@ async function measurePerformance(page, url) {
     totalSize,
     longTaskCount: metrics.longTasks.length,
     longTasks: metrics.longTasks,
+    resources: metrics.resources,
     resourceCount: metrics.resources.length,
   };
 }
@@ -155,6 +156,17 @@ async function runMultipleMeasurements(browser, url, runs) {
     return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
   };
   
+  const bestRun = results.reduce((best, curr) => {
+    if (!best) return curr;
+    const bestSize = best.totalSize || 0;
+    const currSize = curr.totalSize || 0;
+    return currSize > bestSize ? curr : best;
+  }, null);
+  
+  const topResources = (bestRun && bestRun.resources)
+    ? [...bestRun.resources].sort((a, b) => (b.size || 0) - (a.size || 0)).slice(0, 5)
+    : [];
+  
   return {
     url,
     lcp: median(results.map((r) => r.lcp).filter(Boolean)),
@@ -164,6 +176,7 @@ async function runMultipleMeasurements(browser, url, runs) {
     totalSize: median(results.map((r) => r.totalSize)),
     longTaskCount: Math.round(median(results.map((r) => r.longTaskCount))),
     runs: results.length,
+    topResources,
   };
 }
 
@@ -238,6 +251,13 @@ function generateReport(allResults, thresholds) {
     report += `   JS Size:    ${(result.jsSize / 1024).toFixed(1)}KB (budget: ${(thresholds.jsSize.budget / 1024).toFixed(1)}KB)\n`;
     report += `   Total Size: ${(result.totalSize / 1024).toFixed(1)}KB (budget: ${(thresholds.totalSize.budget / 1024).toFixed(1)}KB)\n`;
     report += `   Long Tasks: ${result.longTaskCount} tasks detected\n`;
+    
+    if (result.topResources?.length) {
+      report += '   Heaviest resources (top 5):\n';
+      for (const res of result.topResources) {
+        report += `      • ${(res.size / 1024).toFixed(1)}KB - ${res.name}\n`;
+      }
+    }
     
     const failures = checkThresholds(result, thresholds);
     if (failures.length > 0) {
