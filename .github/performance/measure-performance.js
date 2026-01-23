@@ -165,7 +165,13 @@ async function runMultipleMeasurements(browser, url, runs) {
   }, null);
   
   const topResources = (bestRun && bestRun.resources)
-    ? [...bestRun.resources].sort((a, b) => (b.size || 0) - (a.size || 0)).slice(0, 5)
+    ? [...bestRun.resources]
+        .filter((r) => {
+          const isJs = r.type === 'script' || r.name.endsWith('.js');
+          return isJs && r.name.includes('/libs/');
+        })
+        .sort((a, b) => (b.size || 0) - (a.size || 0))
+        .slice(0, 5)
     : [];
   
   return {
