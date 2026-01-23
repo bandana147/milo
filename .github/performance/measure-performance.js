@@ -86,7 +86,7 @@ async function measurePerformance(page, url) {
   // Calculate JS size only for Milo libs (script or .js under /libs/)
   const jsResources = metrics.resources.filter((r) => {
     const isJs = r.type === 'script' || r.name.endsWith('.js');
-    return isJs && r.name.includes('/libs/');
+    return isJs;
   });
   const jsSize = jsResources.reduce((total, r) => total + r.size, 0);
   
@@ -168,7 +168,7 @@ async function runMultipleMeasurements(browser, url, runs) {
     ? [...bestRun.resources]
         .filter((r) => {
           const isJs = r.type === 'script' || r.name.endsWith('.js');
-          return isJs && r.name.includes('/libs/');
+          return isJs;
         })
         .sort((a, b) => (b.size || 0) - (a.size || 0))
         .slice(0, 5)
@@ -377,6 +377,10 @@ async function main() {
   
   const baseline = await loadBaseline();
   const { thresholds, testUrls, runs } = baseline;
+  
+  if (Array.isArray(baseline.jsIncludePatterns) && baseline.jsIncludePatterns.length) {
+    jsIncludePatterns = baseline.jsIncludePatterns;
+  }
   
   const urlsToTest = buildTestUrls(testUrls, baseUrl, milolibs);
   
