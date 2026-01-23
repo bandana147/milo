@@ -83,10 +83,11 @@ async function measurePerformance(page, url) {
     });
   });
 
-  // Calculate JS size from resources
-  const jsResources = metrics.resources.filter(
-    (r) => r.type === 'script' || r.name.endsWith('.js')
-  );
+  // Calculate JS size only for Milo libs (script or .js under /libs/)
+  const jsResources = metrics.resources.filter((r) => {
+    const isJs = r.type === 'script' || r.name.endsWith('.js');
+    return isJs && r.name.includes('/libs/');
+  });
   const jsSize = jsResources.reduce((total, r) => total + r.size, 0);
   
   // Calculate total page size
