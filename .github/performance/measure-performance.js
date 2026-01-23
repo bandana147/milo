@@ -26,7 +26,7 @@ async function measurePerformance(page, url) {
   // Wait a bit for any lazy-loaded content
   await page.waitForTimeout(2000);
 
-  // Get performance metrics using Performance API
+  // Get performance metrics using Performance API (leveraging buffered observer data)
   const metrics = await page.evaluate(() => {
     return new Promise((resolve) => {
       const results = {
@@ -37,13 +37,17 @@ async function measurePerformance(page, url) {
       };
 
       // Get LCP
-      const lcpEntries = performance.getEntriesByType('largest-contentful-paint');
+      const lcpEntries = (window.__lcpEntries && window.__lcpEntries.length)
+        ? window.__lcpEntries
+        : performance.getEntriesByType('largest-contentful-paint');
       if (lcpEntries.length > 0) {
         results.lcp = lcpEntries[lcpEntries.length - 1].startTime;
       }
 
       // Get CLS from layout-shift entries
-      const clsEntries = performance.getEntriesByType('layout-shift');
+      const clsEntries = (window.__layoutShiftEntries && window.__layoutShiftEntries.length)
+        ? window.__layoutShiftEntries
+        : performance.getEntriesByType('layout-shift');
       let clsScore = 0;
       clsEntries.forEach((entry) => {
         if (!entry.hadRecentInput) {
@@ -110,10 +114,22 @@ async function runMultipleMeasurements(browser, url, runs) {
     });
     const page = await context.newPage();
     
-    // Enable performance observer for long tasks
+    // Enable performance observers early so buffered entries (e.g., LCP/CLS) are captured
     await page.addInitScript(() => {
       if (typeof PerformanceObserver !== 'undefined') {
-        new PerformanceObserver(() => {}).observe({ entryTypes: ['longtask'] });
+        // Capture LCP and CLS with buffered entries
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          (window.__lcpEntries = window.__lcpEntries || []).push(...entries);
+        }).observe({ type: 'largest-contentful-paint', buffered: true });
+        
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          (window.__layoutShiftEntries = window.__layoutShiftEntries || []).push(...entries);
+        }).observe({ type: 'layout-shift', buffered: true });
+        
+        // Long tasks for TBT
+        new PerformanceObserver(() => {}).observe({ type: 'longtask', buffered: true });
       }
     });
     
