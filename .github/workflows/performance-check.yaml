@@ -59,9 +59,9 @@ jobs:
           fi
           
           # Stage branch preview (for comparison)
-          PR_ORG="${{ github.event.pull_request.head.repo.owner.login }}"
-          PR_REPO="${{ github.event.pull_request.head.repo.name }}"
-          STAGE_URL="https://stage--${PR_REPO}--${PR_ORG}.aem.live"
+          BASE_ORG="${{ github.event.pull_request.base.repo.owner.login || github.repository_owner }}"
+          BASE_REPO="${{ github.event.pull_request.base.repo.name || github.event.repository.name }}"
+          STAGE_URL="https://stage--${BASE_REPO}--${BASE_ORG}.aem.live"
           echo "stage_url=$STAGE_URL" >> $GITHUB_OUTPUT
           echo "Stage comparison URL: $STAGE_URL"
 
@@ -101,12 +101,12 @@ jobs:
           node .github/performance/measure-performance.js "$TEST_URL"
 
       - name: Run Performance Check (Stage)
-        if: github.base_ref == 'stage'
+        if: github.event_name == 'pull_request'
         env:
           TEST_URL: ${{ steps.url.outputs.stage_url }}
           PR_BRANCH: stage
-          PR_ORG: ${{ github.event.pull_request.head.repo.owner.login }}
-          PR_REPO: ${{ github.event.pull_request.head.repo.name }}
+          PR_ORG: ${{ github.event.pull_request.base.repo.owner.login || github.repository_owner }}
+          PR_REPO: ${{ github.event.pull_request.base.repo.name || github.event.repository.name }}
           RESULTS_PATH: .github/performance/results-stage.json
           VARIANT_NAME: Stage
         run: |
