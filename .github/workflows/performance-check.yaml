@@ -154,11 +154,11 @@ jobs:
               const hasStage = !!stageData;
               
               if (hasStage) {
-                comment += '| Page | LCP (PR / Stage / Δ) | CLS (PR / Stage / Δ) | TBT (PR / Stage / Δ) | JS Size KB (PR / Stage / Δ) | Status |\n';
-                comment += '|------|----------------------|----------------------|----------------------|------------------------------|--------|\n';
+                comment += '| Page (URL) | LCP (PR / Stage / Δ) | CLS (PR / Stage / Δ) | TBT (PR / Stage / Δ) | JS Size KB (PR / Stage / Δ) |\n';
+                comment += '|------------|----------------------|----------------------|----------------------|------------------------------|\n';
               } else {
-                comment += '| Page | LCP | CLS | TBT | JS Size | Status |\n';
-                comment += '|------|-----|-----|-----|---------|--------|\n';
+                comment += '| Page (URL) | LCP | CLS | TBT | JS Size |\n';
+                comment += '|------------|-----|-----|-----|---------|\n';
               }
               
               const stageResults = hasStage ? stageData.results : [];
@@ -186,32 +186,27 @@ jobs:
               };
               
               for (const [pageName, { pr: result, stage: base }] of byName) {
-                const lcpOk = result?.lcp <= thresholds.lcp.budget;
-                const clsOk = result?.cls <= thresholds.cls.budget;
-                const tbtOk = result?.tbt <= thresholds.tbt.budget;
-                const jsOk = (result?.jsSize || 0) <= thresholds.jsSize.budget / 1024;
-                
                 const fmtMs = (v) => `${Math.round(v)}ms`;
                 const fmtCls = (v) => v.toFixed(3);
                 const fmtKb = (v) => `${(v).toFixed(1)}KB`;
                 
                 const lcpCell = hasStage
-                  ? `${formatDelta(result?.lcp, base?.lcp, fmtMs)} ${lcpOk ? '✅' : '❌'}`
-                  : `${result?.lcp ? Math.round(result.lcp) : 'N/A'}ms ${lcpOk ? '✅' : '❌'}`;
+                  ? `${formatDelta(result?.lcp, base?.lcp, fmtMs)}`
+                  : `${result?.lcp ? Math.round(result.lcp) : 'N/A'}ms`;
                 const clsCell = hasStage
-                  ? `${formatDelta(result?.cls, base?.cls, fmtCls)} ${clsOk ? '✅' : '❌'}`
-                  : `${result?.cls ?? 'N/A'} ${clsOk ? '✅' : '❌'}`;
+                  ? `${formatDelta(result?.cls, base?.cls, fmtCls)}`
+                  : `${result?.cls ?? 'N/A'}`;
                 const tbtCell = hasStage
-                  ? `${formatDelta(result?.tbt, base?.tbt, fmtMs)} ${tbtOk ? '✅' : '❌'}`
-                  : `${result?.tbt ? Math.round(result.tbt) : 'N/A'}ms ${tbtOk ? '✅' : '❌'}`;
+                  ? `${formatDelta(result?.tbt, base?.tbt, fmtMs)}`
+                  : `${result?.tbt ? Math.round(result.tbt) : 'N/A'}ms`;
                 const jsCell = hasStage
-                  ? `${formatDelta(result?.jsSize, base?.jsSize, fmtKb)} ${jsOk ? '✅' : '❌'}`
-                  : `${result?.jsSize}KB ${jsOk ? '✅' : '❌'}`;
+                  ? `${formatDelta(result?.jsSize, base?.jsSize, fmtKb)}`
+                  : `${result?.jsSize}KB`;
                 
-                const allOk = lcpOk && clsOk && tbtOk && jsOk;
-                const statusCell = allOk ? '✅ Pass' : '❌ Fail';
+                const urlVal = result?.url || base?.url || '';
+                const pageCell = urlVal ? `${pageName} (${urlVal})` : pageName;
                 
-                comment += `| ${pageName} | ${lcpCell} | ${clsCell} | ${tbtCell} | ${jsCell} | ${statusCell} |\n`;
+                comment += `| ${pageCell} | ${lcpCell} | ${clsCell} | ${tbtCell} | ${jsCell} |\n`;
               }
               
               comment += '\n<details>\n<summary>📦 Heaviest resources (top 5 per page)</summary>\n\n';

@@ -24,9 +24,7 @@
     }
   },
   "testUrls": {
-    "milo": [
-      "https://main--homepage--adobecom.aem.live/homepage/index-loggedout"
-    ],
+    "milo": [],
     "consumer": [
       {
         "name": "Homepage",
