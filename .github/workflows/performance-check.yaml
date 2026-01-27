@@ -57,6 +57,13 @@ jobs:
             echo "test_url=$URL" >> $GITHUB_OUTPUT
             echo "Using PR preview URL: $URL"
           fi
+          
+          # Stage branch preview (for comparison)
+          PR_ORG="${{ github.event.pull_request.head.repo.owner.login }}"
+          PR_REPO="${{ github.event.pull_request.head.repo.name }}"
+          STAGE_URL="https://stage--${PR_REPO}--${PR_ORG}.aem.live"
+          echo "stage_url=$STAGE_URL" >> $GITHUB_OUTPUT
+          echo "Stage comparison URL: $STAGE_URL"
 
       - name: Wait for deployment
         if: github.event_name != 'workflow_dispatch'
@@ -81,13 +88,27 @@ jobs:
             echo "⚠️ Warning: Deployment may not be ready, proceeding anyway..."
           fi
 
-      - name: Run Performance Check
+      - name: Run Performance Check (PR)
         id: perf
         env:
           TEST_URL: ${{ steps.url.outputs.test_url }}
           PR_BRANCH: ${{ github.head_ref }}
           PR_ORG: ${{ github.event.pull_request.head.repo.owner.login }}
           PR_REPO: ${{ github.event.pull_request.head.repo.name }}
+          RESULTS_PATH: .github/performance/results-pr.json
+          VARIANT_NAME: PR
+        run: |
+          node .github/performance/measure-performance.js "$TEST_URL"
+
+      - name: Run Performance Check (Stage)
+        if: github.base_ref == 'stage'
+        env:
+          TEST_URL: ${{ steps.url.outputs.stage_url }}
+          PR_BRANCH: stage
+          PR_ORG: ${{ github.event.pull_request.head.repo.owner.login }}
+          PR_REPO: ${{ github.event.pull_request.head.repo.name }}
+          RESULTS_PATH: .github/performance/results-stage.json
+          VARIANT_NAME: Stage
         run: |
           node .github/performance/measure-performance.js "$TEST_URL"
 
@@ -96,7 +117,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: performance-results
-          path: .github/performance/results.json
+          path: |
+            .github/performance/results.json
+            .github/performance/results-*.json
           if-no-files-found: ignore
 
       - name: Comment on PR
@@ -105,15 +128,20 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const resultsPath = '.github/performance/results.json';
+            const prResultsPath = '.github/performance/results-pr.json';
+            const stageResultsPath = '.github/performance/results-stage.json';
+            const fallbackPath = '.github/performance/results.json';
             
             let comment = '## 📊 Performance Check Results\n\n';
             
-            if (!fs.existsSync(resultsPath)) {
+            const loadResults = (p) => fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf-8')) : null;
+            const prData = loadResults(prResultsPath) || loadResults(fallbackPath);
+            const stageData = loadResults(stageResultsPath);
+            
+            if (!prData) {
               comment += '⚠️ Performance results not available.\n';
             } else {
-              const data = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
-              const { results, thresholds, passed } = data;
+              const { results: prResults, thresholds, passed } = prData;
               
               comment += `**Test URL:** ${{ steps.url.outputs.test_url }}\n\n`;
               
@@ -123,38 +151,90 @@ jobs:
                 comment += '### ❌ Some metrics exceed budgets\n\n';
               }
               
-              comment += '| Page | LCP | CLS | TBT | JS Size | Status |\n';
-              comment += '|------|-----|-----|-----|---------|--------|\n';
+              const hasStage = !!stageData;
               
-              for (const result of results) {
-                const lcpOk = result.lcp <= thresholds.lcp.budget;
-                const clsOk = result.cls <= thresholds.cls.budget;
-                const tbtOk = result.tbt <= thresholds.tbt.budget;
-                const jsOk = result.jsSize <= thresholds.jsSize.budget / 1024;
+              if (hasStage) {
+                comment += '| Page | LCP (PR / Stage / Δ) | CLS (PR / Stage / Δ) | TBT (PR / Stage / Δ) | JS Size KB (PR / Stage / Δ) | Status |\n';
+                comment += '|------|----------------------|----------------------|----------------------|------------------------------|--------|\n';
+              } else {
+                comment += '| Page | LCP | CLS | TBT | JS Size | Status |\n';
+                comment += '|------|-----|-----|-----|---------|--------|\n';
+              }
+              
+              const stageResults = hasStage ? stageData.results : [];
+              
+              const byName = new Map();
+              for (const r of prResults) {
+                const key = r.name || new URL(r.url).pathname || '/';
+                byName.set(key, { pr: r });
+              }
+              for (const r of stageResults) {
+                const key = r.name || new URL(r.url).pathname || '/';
+                const entry = byName.get(key) || {};
+                entry.stage = r;
+                byName.set(key, entry);
+              }
+              
+              const formatDelta = (prVal, stVal, fmt) => {
+                if (prVal == null && stVal == null) return 'N/A';
+                const prStr = prVal == null ? 'N/A' : fmt(prVal);
+                const stStr = stVal == null ? 'N/A' : fmt(stVal);
+                if (prVal == null || stVal == null) return `${prStr} / ${stStr} / N/A`;
+                const delta = prVal - stVal;
+                const sign = delta > 0 ? '+' : '';
+                return `${prStr} / ${stStr} / ${sign}${fmt(delta)}`;
+              };
+              
+              for (const [pageName, { pr: result, stage: base }] of byName) {
+                const lcpOk = result?.lcp <= thresholds.lcp.budget;
+                const clsOk = result?.cls <= thresholds.cls.budget;
+                const tbtOk = result?.tbt <= thresholds.tbt.budget;
+                const jsOk = (result?.jsSize || 0) <= thresholds.jsSize.budget / 1024;
                 
-                const lcpCell = `${result.lcp ? Math.round(result.lcp) : 'N/A'}ms ${lcpOk ? '✅' : '❌'}`;
-                const clsCell = `${result.cls || 'N/A'} ${clsOk ? '✅' : '❌'}`;
-                const tbtCell = `${result.tbt ? Math.round(result.tbt) : 'N/A'}ms ${tbtOk ? '✅' : '❌'}`;
-                const jsCell = `${result.jsSize}KB ${jsOk ? '✅' : '❌'}`;
+                const fmtMs = (v) => `${Math.round(v)}ms`;
+                const fmtCls = (v) => v.toFixed(3);
+                const fmtKb = (v) => `${(v).toFixed(1)}KB`;
+                
+                const lcpCell = hasStage
+                  ? `${formatDelta(result?.lcp, base?.lcp, fmtMs)} ${lcpOk ? '✅' : '❌'}`
+                  : `${result?.lcp ? Math.round(result.lcp) : 'N/A'}ms ${lcpOk ? '✅' : '❌'}`;
+                const clsCell = hasStage
+                  ? `${formatDelta(result?.cls, base?.cls, fmtCls)} ${clsOk ? '✅' : '❌'}`
+                  : `${result?.cls ?? 'N/A'} ${clsOk ? '✅' : '❌'}`;
+                const tbtCell = hasStage
+                  ? `${formatDelta(result?.tbt, base?.tbt, fmtMs)} ${tbtOk ? '✅' : '❌'}`
+                  : `${result?.tbt ? Math.round(result.tbt) : 'N/A'}ms ${tbtOk ? '✅' : '❌'}`;
+                const jsCell = hasStage
+                  ? `${formatDelta(result?.jsSize, base?.jsSize, fmtKb)} ${jsOk ? '✅' : '❌'}`
+                  : `${result?.jsSize}KB ${jsOk ? '✅' : '❌'}`;
                 
                 const allOk = lcpOk && clsOk && tbtOk && jsOk;
                 const statusCell = allOk ? '✅ Pass' : '❌ Fail';
                 
-                const pageName = result.name || new URL(result.url).pathname || '/';
                 comment += `| ${pageName} | ${lcpCell} | ${clsCell} | ${tbtCell} | ${jsCell} | ${statusCell} |\n`;
               }
               
               comment += '\n<details>\n<summary>📦 Heaviest resources (top 5 per page)</summary>\n\n';
-              for (const result of results) {
-                const pageName = result.name || new URL(result.url).pathname || '/';
-                comment += `**${pageName}**\n`;
-                if (result.topResources && result.topResources.length) {
-                  for (const res of result.topResources) {
-                    const sizeKb = res.size ? (res.size / 1024).toFixed(1) : '0.0';
-                    comment += `- ${sizeKb}KB — ${res.name}\n`;
+              const variants = [
+                { label: 'PR', data: prResults },
+              ];
+              if (hasStage) {
+                variants.push({ label: 'Stage', data: stageResults });
+              }
+              
+              for (const variant of variants) {
+                comment += `**${variant.label}**\n`;
+                for (const result of variant.data) {
+                  const pageName = result.name || new URL(result.url).pathname || '/';
+                  comment += `- ${pageName}\n`;
+                  if (result.topResources && result.topResources.length) {
+                    for (const res of result.topResources) {
+                      const sizeKb = res.size ? (res.size / 1024).toFixed(1) : '0.0';
+                      comment += `  - ${sizeKb}KB — ${res.name}\n`;
+                    }
+                  } else {
+                    comment += '  - No resource data collected\n';
                   }
-                } else {
-                  comment += '- No resource data collected\n';
                 }
                 comment += '\n';
               }

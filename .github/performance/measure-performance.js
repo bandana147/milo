@@ -11,6 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 const BASELINE_PATH = path.join(__dirname, 'baseline.json');
+const RESULTS_PATH = process.env.RESULTS_PATH || path.join(__dirname, 'results.json');
+const VARIANT_NAME = process.env.VARIANT_NAME || 'PR';
 
 async function loadBaseline() {
   const content = fs.readFileSync(BASELINE_PATH, 'utf-8');
@@ -426,8 +428,10 @@ async function main() {
   }
   
   // Write results to file for artifact upload
-  const resultsFile = path.join(__dirname, 'results.json');
-  fs.writeFileSync(resultsFile, JSON.stringify({ results: allResults, thresholds, passed: !hasFailures }, null, 2));
+  fs.writeFileSync(
+    RESULTS_PATH,
+    JSON.stringify({ variant: VARIANT_NAME, results: allResults, thresholds, passed: !hasFailures }, null, 2)
+  );
   
   if (hasFailures) {
     process.exit(1);
